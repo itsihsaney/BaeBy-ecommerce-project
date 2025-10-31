@@ -68,7 +68,7 @@ function Header() {
           >
             <FaHeart className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
                 {wishlistCount}
               </span>
             )}
@@ -81,7 +81,7 @@ function Header() {
           >
             <FaShoppingCart className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
+              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
                 {itemCount}
               </span>
             )}

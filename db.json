@@ -1,0 +1,288 @@
+{
+  "users": [
+    {
+      "id": "1761832374801",
+      "name": "New",
+      "email": "new@gmail.com",
+      "password": "new"
+    },
+    {
+      "id": "1761832584939",
+      "name": "neww",
+      "email": "njw@gmail.com",
+      "password": "dqw"
+    },
+    {
+      "id": "1761833218525",
+      "name": "Mohammed Ihsan",
+      "email": "mdihsan0010@gmail.com",
+      "password": "1627"
+    },
+    {
+      "id": "1761833401758",
+      "name": "suhail",
+      "email": "suhailvedi@gmail.com",
+      "password": "bigboss"
+    },
+    {
+      "id": "1761833706127",
+      "name": "Saras",
+      "email": "saras@gmail.com",
+      "password": "saras"
+    },
+    {
+      "id": 1761844743271,
+      "name": "Jaasir",
+      "email": "jsro@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": 1761892681646,
+      "name": "safuvan",
+      "email": "safuvan@gmail.com",
+      "password": "0987654321"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "COMFORT CORDUROY FLEECE OVERSHIRT",
+      "description": "Warm corduroy overshirt with soft fleece lining.",
+      "price": 29.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/3860/787d/120e4905a4c1/ebb71d4d18b8/03183757401-e1/03183757401-e1.jpg?ts=1759301748208&w=1900"
+    },
+    {
+      "id": "2",
+      "name": "EMBROIDERED HEART DRESS",
+      "description": "Elegant cotton dress with fine heart embroidery.",
+      "price": 34.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/b4ca/4c0f/2b7d43818f0b/d7380f9bcb31/06681614809-e1/06681614809-e1.jpg?ts=1761304723202&w=1900"
+    },
+    {
+      "id": "3",
+      "name": "SPARKLY JACQUARD KNIT JUMPER",
+      "description": "Soft knitted jumper with subtle shimmer detail.",
+      "price": 27.49,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/abfc/64aa/61f14eeeb39a/09f658990863/05624502442-e1/05624502442-e1.jpg?ts=1761308273073&w=1900"
+    },
+    {
+      "id": "4",
+      "name": "COMFORT CORDUROY FLEECE OVERSHIRT",
+      "description": "Classic fleece overshirt for a refined casual look.",
+      "price": 28.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/b996/488b/704c4d1ea084/834605872751/04786566712-e1/04786566712-e1.jpg?ts=1759244687559&w=1900"
+    },
+    {
+      "id": "5",
+      "name": "PETER PAN COLLAR CARDIGAN",
+      "description": "Stylish cardigan with signature Peter Pan collar.",
+      "price": 31.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/167c/f3fd/98854d7e86d9/c352bf0b86db/02209300442-e1/02209300442-e1.jpg?ts=1761301183101&w=1900"
+    },
+    {
+      "id": "6",
+      "name": "FLORAL PRINT LACE DRESS",
+      "description": "Delicate lace dress featuring floral patterns.",
+      "price": 35.49,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/e23c/8abe/605d4a2782e6/86bdcdc0f89f/09555748485-e1/09555748485-e1.jpg?ts=1761733970420&w=1900"
+    },
+    {
+      "id": "7",
+      "name": "ZARA x BAEBY REDDY CLOTH COAT",
+      "description": "Premium wool-blend coat for comfort and warmth.",
+      "price": 42.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/21e1/a30a/3b344b70b648/fb5285e219d0/05854582606-e1/05854582606-e1.jpg?ts=1761668516152&w=1900"
+    },
+    {
+      "id": "8",
+      "name": "EMBROIDERED T-SHIRT WITH PETER PAN COLLAR",
+      "description": "Soft cotton T-shirt with elegant embroidered details.",
+      "price": 22.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/99f5/bb0a/3ed64989a64b/1b4af6d9956a/02335321700-e1/02335321700-e1.jpg?ts=1761128514078&w=1900"
+    },
+    {
+      "id": "9",
+      "name": "MARINE VELVET TROUSERS",
+      "description": "Velvet trousers designed for a smooth, premium feel.",
+      "price": 26.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/8013/08b6/77664a8f9a79/184cc6dad4cb/04745289914-e1/04745289914-e1.jpg?ts=1761130809713&w=1900"
+    },
+    {
+      "id": "10",
+      "name": "ZARA x BAEBY VELVET CULOTTES",
+      "description": "Elegant velvet culottes with a relaxed silhouette.",
+      "price": 27.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/3f21/913d/da514d3986ab/e2d1a8c4cab6/05644998712-e1/05644998712-e1.jpg?ts=1760537754999&w=1900"
+    },
+    {
+      "id": "11",
+      "name": "SPARKLY VELVET BOW SCRUNCHIE",
+      "description": "Charming velvet scrunchie with a glossy bow finish.",
+      "price": 8.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/a9b8/20f1/5a4240ed927a/d20df23e65b8/04701744800-e1/04701744800-e1.jpg?ts=1761723675501&w=1900"
+    },
+    {
+      "id": "12",
+      "name": "WIDE-WALE CORDUROY TROUSERS",
+      "description": "Classic corduroy trousers with modern tailoring.",
+      "price": 25.99,
+      "category": "clothes",
+      "image": "https://static.zara.net/assets/public/8906/6faf/a78644a1964a/87beed218c6f/05644998716-e1/05644998716-e1.jpg?ts=1760537757233&w=1900"
+    },
+    {
+      "id": "13",
+      "name": "4in1 Evo Trike",
+      "description": "Soft plush teddy designed for gentle cuddles.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw65a6fe25/ed-Activity-and-Entertainment/Toys/8058664190225_4in1%20Evo%20Trike%20Black/8058664190225%20(1).png?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "14",
+      "name": "Chicco x BaeBy Xylophone (Happy) ",
+      "description": "Recommended For Age 1+ years",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw6d0d9b8c/ed-Activity-and-Entertainment/Toys/8058664188239_Happy%20Music%20My%20First%20Xylophone/8058664188239%20(1).jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "15",
+      "name": "2in1 Animal Cottage",
+      "description": "Animal Cottage Toy - most complete shape sorter, with increasing difficulty levels!",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/v1761807342783/ed-Activity-and-Entertainment/Toys/8058664129515%20-%202%20in%201%20ANIMAL%20COTTAGE/toy-smart2play-2in1-animal-cottage-1.jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "16",
+      "name": "Rattle Easy Grasp Bear",
+      "description": "Homologated from 3m+.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw4f27861f/ed-Activity-and-Entertainment/Toys/Easy%20Grasp%20Rattles/8058664139811%20-%20Easy%20Grasp%20Bear%20Rattle/toy-rattle-easy-grasp-bear-1.jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "17",
+      "name": "Cuddly Teddy Bear",
+      "description": "Soft plush teddy designed for gentle cuddles.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/v1761807342783/ed-Activity-and-Entertainment/Toys/8058664133994%20-%20Ben%20the%20Bear%20Teether/toy-teether-rattle-ben-the-bear-1.jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "19",
+      "name": "Speedy Red Balance Bike",
+      "description": "Soft plush teddy designed for gentle cuddles.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw10601d04/ed-Activity-and-Entertainment/Toys/80586641902180_Speedy%20Red%20Balance%20Bike/8058664190218%20(8).jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "18",
+      "name": "Ducati Monster Sit N Ride Bike",
+      "description": "Soft plush teddy designed for gentle cuddles.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dwf7b992ad/ed-Activity-and-Entertainment/Toys/8058664181797_Ducati/8058664181797%20(1).jpg?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "20",
+      "name": "Chicco x BaeBy Play Set Rattles -4Pcs ",
+      "description": "Soft plush teddy designed for gentle cuddles.",
+      "price": 19.99,
+      "category": "toys",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw4c6c4688/ed-Activity-and-Entertainment/Toys/8058664133161%20-%20Chicco%20Play%20Set/8058664133161%20(1).JPG?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "21",
+      "name": "BaeBy Lotion | Deep Hydration",
+      "description": "50+50ml (2in1)",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "/public/BabyLotion.jpg"
+    },
+    {
+      "id": "22",
+      "name": "Manual Breast Pump Wellbeing",
+      "description": "Mother Friendly",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dwc37961a5/ed-Feeding/Breast-Pumps/8058664024001_Manual%20Breast%20Pump%20Wellbeing/8058664024001%20(1).png?sw=800&sh=800&sm=fit"
+    },
+    {
+      "id": "23",
+      "name": "Tear Free Baby Shampoo-50ML",
+      "description": "ph Balanced | Soap Free ",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "https://maate.in/cdn/shop/files/Slide1_ab44917b-91a3-4f0e-b191-0707a70a9b4d.jpg?v=1727027824&width=1500"
+    },
+    {
+      "id": "24",
+      "name": "Baby Body Butter-50 Gm",
+      "description": "Natural Lotion",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "https://maate.in/cdn/shop/files/Slide1_a286edf6-b58c-4699-9105-5c8bd61f680a.jpg?v=1756378529&width=1500"
+    },
+    {
+      "id": "25",
+      "name": "BaeBy Sunscreen ",
+      "description": "World Best for Babies",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "/public/Sunscreen1.png"
+    },
+    {
+      "id": "26",
+      "name": "BaeBy Milky Mineral Sunscreen",
+      "description": "Protect Like Mother",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "/public/Sunscreen2.png"
+    },
+    {
+      "id": "27",
+      "name": "BaeBy Lotion | Deep Hydration",
+      "description": "Natural Lotion",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "/public/BabyLotion.jpg"
+    },
+    {
+      "id": "28",
+      "name": "BaeBy Lotion | Deep Hydration",
+      "description": "Natural Lotion",
+      "price": 14.49,
+      "category": "skincare",
+      "image": "/public/BabyLotion.jpg"
+    }
+  ],
+  "genz-picks": [
+    {
+      "id": "1",
+      "title": "Mini Streetwear Hoodie",
+      "price": 39.99,
+      "image": "/images/streetwear1.jpg",
+      "tag": "trending"
+    },
+    {
+      "id": "2",
+      "title": "Soft Pastel Toy Set",
+      "price": 19.99,
+      "image": "/images/pasteltoy.jpg",
+      "tag": "new"
+    }
+  ]
+}

@@ -49,7 +49,7 @@ function Orders() {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center text-center">
         <img
-          src="/empty-orders.svg"
+          src="/empty.png"
           alt="No Orders"
           className="w-56 mb-6 opacity-80"
         />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../../Context/CartContext";
+import { useAuth } from "../../Context/AuthContext";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -10,6 +11,7 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [added, setAdded] = useState(false);
+  const {user} = useAuth()
 
   const { addToCart } = useCart();
 
@@ -30,7 +32,11 @@ function ProductDetails() {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!product) return;
+    if (!user)  {
+      navigate("/login")
+      return; 
+
+    };
     addToCart({
       id: product.id,
       name: product.name,
@@ -42,7 +48,7 @@ function ProductDetails() {
     setTimeout(() => setAdded(false), 1500);
   };
 
-  // ✅ Handle Buy Now
+  //  Handle Buy Now
   const handleBuyNow = () => {
     navigate("/payment", { state: { product } }); // send product to payment page
   };

@@ -8,12 +8,12 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // 🔁 Sync cart to localStorage
+  //  Sync cart to localStorage
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // 🛍 Add item to cart
+  //  Add item to cart
   const addToCart = (item) => {
     setCart((prevCart) => {
       const existing = prevCart.find((p) => p.id === item.id);
@@ -29,7 +29,9 @@ export function CartProvider({ children }) {
     });
   };
 
-  // ❌ Remove item
+  
+
+  //  Remove item
   const removeFromCart = (id) => {
     const removedItem = cart.find((i) => i.id === id);
     showToast(`${removedItem?.name || "Item"} removed `);
@@ -42,7 +44,7 @@ export function CartProvider({ children }) {
     showToast("Cart cleared ");
   };
 
-  // 🔢 Update quantity (increase/decrease)
+  //  Update quantity (increase/decrease)
   const updateQuantity = (id, action) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
@@ -62,7 +64,7 @@ export function CartProvider({ children }) {
     else showToast("Quantity decreased ");
   };
 
-  // 💬 Custom Toast (without any package)
+  //  Custom Toast (without any package)
   const showToast = (message) => {
     const toast = document.createElement("div");
     toast.textContent = message;
@@ -88,7 +90,7 @@ export function CartProvider({ children }) {
   );
 }
 
-// 🧠 Hook for easy access
+//  Hook for easy access
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {

@@ -4,12 +4,14 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useCart } from "../../Context/CartContext";
 import { useWishlist } from "../../Context/WishlistContext";
 import { FaHeart } from "react-icons/fa";
+import { useAuth } from "../../Context/AuthContext";
 
 function Clothes() {
   const { products, loading, error } = useProducts("clothes");
   const { addToCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
+  const {user} = useAuth()
 
   // Receive sortType and filterType from Outlet (Products.jsx)
   const { sortType, filterType } = useOutletContext();
@@ -18,7 +20,7 @@ function Clothes() {
   const filteredAndSortedProducts = useMemo(() => {
     let updatedProducts = [...products];
 
-    // 1️⃣ Apply Filter
+    // 1️ Apply Filter
     if (filterType === "under20") {
       updatedProducts = updatedProducts.filter((p) => p.price < 20);
     } else if (filterType === "20to40") {
@@ -27,7 +29,7 @@ function Clothes() {
       updatedProducts = updatedProducts.filter((p) => p.price > 40);
     }
 
-    // 2️⃣ Apply Sort
+    // 2️ Apply Sort
     if (sortType === "lowToHigh") {
       updatedProducts.sort((a, b) => a.price - b.price);
     } else if (sortType === "highToLow") {
@@ -60,15 +62,15 @@ function Clothes() {
               >
                 {/*  Wishlist Icon */}
                 <button
-                  onClick={() => toggleWishlist(product)}
-                  className={`absolute top-3 right-3 text-xl transition-all ${
-                    isWishlisted
-                      ? "text-pink-600"
-                      : "text-gray-400 hover:text-pink-500"
-                  }`}
-                >
-                  <FaHeart />
-                </button>
+                 onClick={() => addToWishlist(product)}
+                 className={`absolute top-3 right-3 text-xl transition-all ${
+                 isWishlisted
+                  ? "text-pink-600"
+                   : "text-gray-400 hover:text-pink-500"
+                    }`}
+                   >
+                   <FaHeart />
+                   </button>
 
                 {/* Product Image */}
                 <img
@@ -91,7 +93,8 @@ function Clothes() {
 
                   {/*  Buttons */}
                   <div className="flex justify-center gap-3 mt-3">
-                    <button
+
+                    <button 
                       onClick={() => addToCart(product)}
                       className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
                     >

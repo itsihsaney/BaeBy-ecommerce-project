@@ -16,7 +16,7 @@ function OrderSuccess() {
         Order Placed Successfully!
       </h1>
       <p className="text-gray-600 mb-6">
-        Thanks for shopping with <span className="text-pink-500 font-semibold">BaebyStore</span> 💖  
+        Thanks for shopping with <span className="text-pink-500 font-semibold">BaebyStore</span>  
         Your order has been received and is being processed.
       </p>
 

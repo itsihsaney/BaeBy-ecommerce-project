@@ -26,7 +26,7 @@ export const WishlistProvider = ({ children }) => {
     setWishlist((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // ✅ Clear wishlist completely (used during logout)
+  // Clear wishlist completely (used during logout)
   const clearWishlist = () => {
     setWishlist([]);
     localStorage.removeItem("wishlist");

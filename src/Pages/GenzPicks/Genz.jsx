@@ -53,7 +53,7 @@ function GenzPicks() {
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-white">
               <div className="flex gap-4">
-                {/* 👕 Go to Product Details */}
+                {/*  Go to Product Details */}
                 <button
                   onClick={() => handleViewDetails(item)}
                   className="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-3 rounded-full text-lg font-semibold hover:opacity-90 transition"
@@ -61,7 +61,7 @@ function GenzPicks() {
                   Cop the Drip
                 </button>
 
-                {/* 💖 Add to Wishlist */}
+                {/*  Add to Wishlist */}
                 
               </div>
             </div>

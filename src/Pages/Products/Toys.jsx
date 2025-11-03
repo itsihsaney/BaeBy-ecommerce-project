@@ -12,36 +12,31 @@ function Toys() {
   const navigate = useNavigate();
   const { sortType, filterType } = useOutletContext(); //  gets sorting/filtering
 
-  // ✅Apply Sorting and Filtering
-  const processedProducts = useMemo(() => {
-    let updated = [...products];
-
-    // Apply filter if available
-    if (filterType && filterType !== "all") {
-      updated = updated.filter(
-        (product) =>
-          product.category?.toLowerCase() === filterType.toLowerCase()
-      );
-    }
-
-    // Apply sorting logic
-    if (sortType === "price-low-high") {
-      updated.sort((a, b) => a.price - b.price);
-    } else if (sortType === "price-high-low") {
-      updated.sort((a, b) => b.price - a.price);
-    } else if (sortType === "name-az") {
-      updated.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortType === "name-za") {
-      updated.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    return updated;
-  }, [products, sortType, filterType]);
-
-  if (loading)
-    return <p className="text-center text-gray-500 py-10">Loading...</p>;
-  if (error)
-    return <p className="text-center text-red-500 py-10">{error}</p>;
+   //  Apply Sorting & Filtering with useMemo (for performance)
+     const processedProducts = useMemo(() => {
+       let updatedProducts = [...products];
+   
+       // 1️ Apply Filter
+       if (filterType === "under20") {
+         updatedProducts = updatedProducts.filter((p) => p.price < 20);
+       } else if (filterType === "20to40") {
+         updatedProducts = updatedProducts.filter((p) => p.price >= 20 && p.price <= 40);
+       } else if (filterType === "above40") {
+         updatedProducts = updatedProducts.filter((p) => p.price > 40);
+       }
+   
+       // 2️ Apply Sort
+       if (sortType === "lowToHigh") {
+         updatedProducts.sort((a, b) => a.price - b.price);
+       } else if (sortType === "highToLow") {
+         updatedProducts.sort((a, b) => b.price - a.price);
+       }
+   
+       return updatedProducts;
+     }, [products, sortType, filterType]);
+   
+     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+     if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-10">

@@ -6,14 +6,15 @@ import AuthContext from "../Context/AuthContext";
 import { useCart } from "../Context/CartContext";
 import { useWishlist } from "../Context/WishlistContext";
 
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
-  const { cart } = useCart(); // use updated CartContext (cart not cartItems)
-  const { wishlist } = useWishlist();
+  const { cart , clearCart } = useCart(); // use updated CartContext (cart not cartItems)
+  const { wishlist ,clearWishlist } = useWishlist();
   const navigate = useNavigate();
 
-  // 🛒 Total cart items
+  //  Total cart items
   const itemCount = Array.isArray(cart)
     ? cart.reduce((sum, item) => sum + item.quantity, 0)
     : 0;
@@ -59,7 +60,7 @@ function Header() {
           })}
         </ul>
 
-        {/* 🌈Right Side Icons */}
+        {/* Right Side Icons */}
         <div className="flex items-center gap-5">
           {/*  Wishlist Icon */}
           <div
@@ -74,7 +75,7 @@ function Header() {
             )}
           </div>
 
-          {/* 🛒 Cart Icon */}
+          {/* Cart Icon */}
           <div
             className="relative cursor-pointer"
             onClick={() => navigate("/cart")}
@@ -99,7 +100,11 @@ function Header() {
                 </span>
               </span>
               <button
-                onClick={logout}
+                onClick={ ()=> {
+                  logout()
+                  clearCart()
+                  clearWishlist()
+                }}
                 className="ml-2 px-4 py-1.5 rounded-full bg-pink-500 text-white shadow-[0_0_8px_#ffb6c1] hover:shadow-[0_0_14px_#ff80ab] transition-all duration-300"
               >
                 Logout

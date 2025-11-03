@@ -7,7 +7,7 @@ function Cart() {
 
   const navigate = useNavigate()
 
-  // 🧮Calculate total amount
+  // Calculate total amount
   const total = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -37,7 +37,7 @@ function Cart() {
     }, 2000);
   };
 
-  // 🛒 Empty cart display
+  //  Empty cart display
   if (!cart || cart.length === 0) {
     return (
       <div className="min-h-screen bg-pink-50 py-10">
@@ -106,7 +106,7 @@ function Cart() {
           </div>
         ))}
 
-        {/* 🧾 Total & Actions */}
+        {/*  Total & Actions */}
         <div className="flex flex-col sm:flex-row justify-between items-center mt-8 text-lg font-semibold gap-4">
           <p className="text-gray-800">
             Total:{" "}

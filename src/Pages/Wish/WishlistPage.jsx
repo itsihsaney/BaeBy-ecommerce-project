@@ -1,8 +1,11 @@
 import React from "react";
 import { useWishlist } from "../../Context/WishlistContext";
+import { useCart } from "../../Context/CartContext";
+
 
 function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist();
+  const {addToCart} = useCart()
 
   if (!wishlist) return <div>Loading...</div>;
 
@@ -39,6 +42,18 @@ function WishlistPage() {
               >
                 Remove
               </button>
+              <button
+               onClick={() =>{
+
+                addToCart(item)
+
+               } 
+                
+               }
+               className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
+                >
+                 Add to Cart
+                </button>
             </div>
           ))}
         </div>

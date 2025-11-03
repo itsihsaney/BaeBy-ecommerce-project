@@ -4,6 +4,7 @@ import useProducts from "../../hooks/useProducts";
 import { useCart } from "../../Context/CartContext";
 import { useWishlist } from "../../Context/WishlistContext";
 import { FaHeart } from "react-icons/fa";
+import { useAuth } from "../../Context/AuthContext";
 
 function AllProducts() {
   const { products, loading, error } = useProducts();
@@ -11,6 +12,7 @@ function AllProducts() {
   const { wishlist, addToWishlist } = useWishlist();
   const navigate = useNavigate();
   const { sortType, filterType } = useOutletContext(); //  get from parent
+  const {user} = useAuth()
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
@@ -83,7 +85,7 @@ function AllProducts() {
                 >
                   {/* Wishlist Button */}
                   <button
-                    onClick={() => addToWishlist(product)}
+                    onClick={() => {user ? addToWishlist(product) :navigate("/login")}}
                     className={`absolute top-3 right-3 text-xl transition-all ${
                       isWishlisted
                         ? "text-pink-600"
@@ -111,7 +113,7 @@ function AllProducts() {
 
                     <div className="flex justify-center gap-3 mt-3">
                       <button
-                        onClick={() => addToCart(product)}
+                        onClick={() => {user ? addToCart(product) : navigate("/login")} }
                         className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
                       >
                         Add to Cart

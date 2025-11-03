@@ -31,26 +31,263 @@
       "password": "saras"
     },
     {
-      "id": 1761844743271,
+      "id": "1761844743271",
       "name": "Jaasir",
       "email": "jsro@gmail.com",
       "password": "123456"
     },
     {
-      "id": 1761892681646,
+      "id": "1761892681646",
       "name": "safuvan",
       "email": "safuvan@gmail.com",
       "password": "0987654321"
+    },
+    {
+      "id": "1761971126848",
+      "name": "Safuvan K",
+      "email": "safuvan1@gmail.com",
+      "password": "1111"
+    },
+    {
+      "id": "1761972159270",
+      "name": "Rihaan",
+      "email": "rihaan@gmail.com",
+      "password": "1234"
+    },
+    {
+      "id": "1761972364984",
+      "name": "i",
+      "email": "1@gmail.com",
+      "password": "        "
+    },
+    {
+      "id": "1761985732780",
+      "name": "suhailaslam",
+      "email": "suhailaslam1@gmail.com",
+      "password": "asdfasdf"
+    },
+    {
+      "id": "1761988258615",
+      "name": "rinsha fathima",
+      "email": "rinsha@gmail.com",
+      "password": "12345678"
+    },
+    {
+      "id": "1761993805633",
+      "name": "thabsheer",
+      "email": "thabsheer@gmail.com",
+      "password": "Thabsheer@123"
+    },
+    {
+      "id": "1761994988918",
+      "name": "SWALIH",
+      "email": "swalih@gmail.com",
+      "password": "swalih123"
+    },
+    {
+      "id": "1762005553876",
+      "name": "Sana Fathima",
+      "email": "sanaihsaney@gmail.com",
+      "password": "1627"
+    },
+    {
+      "id": "1762005935398",
+      "name": "Naseema",
+      "email": "naseema@gmail.com",
+      "password": "naseema"
+    },
+    {
+      "id": "1762006099847",
+      "name": "Muhammed Shah",
+      "email": "shah@gmail.com",
+      "password": "shah"
+    }
+  ],
+  "orders": [
+    {
+      "id": "1",
+      "name": "Mohammed Ihsan",
+      "date": "01/11/2025, 15:05:46",
+      "email": "ihsan@gmail.com",
+      "address": "Palakkad, Kerala",
+      "paymentMethod": "UPI",
+      "totalAmount": 49.99,
+      "status": "Delivered"
+    },
+    {
+      "id": "1761989746949",
+      "method": "upi",
+      "name": "Mohammed Ihsan",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "upiId": "HA@okaxis",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Paid",
+      "date": "01/11/2025, 15:05:46"
+    },
+    {
+      "id": "1761993147592",
+      "method": "upi",
+      "name": "Mohammed Ihsan",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "upiId": "HA@okaxis",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Paid",
+      "date": "01/11/2025, 16:02:27"
+    },
+    {
+      "id": "1761993964493",
+      "method": "cod",
+      "name": "thabsheer",
+      "address": "KINFRA",
+      "phone": "9999999999",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 16:16:04"
+    },
+    {
+      "id": "1761994676628",
+      "method": "upi",
+      "name": "RIHAAN",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "upiId": "HA@okaxis",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Delivered",
+      "date": "01/11/2025, 16:27:56"
+    },
+    {
+      "id": "1761999992307",
+      "method": "cod",
+      "name": "Mohammed Ihsan",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 17:56:32"
+    },
+    {
+      "id": "1762004663116",
+      "method": "cod",
+      "name": "Sana Fathima",
+      "address": "Ihsaney",
+      "phone": "1234567891",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": 29.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 19:14:23"
+    },
+    {
+      "id": "1762005650726",
+      "method": "cod",
+      "name": "Sana Fathima",
+      "address": "Ihsaney",
+      "phone": "09876543",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": 34.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 19:30:50"
+    },
+    {
+      "id": "1762005716908",
+      "method": "cod",
+      "name": "Sana Fathima",
+      "address": "Ihsaney",
+      "phone": "09876543",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "Custom Order",
+      "price": "N/A",
+      "status": "Pending COD",
+      "date": "01/11/2025, 19:31:56"
+    },
+    {
+      "id": "1762005971657",
+      "method": "cod",
+      "name": "Naseema",
+      "address": "ihsaney house",
+      "phone": "12345678",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": 29.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 19:36:11"
+    },
+    {
+      "id": "1762006154339",
+      "method": "cod",
+      "name": "Muhammed Shah",
+      "address": "ihsaney house",
+      "phone": "09876543",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": 29.99,
+      "status": "Pending COD",
+      "date": "01/11/2025, 19:39:14"
+    },
+    {
+      "id": 1762066492251,
+      "method": "upi",
+      "name": "Rihaan Shehariyar",
+      "address": "Kinfra Techno Industrial Park, Kakkanchery",
+      "phone": "08921996927",
+      "upiId": "rihaan@oksbi",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": 29.99,
+      "status": "Paid",
+      "date": "02/11/2025, 12:24:52"
     }
   ],
   "products": [
     {
       "id": "1",
-      "name": "COMFORT CORDUROY FLEECE OVERSHIRT",
+      "name": "MICKEY MOUSE SWEATSHIRT",
       "description": "Warm corduroy overshirt with soft fleece lining.",
       "price": 29.99,
       "category": "clothes",
-      "image": "https://static.zara.net/assets/public/3860/787d/120e4905a4c1/ebb71d4d18b8/03183757401-e1/03183757401-e1.jpg?ts=1759301748208&w=1900"
+      "image": "https://static.zara.net/assets/public/fc7f/85e5/b04b475e8266/d0641ba94c3d/02878553712-e1/02878553712-e1.jpg?ts=1761033959154&w=1900"
     },
     {
       "id": "2",
@@ -70,11 +307,11 @@
     },
     {
       "id": "4",
-      "name": "COMFORT CORDUROY FLEECE OVERSHIRT",
-      "description": "Classic fleece overshirt for a refined casual look.",
+      "name": "GINGHAM CHECK OVERSHIRT",
+      "description": "Classic check overshirt for a casual look.",
       "price": 28.99,
       "category": "clothes",
-      "image": "https://static.zara.net/assets/public/b996/488b/704c4d1ea084/834605872751/04786566712-e1/04786566712-e1.jpg?ts=1759244687559&w=1900"
+      "image": "https://static.zara.net/assets/public/0d7c/0451/b093441aa95c/80f52b3d36eb/05644522093-e1/05644522093-e1.jpg?ts=1761147347600&w=2636"
     },
     {
       "id": "5",
@@ -176,7 +413,7 @@
       "id": "17",
       "name": "Cuddly Teddy Bear",
       "description": "Soft plush teddy designed for gentle cuddles.",
-      "price": 9.00,
+      "price": 9,
       "category": "toys",
       "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/v1761807342783/ed-Activity-and-Entertainment/Toys/8058664133994%20-%20Ben%20the%20Bear%20Teether/toy-teether-rattle-ben-the-bear-1.jpg?sw=800&sh=800&sm=fit"
     },
@@ -258,7 +495,7 @@
       "description": "Natural Lotion",
       "price": 12.49,
       "category": "skincare",
-      "image": "/public/BabyLotion.jpg"
+      "image": "/Cream.jpg"
     },
     {
       "id": "28",
@@ -274,14 +511,14 @@
       "id": "1",
       "title": "Mini Streetwear Hoodie",
       "price": 39.99,
-      "image": "/images/streetwear1.jpg",
+      "image": "https://static.zara.net/assets/public/abdb/2f2e/cb2c4581bc50/773615019412/02878553712400-ult1/02878553712400-ult1.jpg?ts=1761137592138&w=3116",
       "tag": "trending"
     },
     {
-      "id": "2",
+      "id": "4",
       "title": "Soft Pastel Toy Set",
       "price": 19.99,
-      "image": "/images/pasteltoy.jpg",
+      "image": "https://static.zara.net/assets/public/417c/4956/9f8640768eca/44cf58a5011f/05644523093000-a1/05644523093000-a1.jpg?ts=1760952300771&w=2636",
       "tag": "new"
     }
   ]

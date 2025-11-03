@@ -18,12 +18,12 @@ export function CartProvider({ children }) {
     setCart((prevCart) => {
       const existing = prevCart.find((p) => p.id === item.id);
       if (existing) {
-        showToast(`${item.name} quantity increased 🩷`);
+        showToast(`${item.name} quantity increased `);
         return prevCart.map((p) =>
           p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
         );
       } else {
-        showToast(`${item.name} added to cart 🛒`);
+        showToast(`${item.name} added to cart `);
         return [...prevCart, { ...item, quantity: 1 }];
       }
     });
@@ -32,14 +32,14 @@ export function CartProvider({ children }) {
   // ❌ Remove item
   const removeFromCart = (id) => {
     const removedItem = cart.find((i) => i.id === id);
-    showToast(`${removedItem?.name || "Item"} removed 💔`);
+    showToast(`${removedItem?.name || "Item"} removed `);
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   // 🧹 Clear cart
   const clearCart = () => {
     setCart([]);
-    showToast("Cart cleared 🧺");
+    showToast("Cart cleared ");
   };
 
   // 🔢 Update quantity (increase/decrease)
@@ -58,8 +58,8 @@ export function CartProvider({ children }) {
       )
     );
 
-    if (action === "increase") showToast("Quantity increased ✨");
-    else showToast("Quantity decreased 💫");
+    if (action === "increase") showToast("Quantity increased ");
+    else showToast("Quantity decreased ");
   };
 
   // 💬 Custom Toast (without any package)

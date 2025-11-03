@@ -1,23 +1,28 @@
 import React from "react";
 import { useCart } from "../../Context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
 
-  // 🧮 Calculate total amount
+  const navigate = useNavigate()
+
+  // 🧮Calculate total amount
   const total = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
-  // 🧾 Checkout function
+  //  Checkout function
   const handleCheckout = () => {
     if (cart.length === 0) return;
-    showToast("Order placed successfully 💖");
+    showToast("Order placed successfully ");
     clearCart();
+    navigate("/payment")
+
   };
 
-  // ✨ Simple toast for checkout message
+  //  Simple toast for checkout message
   const showToast = (message) => {
     const toast = document.createElement("div");
     toast.textContent = message;
@@ -35,13 +40,14 @@ function Cart() {
   // 🛒 Empty cart display
   if (!cart || cart.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center text-gray-600 text-lg">
-        <img
-          src="/empty-cart.svg"
-          alt="Empty Cart"
-          className="w-52 mb-4 opacity-80"
-        />
-        Your cart is empty 🛒
+      <div className="min-h-screen bg-pink-50 py-10">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+         Your Cart is empty 
+      </h1>
+        <p className="text-center text-gray-600 text-lg">
+         Big yikes. You forgot.
+        </p>
+         
       </div>
     );
   }
@@ -53,7 +59,7 @@ function Cart() {
       </h1>
 
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-md p-6">
-        {/* 🧺 Cart Items */}
+        {/*  Cart Items */}
         {cart.map((item) => (
           <div
             key={item.id}
@@ -63,7 +69,7 @@ function Cart() {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-20 h-20 object-cover rounded-2xl shadow-sm"
+                className="w-50 h-50 object-cover rounded-2xl shadow-sm"
               />
               <div>
                 <h3 className="font-semibold text-gray-800">{item.name}</h3>
@@ -71,7 +77,7 @@ function Cart() {
               </div>
             </div>
 
-            {/* ➕➖ Counter */}
+            {/* Counter */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => updateQuantity(item.id, "decrease")}
@@ -90,7 +96,7 @@ function Cart() {
               </button>
             </div>
 
-            {/* ❌ Remove Button */}
+            {/*  Remove Button */}
             <button
               onClick={() => removeFromCart(item.id)}
               className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-all font-medium shadow-sm"

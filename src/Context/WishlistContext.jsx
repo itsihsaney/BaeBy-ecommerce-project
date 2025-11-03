@@ -8,7 +8,7 @@ export const WishlistProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Save wishlist to localStorage when it changes
+  // Save wishlist to localStorage
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
@@ -26,9 +26,15 @@ export const WishlistProvider = ({ children }) => {
     setWishlist((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // ✅ Clear wishlist completely (used during logout)
+  const clearWishlist = () => {
+    setWishlist([]);
+    localStorage.removeItem("wishlist");
+  };
+
   return (
     <WishlistContext.Provider
-      value={{ wishlist, addToWishlist, removeFromWishlist }}
+      value={{ wishlist, addToWishlist, removeFromWishlist, clearWishlist }}
     >
       {children}
     </WishlistContext.Provider>
@@ -36,3 +42,4 @@ export const WishlistProvider = ({ children }) => {
 };
 
 export const useWishlist = () => useContext(WishlistContext);
+export default WishlistContext;

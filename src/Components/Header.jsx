@@ -4,12 +4,12 @@ import { BiSolidLogInCircle } from "react-icons/bi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import AuthContext from "../Context/AuthContext";
 import { useCart } from "../Context/CartContext";
-import { useWishlist } from "../Context/WishListContext";
+import { useWishlist } from "../Context/WishlistContext";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
-  const { cart } = useCart(); // ✅ use updated CartContext (cart not cartItems)
+  const { cart } = useCart(); // use updated CartContext (cart not cartItems)
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
 
@@ -18,13 +18,13 @@ function Header() {
     ? cart.reduce((sum, item) => sum + item.quantity, 0)
     : 0;
 
-  // 💖 Total wishlist items
+  //  Total wishlist items
   const wishlistCount = Array.isArray(wishlist) ? wishlist.length : 0;
 
   return (
     <header className="backdrop-blur-md bg-gradient-to-r from-pink-100/70 to-white/50 shadow-md sticky top-0 z-50 border-b border-pink-200/40">
       <nav className="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex justify-between items-center">
-        {/* 🌸 Logo */}
+        {/*  Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img
             src="/BaeBy Official Logo.png"
@@ -33,7 +33,7 @@ function Header() {
           />
         </Link>
 
-        {/* 🧭 Navbar Links (Desktop) */}
+        {/*  Navbar Links (Desktop) */}
         <ul className="hidden md:flex space-x-8 text-gray-700 font-medium">
           {["Home", "Products", "Gen Z Picks"].map((item) => {
             const path =
@@ -59,9 +59,9 @@ function Header() {
           })}
         </ul>
 
-        {/* 🌈 Right Side Icons */}
+        {/* 🌈Right Side Icons */}
         <div className="flex items-center gap-5">
-          {/* 💖 Wishlist Icon */}
+          {/*  Wishlist Icon */}
           <div
             className="relative cursor-pointer"
             onClick={() => navigate("/wishlist")}
@@ -87,7 +87,8 @@ function Header() {
             )}
           </div>
 
-          {/* 👤 User / Login */}
+          {/*  User / Login */}
+          <Link to="/orders" className="hover:text-pink-600">My Orders</Link>
           {user ? (
             <div className="flex items-center gap-3">
               <FaUser className="text-2xl text-pink-500 drop-shadow-[0_0_8px_#ffb6c1]" />
@@ -103,10 +104,11 @@ function Header() {
               >
                 Logout
               </button>
+              
             </div>
           ) : (
             <>
-              <Link to="/account">
+              <Link to="/">
                 <FaUser className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
               </Link>
               <Link
@@ -119,7 +121,7 @@ function Header() {
             </>
           )}
 
-          {/* 🍔 Hamburger (Mobile) */}
+          {/*  Hamburger (Mobile) */}
           <button
             className="md:hidden text-3xl text-pink-500"
             aria-label="Open menu"

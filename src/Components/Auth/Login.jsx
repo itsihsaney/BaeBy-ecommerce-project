@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import toast from "react-hot-toast";
+
 
 function Login() {
   const { login, user } = useAuth();
@@ -17,19 +19,26 @@ function Login() {
   const handleChange = (e) =>
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    const res = login(form.email.trim(), form.password);
+  try {
+    const res = await login(form.email.trim(), form.password);
     if (res.success) {
-      // gentle success UX
+      toast.success("You are successfully logged in!");
       navigate("/");
     } else {
       setError(res.message);
-      alert("invalid login")
+      toast.error("Invalid login credentials");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    toast.error("Something went wrong. Please try again.");
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">

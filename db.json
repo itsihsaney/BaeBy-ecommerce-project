@@ -101,6 +101,36 @@
       "name": "Muhammed Shah",
       "email": "shah@gmail.com",
       "password": "shah"
+    },
+    {
+      "id": "1762159989293",
+      "name": "tester",
+      "email": "tester@gamail.com",
+      "password": "test"
+    },
+    {
+      "id": "1762161431764",
+      "name": "ashitha",
+      "email": "ashitha@gmail.com",
+      "password": "121212"
+    },
+    {
+      "id": "1762162128926",
+      "name": "Rashad",
+      "email": "rashad@gmail.com",
+      "password": "1212"
+    },
+    {
+      "id": "1762183009462",
+      "name": "vaishakh",
+      "email": "vaishakhvinodnlr@gmail.com",
+      "password": "vaishkh@123"
+    },
+    {
+      "id": 1762249834848,
+      "name": "Ihsan",
+      "email": "ihsan@gmail.com",
+      "password": "ihsan"
     }
   ],
   "orders": [
@@ -130,154 +160,49 @@
       "date": "01/11/2025, 15:05:46"
     },
     {
-      "id": "1761993147592",
-      "method": "upi",
+      "id": "1762192922958",
+      "method": "card",
       "name": "Mohammed Ihsan",
-      "address": "KINFRA",
-      "phone": "09876543",
-      "upiId": "HA@okaxis",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
+      "address": "Kinfra",
+      "phone": "9287263212",
+      "upiId": "",
+      "cardNumber": "4524451651643416",
+      "expiry": "02/03",
+      "cvv": "111",
+      "product": "Tear Free Baby Shampoo-50ML",
+      "price": 12.49,
       "status": "Paid",
-      "date": "01/11/2025, 16:02:27"
+      "date": "11/3/2025, 11:32:02 PM"
     },
     {
-      "id": "1761993964493",
-      "method": "cod",
-      "name": "thabsheer",
-      "address": "KINFRA",
-      "phone": "9999999999",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 16:16:04"
-    },
-    {
-      "id": "1761994676628",
-      "method": "upi",
-      "name": "RIHAAN",
-      "address": "KINFRA",
-      "phone": "09876543",
-      "upiId": "HA@okaxis",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
-      "status": "Delivered",
-      "date": "01/11/2025, 16:27:56"
-    },
-    {
-      "id": "1761999992307",
+      "id": 1762241063625,
       "method": "cod",
       "name": "Mohammed Ihsan",
-      "address": "KINFRA",
-      "phone": "09876543",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 17:56:32"
-    },
-    {
-      "id": "1762004663116",
-      "method": "cod",
-      "name": "Sana Fathima",
-      "address": "Ihsaney",
-      "phone": "1234567891",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "MICKEY MOUSE SWEATSHIRT",
-      "price": 29.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 19:14:23"
-    },
-    {
-      "id": "1762005650726",
-      "method": "cod",
-      "name": "Sana Fathima",
-      "address": "Ihsaney",
-      "phone": "09876543",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 19:30:50"
-    },
-    {
-      "id": "1762005716908",
-      "method": "cod",
-      "name": "Sana Fathima",
-      "address": "Ihsaney",
-      "phone": "09876543",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "Custom Order",
-      "price": "N/A",
-      "status": "Pending COD",
-      "date": "01/11/2025, 19:31:56"
-    },
-    {
-      "id": "1762005971657",
-      "method": "cod",
-      "name": "Naseema",
-      "address": "ihsaney house",
-      "phone": "12345678",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "MICKEY MOUSE SWEATSHIRT",
-      "price": 29.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 19:36:11"
-    },
-    {
-      "id": "1762006154339",
-      "method": "cod",
-      "name": "Muhammed Shah",
-      "address": "ihsaney house",
-      "phone": "09876543",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "MICKEY MOUSE SWEATSHIRT",
-      "price": 29.99,
-      "status": "Pending COD",
-      "date": "01/11/2025, 19:39:14"
-    },
-    {
-      "id": 1762066492251,
-      "method": "upi",
-      "name": "Rihaan Shehariyar",
-      "address": "Kinfra Techno Industrial Park, Kakkanchery",
+      "address": "Pullissery, Mannarkkad",
       "phone": "08921996927",
-      "upiId": "rihaan@oksbi",
+      "upiId": "",
       "cardNumber": "",
       "expiry": "",
       "cvv": "",
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": 29.99,
-      "status": "Paid",
-      "date": "02/11/2025, 12:24:52"
+      "status": "Pending COD",
+      "date": "04/11/2025, 12:54:23"
+    },
+    {
+      "id": 1762263477109,
+      "method": "cod",
+      "name": " Ihsan",
+      "address": "Palakkad",
+      "phone": "8276362726",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": 29.99,
+      "status": "Pending COD",
+      "date": "04/11/2025, 19:07:57"
     }
   ],
   "products": [
@@ -450,14 +375,6 @@
       "image": "/public/BabyLotion.jpg"
     },
     {
-      "id": "22",
-      "name": "Manual Breast Pump Wellbeing",
-      "description": "Mother Friendly",
-      "price": 10.49,
-      "category": "skincare",
-      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dwc37961a5/ed-Feeding/Breast-Pumps/8058664024001_Manual%20Breast%20Pump%20Wellbeing/8058664024001%20(1).png?sw=800&sh=800&sm=fit"
-    },
-    {
       "id": "23",
       "name": "Tear Free Baby Shampoo-50ML",
       "description": "ph Balanced | Soap Free ",
@@ -498,10 +415,18 @@
       "image": "/Cream.jpg"
     },
     {
+      "id": "22",
+      "name": "Milk Pump Wellbeing",
+      "description": "Mother Friendly",
+      "price": 40.49,
+      "category": "skincare",
+      "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dwc37961a5/ed-Feeding/Breast-Pumps/8058664024001_Manual%20Breast%20Pump%20Wellbeing/8058664024001%20(1).png?sw=800&sh=800&sm=fit"
+    },
+    {
       "id": "28",
       "name": "BaeBy Lotion | Deep Hydration",
       "description": "Natural Lotion",
-      "price": 14.49,
+      "price": 24.49,
       "category": "skincare",
       "image": "/public/BabyLotion.jpg"
     }

@@ -65,7 +65,7 @@ function Toys() {
                   onClick={() => toggleWishlist(product)}
                   className={`absolute top-3 right-3 text-xl transition-all ${
                     isWishlisted
-                      ? "text-pink-600"
+                      ? "text-pink-600 scale-125"
                       : "text-gray-400 hover:text-pink-500"
                   }`}
                 >

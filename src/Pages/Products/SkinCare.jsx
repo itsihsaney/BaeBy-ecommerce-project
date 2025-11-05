@@ -10,13 +10,13 @@ function SkinCare() {
   const { addToCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
-  const { sortType, filterType } = useOutletContext(); // ✅ from parent
+  const { sortType, filterType } = useOutletContext(); //  from parent
 
  //  Apply Sorting & Filtering with useMemo (for performance)
    const processedProducts = useMemo(() => {
      let updatedProducts = [...products];
  
-     // 1️ Apply Filter
+     //  Apply Filter
      if (filterType === "under20") {
        updatedProducts = updatedProducts.filter((p) => p.price < 20);
      } else if (filterType === "20to40") {
@@ -25,7 +25,7 @@ function SkinCare() {
        updatedProducts = updatedProducts.filter((p) => p.price > 40);
      }
  
-     // 2️ Apply Sort
+     //  Apply Sort
      if (sortType === "lowToHigh") {
        updatedProducts.sort((a, b) => a.price - b.price);
      } else if (sortType === "highToLow") {
@@ -63,7 +63,7 @@ function SkinCare() {
                   onClick={() => toggleWishlist(product)}
                   className={`absolute top-3 right-3 text-xl transition-all ${
                     isWishlisted
-                      ? "text-pink-600"
+                      ? "text-pink-600 scale-125"
                       : "text-gray-400 hover:text-pink-500"
                   }`}
                 >

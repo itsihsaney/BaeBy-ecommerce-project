@@ -5,8 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // If coming from product details, you can pass product info via state
+  
   const product = location.state?.product;
 
   const [method, setMethod] = useState("cod");

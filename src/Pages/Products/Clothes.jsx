@@ -8,19 +8,21 @@ import { useAuth } from "../../Context/AuthContext";
 
 function Clothes() {
   const { products, loading, error } = useProducts("clothes");
-  const { addToCart } = useCart();
+  const { cart, addToCart ,removeFromCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
-  const {user} = useAuth()
+  const { user } = useAuth();
 
-  // Receive sortType and filterType from Outlet (Products.jsx)
+  //  Check if item is already in cart
+  const isInCart = (id) => cart.some((item) => item.id === id);
+
+  //  Sorting and Filtering
   const { sortType, filterType } = useOutletContext();
 
-  //  Apply Sorting & Filtering with useMemo (for performance)
   const filteredAndSortedProducts = useMemo(() => {
     let updatedProducts = [...products];
 
-    // 1️ Apply Filter
+    // 1️ Filter
     if (filterType === "under20") {
       updatedProducts = updatedProducts.filter((p) => p.price < 20);
     } else if (filterType === "20to40") {
@@ -29,7 +31,7 @@ function Clothes() {
       updatedProducts = updatedProducts.filter((p) => p.price > 40);
     }
 
-    // 2️ Apply Sort
+    // 2️ Sort
     if (sortType === "lowToHigh") {
       updatedProducts.sort((a, b) => a.price - b.price);
     } else if (sortType === "highToLow") {
@@ -60,17 +62,17 @@ function Clothes() {
                 key={product.id}
                 className="relative bg-white shadow-md rounded-2xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg"
               >
-                {/*  Wishlist Icon */}
+                {/*  Wishlist Button */}
                 <button
-                 onClick={() => addToWishlist(product)}
-                 className={`absolute top-3 right-3 text-xl transition-all ${
-                 isWishlisted
-                  ? "text-pink-600"
-                   : "text-gray-400 hover:text-pink-500"
-                    }`}
-                   >
-                   <FaHeart />
-                   </button>
+                  onClick={() => toggleWishlist(product)}
+                  className={`absolute top-3 right-3 text-xl transition-all ${
+                    isWishlisted
+                      ? "text-pink-600 scale-125"
+                      : "text-gray-400 hover:text-pink-500"
+                  }`}
+                >
+                  <FaHeart />
+                </button>
 
                 {/* Product Image */}
                 <img
@@ -79,7 +81,7 @@ function Clothes() {
                   className="w-full h-52 object-cover"
                 />
 
-                {/* Product Info */}
+                {/* 📝 Product Info */}
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-700">
                     {product.name}
@@ -87,19 +89,33 @@ function Clothes() {
                   <p className="text-sm text-gray-500 mb-2 line-clamp-2">
                     {product.description}
                   </p>
-                  <p className="text-pink-600 font-bold text-lg">
-                    ${product.price}
-                  </p>
+                  <p className="text-pink-600 font-bold text-lg">${product.price}</p>
 
                   {/*  Buttons */}
                   <div className="flex justify-center gap-3 mt-3">
+                    {isInCart(product.id) ? (
+  <button
+    onClick={() => removeFromCart(product.id)}
+    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
+  >
+    Takeout
+  </button>
+) : (
+  <button
+    onClick={() => {
+      if (!user) {
+        navigate("/login");
+        return;
+      }
+      addToCart(product);
+    }}
+    className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md "
+  >
+    Add to Cart
+  </button>
+)}
 
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
-                    >
-                      Add to Cart
-                    </button>
+
                     <button
                       onClick={() => navigate(`/product/${product.id}`)}
                       className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-full transition-all duration-200 shadow-md"

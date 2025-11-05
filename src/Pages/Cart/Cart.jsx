@@ -13,6 +13,8 @@ function Cart() {
     0
   );
 
+  
+
   //  Checkout function
   const handleCheckout = () => {
     if (cart.length === 0) return;
@@ -114,6 +116,8 @@ function Cart() {
               ${total.toFixed(2)}
             </span>
           </p>
+
+
 
           <div className="flex gap-4">
             <button

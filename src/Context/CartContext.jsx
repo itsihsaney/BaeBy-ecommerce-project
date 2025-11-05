@@ -38,7 +38,7 @@ export function CartProvider({ children }) {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  // 🧹 Clear cart
+  //  Clear cart
   const clearCart = () => {
     setCart([]);
     showToast("Cart cleared ");

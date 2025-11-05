@@ -9,19 +9,19 @@ import { useAuth } from "../../Context/AuthContext";
 function AllProducts() {
   const { products, loading, error } = useProducts();
   const { addToCart } = useCart();
-  const { wishlist, addToWishlist } = useWishlist();
+  const { wishlist, toggleWishlist } = useWishlist(); //  Corrected
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { sortType, filterType } = useOutletContext(); //  get from parent
-  const {user} = useAuth()
+  const { sortType, filterType } = useOutletContext(); // from parent layout
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  //  Apply Sorting & Filtering Logic
+  // Apply Sorting & Filtering
   const processedProducts = useMemo(() => {
     let updated = [...products];
 
-    // Filter by category (if selected)
+    // Filter by category
     if (filterType && filterType !== "all") {
       updated = updated.filter(
         (product) =>
@@ -29,21 +29,28 @@ function AllProducts() {
       );
     }
 
-    // Sort Logic
-    if (sortType === "price-low-high") {
-      updated.sort((a, b) => a.price - b.price);
-    } else if (sortType === "price-high-low") {
-      updated.sort((a, b) => b.price - a.price);
-    } else if (sortType === "name-az") {
-      updated.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortType === "name-za") {
-      updated.sort((a, b) => b.name.localeCompare(a.name));
+    // Sorting logic
+    switch (sortType) {
+      case "price-low-high":
+        updated.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high-low":
+        updated.sort((a, b) => b.price - a.price);
+        break;
+      case "name-az":
+        updated.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-za":
+        updated.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      default:
+        break;
     }
 
     return updated;
   }, [products, sortType, filterType]);
 
-  // Pagination Logic
+  //  Pagination logic
   const totalPages = Math.ceil(processedProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const currentProducts = processedProducts.slice(
@@ -56,6 +63,7 @@ function AllProducts() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  //  Loading & Error
   if (loading)
     return <p className="text-center text-gray-500 py-10">Loading...</p>;
   if (error)
@@ -71,7 +79,7 @@ function AllProducts() {
         <p className="text-center text-gray-500">No products found.</p>
       ) : (
         <>
-          {/* Product Grid */}
+          {/*  Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {currentProducts.map((product) => {
               const isWishlisted = wishlist.some(
@@ -83,23 +91,28 @@ function AllProducts() {
                   key={product.id}
                   className="relative bg-white shadow-md rounded-2xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg"
                 >
-                  {/* Wishlist Button */}
+                  {/*  Wishlist Button */}
                   <button
-                    onClick={() => {user ? addToWishlist(product) :navigate("/login")}}
+                    onClick={() => {
+                      user ? toggleWishlist(product) : navigate("/login");
+                    }}
                     className={`absolute top-3 right-3 text-xl transition-all ${
                       isWishlisted
-                        ? "text-pink-600"
+                        ? "text-pink-600 scale-125"
                         : "text-gray-400 hover:text-pink-500"
                     }`}
                   >
                     <FaHeart />
                   </button>
 
+                  {/*  Product Image */}
                   <img
                     src={product.image}
                     alt={product.name}
                     className="w-full h-52 object-cover"
                   />
+
+                  {/* Product Info */}
                   <div className="p-4 text-center">
                     <h3 className="text-lg font-semibold text-gray-700">
                       {product.name}
@@ -111,9 +124,12 @@ function AllProducts() {
                       ${product.price}
                     </p>
 
+                    {/* Buttons */}
                     <div className="flex justify-center gap-3 mt-3">
                       <button
-                        onClick={() => {user ? addToCart(product) : navigate("/login")} }
+                        onClick={() => {
+                          user ? addToCart(product) : navigate("/login");
+                        }}
                         className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
                       >
                         Add to Cart
@@ -131,7 +147,7 @@ function AllProducts() {
             })}
           </div>
 
-          {/* Pagination */}
+          {/*  Pagination Controls */}
           <div className="flex justify-center items-center gap-3 mt-12">
             <button
               onClick={() =>

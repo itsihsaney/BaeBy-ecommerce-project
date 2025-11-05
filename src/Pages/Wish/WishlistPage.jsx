@@ -2,12 +2,14 @@ import React from "react";
 import { useWishlist } from "../../Context/WishlistContext";
 import { useCart } from "../../Context/CartContext";
 
-
 function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist();
-  const {addToCart} = useCart()
+  const { cart, addToCart } = useCart();
 
   if (!wishlist) return <div>Loading...</div>;
+
+  // Function to check if item already in cart
+  const isInCart = (id) => cart.some((item) => item.id === id);
 
   return (
     <div className="min-h-screen bg-pink-50 py-10">
@@ -24,7 +26,7 @@ function WishlistPage() {
           {wishlist.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center"
+              className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center transition-all hover:shadow-lg"
             >
               <img
                 src={item.image}
@@ -34,26 +36,34 @@ function WishlistPage() {
               <h3 className="font-semibold text-lg text-gray-800">
                 {item.name}
               </h3>
-              <p className="text-gray-600 mb-2">${item.price}</p>
+              <p className="text-gray-600 mb-3">${item.price}</p>
 
-              <button
-                onClick={() => removeFromWishlist(item.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-              >
-                Remove
-              </button>
-              <button
-               onClick={() =>{
-
-                addToCart(item)
-
-               } 
-                
-               }
-               className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
+              <div className="flex gap-3">
+                {/* Remove Button */}
+                <button
+                  onClick={() => removeFromWishlist(item.id)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition"
                 >
-                 Add to Cart
+                  Remove
                 </button>
+
+                {/* Add to Cart / Already in Cart */}
+                {isInCart(item.id) ? (
+                  <button
+                    disabled
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed"
+                  >
+                    Already in Cart
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => addToCart(item)}
+                    className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-lg transition-all duration-200 shadow-md"
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

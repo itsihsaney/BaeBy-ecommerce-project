@@ -10,7 +10,7 @@ export const ProductsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 🆕 Active Category
+  //  Active Category
   const [activeCategory, setActiveCategory] = useState("Clothes");
 
   useEffect(() => {

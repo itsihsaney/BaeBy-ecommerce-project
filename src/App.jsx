@@ -50,9 +50,9 @@ export default function App() {
             }
             />
             <Route path="/wishlist" element={
-             <ProtectedRoute>
-              <WishlistPage />
-              </ProtectedRoute>
+                  <ProtectedRoute>
+                    <WishlistPage />
+                  </ProtectedRoute>
               }
              />
             

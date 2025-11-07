@@ -1,136 +1,140 @@
 {
   "users": [
     {
-      "id": "1761832374801",
-      "name": "New",
-      "email": "new@gmail.com",
-      "password": "new"
-    },
-    {
-      "id": "1761832584939",
-      "name": "neww",
-      "email": "njw@gmail.com",
-      "password": "dqw"
-    },
-    {
       "id": "1761833218525",
       "name": "Mohammed Ihsan",
       "email": "mdihsan0010@gmail.com",
-      "password": "1627"
-    },
-    {
-      "id": "1761833401758",
-      "name": "suhail",
-      "email": "suhailvedi@gmail.com",
-      "password": "bigboss"
+      "password": "1627",
+      "role": "admin",
+      "status": "active"
     },
     {
       "id": "1761833706127",
       "name": "Saras",
       "email": "saras@gmail.com",
-      "password": "saras"
+      "password": "saras",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761844743271",
       "name": "Jaasir",
       "email": "jsro@gmail.com",
-      "password": "123456"
+      "password": "123456",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761892681646",
-      "name": "safuvan",
+      "name": "Safuvan",
       "email": "safuvan@gmail.com",
-      "password": "0987654321"
+      "password": "0987654321",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761971126848",
       "name": "Safuvan K",
       "email": "safuvan1@gmail.com",
-      "password": "1111"
+      "password": "1111",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761972159270",
       "name": "Rihaan",
       "email": "rihaan@gmail.com",
-      "password": "1234"
-    },
-    {
-      "id": "1761972364984",
-      "name": "i",
-      "email": "1@gmail.com",
-      "password": "        "
+      "password": "1234",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761985732780",
-      "name": "suhailaslam",
+      "name": "Suhail Aslam",
       "email": "suhailaslam1@gmail.com",
-      "password": "asdfasdf"
+      "password": "asdfasdf",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761988258615",
-      "name": "rinsha fathima",
+      "name": "Rinsha Fathima",
       "email": "rinsha@gmail.com",
-      "password": "12345678"
+      "password": "12345678",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761993805633",
-      "name": "thabsheer",
+      "name": "Thabsheer",
       "email": "thabsheer@gmail.com",
-      "password": "Thabsheer@123"
+      "password": "Thabsheer@123",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1761994988918",
-      "name": "SWALIH",
+      "name": "Swalih",
       "email": "swalih@gmail.com",
-      "password": "swalih123"
-    },
-    {
-      "id": "1762005553876",
-      "name": "Sana Fathima",
-      "email": "sanaihsaney@gmail.com",
-      "password": "1627"
+      "password": "swalih123",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1762005935398",
       "name": "Naseema",
       "email": "naseema@gmail.com",
-      "password": "naseema"
+      "password": "naseema",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1762006099847",
       "name": "Muhammed Shah",
       "email": "shah@gmail.com",
-      "password": "shah"
+      "password": "shah",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1762159989293",
-      "name": "tester",
+      "name": "Tester HERE",
       "email": "tester@gamail.com",
-      "password": "test"
+      "password": "test",
+      "role": "user",
+      "status": "inactive"
     },
     {
       "id": "1762161431764",
-      "name": "ashitha",
+      "name": "Ashitha",
       "email": "ashitha@gmail.com",
-      "password": "121212"
+      "password": "121212",
+      "role": "user",
+      "status": "block"
     },
     {
       "id": "1762162128926",
       "name": "Rashad",
       "email": "rashad@gmail.com",
-      "password": "1212"
+      "password": "1212",
+      "role": "user",
+      "status": "active"
     },
     {
       "id": "1762183009462",
-      "name": "vaishakh",
+      "name": "Vaishakh",
       "email": "vaishakhvinodnlr@gmail.com",
-      "password": "vaishkh@123"
+      "password": "vaishkh@123",
+      "role": "user",
+      "status": "active"
     },
     {
-      "id": 1762249834848,
+      "id": "1762249834848",
       "name": "Ihsan",
       "email": "ihsan@gmail.com",
-      "password": "ihsan"
+      "password": "ihsan",
+      "role": "user",
+      "status": "active"
     }
   ],
   "orders": [
@@ -151,9 +155,6 @@
       "address": "KINFRA",
       "phone": "09876543",
       "upiId": "HA@okaxis",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
       "product": "EMBROIDERED HEART DRESS",
       "price": 34.99,
       "status": "Paid",
@@ -165,7 +166,6 @@
       "name": "Mohammed Ihsan",
       "address": "Kinfra",
       "phone": "9287263212",
-      "upiId": "",
       "cardNumber": "4524451651643416",
       "expiry": "02/03",
       "cvv": "111",
@@ -175,34 +175,56 @@
       "date": "11/3/2025, 11:32:02 PM"
     },
     {
-      "id": 1762241063625,
+      "id": "1762241063625",
       "method": "cod",
       "name": "Mohammed Ihsan",
       "address": "Pullissery, Mannarkkad",
       "phone": "08921996927",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": 29.99,
       "status": "Pending COD",
       "date": "04/11/2025, 12:54:23"
     },
     {
-      "id": 1762263477109,
+      "id": "1762263477109",
       "method": "cod",
-      "name": " Ihsan",
+      "name": "Ihsan",
       "address": "Palakkad",
       "phone": "8276362726",
-      "upiId": "",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": 29.99,
       "status": "Pending COD",
       "date": "04/11/2025, 19:07:57"
+    },
+    {
+      "id": 1762447577727,
+      "method": "cod",
+      "name": "Mohammed Ihsan",
+      "address": "Kinfra",
+      "phone": "9287263212",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "Custom Order",
+      "price": "N/A",
+      "status": "Pending COD",
+      "date": "11/6/2025, 10:16:17 PM"
+    },
+    {
+      "id": 1762447631326,
+      "method": "cod",
+      "name": "Mohammed Ihsan",
+      "address": "Kinfra",
+      "phone": "9287263212",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "Custom Order",
+      "price": "N/A",
+      "status": "Pending COD",
+      "date": "11/6/2025, 10:17:11 PM"
     }
   ],
   "products": [

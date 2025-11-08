@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Menu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function TopBar({ onMenuClick }) {
   const [admin, setAdmin] = useState(null);
+  const navigate = useNavigate()
 
   //  Fetch admin user from db.json
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function TopBar({ onMenuClick }) {
               <p className="text-sm text-gray-400">{admin.email}</p>
             </div>
 
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-fuchsia-600 to-pink-500 flex items-center justify-center text-white font-bold">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-fuchsia-600 to-pink-900 flex items-center justify-center text-white font-bold">
               {admin.name.charAt(0).toUpperCase()}
             </div>
           </>
@@ -49,7 +51,8 @@ export default function TopBar({ onMenuClick }) {
           <p className="text-sm text-gray-500">Loading admin...</p>
         )}
 
-        <button className="bg-gradient-to-r from-fuchsia-600 to-pink-500 px-5 py-2 rounded-lg text-white font-medium shadow-md hover:opacity-90 transition">
+        <button 
+        className="bg-gradient-to-r from-fuchsia-600 to-pink-500 px-5 py-2 rounded-lg text-white font-medium shadow-md hover:opacity-90 transition">
           Logout
         </button>
       </div>

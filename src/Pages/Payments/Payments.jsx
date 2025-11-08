@@ -22,13 +22,13 @@ function Payment() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🧠 Function to clean price strings like "$50" or "₹59.99"
+  //  Function to clean price strings like "$50" or "₹59.99"
   const cleanPrice = (value) => {
     if (!value) return 0;
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
-  // 🧩 Debug: Check what comes from cart or product
+  //  Debug: Check what comes from cart or product
   useEffect(() => {
     console.log("🧾 Product received in Payment.jsx:", product);
   }, [product]);
@@ -52,7 +52,7 @@ function Payment() {
       );
     }
 
-    // ✅ Protect against zero prices
+    //  Protect against zero prices
     if (totalAmount <= 0) {
       alert("Error: Product price missing or invalid.");
       console.error("🛑 Invalid product data:", product);
@@ -86,7 +86,7 @@ function Payment() {
           Complete Your <span className="text-pink-500">Payment</span>
         </h2>
 
-        {/* 🧾 Product Summary */}
+        {/*  Product Summary */}
         {product && (
           <div className="mb-6 text-center bg-pink-50 border border-pink-200 rounded-xl py-3">
             <h3 className="font-semibold text-gray-700">
@@ -109,7 +109,7 @@ function Payment() {
           </div>
         )}
 
-        {/* 💳 Payment Method Selection */}
+        {/*  Payment Method Selection */}
         <div className="flex justify-around mb-6">
           {[
             { key: "cod", label: "Cash on Delivery" },

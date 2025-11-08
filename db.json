@@ -135,6 +135,14 @@
       "password": "safuvan",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": "1762594157210",
+      "name": "Test",
+      "email": "test@gmail.com",
+      "password": "test",
+      "role": "user",
+      "status": "active"
     }
   ],
   "orders": [
@@ -185,6 +193,22 @@
       "totalAmount": "$196.44",
       "status": "Paid",
       "date": "08/11/2025, 14:03:58"
+    },
+    {
+      "id": 1762598302803,
+      "method": "upi",
+      "name": "Mohammed Ihsan",
+      "address": "Pullissery, Mannarkkad",
+      "phone": "87654345678",
+      "upiId": "ihsan@oksbi",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": "$34.99",
+      "totalAmount": "$34.99",
+      "status": "Paid",
+      "date": "08/11/2025, 16:08:22"
     }
   ],
   "products": [

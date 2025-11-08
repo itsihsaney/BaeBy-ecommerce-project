@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext";
@@ -7,7 +5,7 @@ import { WishlistProvider } from "./Context/WishlistContext";
 import { CartProvider } from "./Context/CartContext";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products/Products";
-import AllProducts from "./Pages/Products/AllProducts"; //  Unified Product Page
+import AllProducts from "./Pages/Products/AllProducts";
 import Header from "./Components/Header";
 import ProductDetails from "./Pages/ProductDetails/ProductDetails";
 import Register from "./Components/Auth/Register";
@@ -16,6 +14,7 @@ import ScrollToTop from "./Components/Scroll/ScrollToTop";
 import Cart from "./Pages/Cart/Cart";
 import WishlistPage from "./Pages/Wish/WishlistPage";
 import ProtectedRoute from "./Components/ProtectRouter/ProtectedRoute";
+import AdminRoute from "./Components/ProtectRouter/AdminRoute";
 import { Toaster } from "react-hot-toast";
 import GenzPicks from "./Pages/GenzPicks/Genz";
 import Footer from "./Components/Footer";
@@ -30,14 +29,12 @@ import Dashboard from "./Pages/Admin/Dashboard";
 import AdminProducts from "./Pages/Admin/AdminProducts";
 import AdminOrders from "./Pages/Admin/AdminOrders";
 import AdminLayout from "./Pages/Admin/Layout/AdminLayout";
-
-
-
-
+import NotAuthorized from "./Components/Auth/NotAuthorized";
 
 export default function App() {
-     const location = useLocation();
-    const isAdminRoute = location.pathname.startsWith("/admin");
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <AuthProvider>
       <WishlistProvider>
@@ -47,15 +44,18 @@ export default function App() {
           <Toaster position="top-center" reverseOrder={false} />
 
           <Routes>
-            {/* Home Routes */}
+            {/* 🏠 Home Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
 
-            {/*  Auth */}
+            {/* 🔐 Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/*  Protected Routes */}
+            {/* 🚫 Not Authorized */}
+            <Route path="/not-authorized" element={<NotAuthorized />} />
+
+            {/* 🛒 Protected Routes (User) */}
             <Route
               path="/cart"
               element={
@@ -73,16 +73,13 @@ export default function App() {
               }
             />
 
-            {/*  Products */}
+            {/* 🛍️ Products */}
             <Route path="/products" element={<Products />}>
-              {/* Default: Show all */}
               <Route index element={<AllProducts />} />
-
-              {/* Dynamic category (clothes, toys, skincare...) */}
               <Route path=":category" element={<AllProducts />} />
             </Route>
 
-            {/*  Payment & Orders */}
+            {/* 💳 Payment & Orders */}
             <Route
               path="/payment"
               element={
@@ -92,23 +89,36 @@ export default function App() {
               }
             />
             <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
 
-            {/*  Other Pages */}
+            {/* 🌟 Other Pages */}
             <Route path="/gen-z-picks" element={<GenzPicks />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/returns" element={<Return />} />
 
-            {/* ADMIN SIDE  */}
-            <Route path="/admin" element={<AdminLayout />}>
+            {/* ⚙️ ADMIN SIDE (Protected) */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
               <Route index element={<Dashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="users" element={<Users />} />
             </Route>
-
           </Routes>
 
           {!isAdminRoute && <Footer />}

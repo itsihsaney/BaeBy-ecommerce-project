@@ -17,12 +17,13 @@ function Cart() {
 
   //  Checkout function
   const handleCheckout = () => {
-    if (cart.length === 0) return;
-    showToast("Order placed successfully ");
-    clearCart();
-    navigate("/payment")
+  if (cart.length === 0) return;
+  showToast("Redirecting to payment...");
+  
+  // ✅ Pass the cart data to Payment page
+  navigate("/payment", { state: { product: cart } });
+};
 
-  };
 
   //  Simple toast for checkout message
   const showToast = (message) => {

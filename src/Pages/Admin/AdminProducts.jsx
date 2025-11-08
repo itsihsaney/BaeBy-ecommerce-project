@@ -1,73 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import toast from "react-hot-toast";
-
-// export default function AdminProducts() {
-//   const [products, setProducts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   const fetchProducts = () => {
-//     axios
-//       .get("http://localhost:5001/products")
-//       .then((res) => {
-//         setProducts(res.data);
-//         setLoading(false);
-//       })
-//       .catch((err) => console.error("Error fetching products:", err));
-//   };
-
-//   useEffect(() => {
-//     fetchProducts();
-//   }, []);
-
-//   const handleDelete = async (id) => {
-//     try {
-//       await axios.delete(`http://localhost:5001/products/${id}`);
-//       toast.success("Product deleted");
-//       fetchProducts(); // refresh list
-//     } catch (error) {
-//       toast.error("Failed to delete product");
-//     }
-//   };
-
-//   if (loading) return <p>Loading products...</p>;
-
-//   return (
-//     <div className="p-6">
-//       <h2 className="text-2xl font-bold mb-4">All Products</h2>
-
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-//         {products.map((product) => (
-//           <div
-//             key={product.id}
-//             className="bg-white rounded-lg shadow-md overflow-hidden"
-//           >
-//             <img
-//               src={product.image}
-//               alt={product.name}
-//               className="h-48 w-full object-cover"
-//             />
-//             <div className="p-4">
-//               <h3 className="text-lg font-semibold">{product.name}</h3>
-//               <p className="text-gray-600 mb-2 capitalize">{product.category}</p>
-//               <p className="font-bold text-pink-600 mb-3">₹{product.price}</p>
-//               <button
-//                 onClick={() => handleDelete(product.id)}
-//                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-//               >
-//                 Delete
-//               </button>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, Trash2, Loader2, Edit3, Package } from "lucide-react";
@@ -103,6 +33,12 @@ export default function AdminProducts() {
     fetchProducts();
   }, []);
 
+  // ✅ Helper to clean price
+  const cleanPrice = (value) => {
+    if (!value) return 0;
+    return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
+  };
+
   // 🗑️ Delete Product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -126,13 +62,13 @@ export default function AdminProducts() {
       const product = {
         id: Date.now(),
         ...newProduct,
-        price: parseFloat(newProduct.price),
+        price: cleanPrice(newProduct.price),
       };
       await axios.post("http://localhost:5001/products", product);
       toast.success("Product added successfully");
       setShowAddModal(false);
-      fetchProducts();
       setNewProduct({ name: "", category: "", price: "", image: "" });
+      fetchProducts();
     } catch {
       toast.error("Failed to add product");
     }
@@ -140,7 +76,7 @@ export default function AdminProducts() {
 
   // ✏ Edit Product
   const openEditModal = (product) => {
-    setEditProduct(product);
+    setEditProduct({ ...product, price: cleanPrice(product.price) });
     setShowEditModal(true);
   };
 
@@ -153,7 +89,7 @@ export default function AdminProducts() {
     try {
       await axios.patch(
         `http://localhost:5001/products/${editProduct.id}`,
-        editProduct
+        { ...editProduct, price: cleanPrice(editProduct.price) }
       );
       toast.success("Product updated successfully");
       setShowEditModal(false);
@@ -175,7 +111,7 @@ export default function AdminProducts() {
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
       <Toaster position="top-right" />
 
-      {/* Header */}
+      {/* ===== Header ===== */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
           Products Management
@@ -188,7 +124,7 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      {/* Product Grid */}
+      {/* ===== Product Grid ===== */}
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 text-gray-400">
           <Package size={50} className="text-fuchsia-500 mb-3" />
@@ -202,7 +138,10 @@ export default function AdminProducts() {
               className="bg-[#1F2937]/80 backdrop-blur-md border border-fuchsia-700/20 rounded-2xl shadow-md hover:shadow-fuchsia-600/30 transition-all duration-300 overflow-hidden"
             >
               <img
-                src={product.image || "https://via.placeholder.com/300x200?text=No+Image"}
+                src={
+                  product.image ||
+                  "https://via.placeholder.com/300x200?text=No+Image"
+                }
                 alt={product.name}
                 className="h-48 w-full object-cover"
               />
@@ -215,7 +154,7 @@ export default function AdminProducts() {
                     {product.category}
                   </p>
                   <p className="text-fuchsia-300 font-semibold mb-3">
-                    ${product.price}
+                    ${cleanPrice(product.price).toFixed(2)}
                   </p>
                 </div>
 
@@ -239,7 +178,7 @@ export default function AdminProducts() {
         </div>
       )}
 
-      {/* Add Product Modal */}
+      {/* ===== Add Product Modal ===== */}
       {showAddModal && (
         <Modal
           title="Add New Product"
@@ -254,7 +193,7 @@ export default function AdminProducts() {
         </Modal>
       )}
 
-      {/* Edit Product Modal */}
+      {/* ===== Edit Product Modal ===== */}
       {showEditModal && (
         <Modal
           title={`Edit Product: ${editProduct.name}`}
@@ -273,7 +212,7 @@ export default function AdminProducts() {
 }
 
 /* 🧩 Product Form Component */
-function ProductForm({ product, setProduct, isEdit }) {
+function ProductForm({ product, setProduct }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProduct((prev) => ({ ...prev, [name]: value }));

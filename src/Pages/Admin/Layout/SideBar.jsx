@@ -10,6 +10,13 @@ export default function SideBar({ isOpen, setIsOpen }) {
   const inactiveClass =
     "text-gray-300 hover:bg-[#312E81]/40 hover:text-fuchsia-300";
 
+  const navItems = [
+    { to: "/admin", label: "Dashboard" },
+    { to: "/admin/products", label: "Products" },
+    { to: "/admin/orders", label: "Orders" },
+    { to: "/admin/users", label: "Users" },
+  ];
+
   return (
     <aside
       className={`fixed lg:static z-40 top-0 left-0 h-full w-64 bg-[#1F2937] border-r border-fuchsia-700/40 p-6 flex flex-col transform transition-transform duration-300 ${
@@ -19,12 +26,10 @@ export default function SideBar({ isOpen, setIsOpen }) {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-3">
-          {/* ✅ Baeby Logo */}
           <img
             src="/BaeBy Official Logo.jpg"
             alt="Baeby Logo"
             className="h-10 w-10 object-contain rounded-lg shadow-md"
-            
           />
           <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
             Baeby Admin
@@ -42,46 +47,19 @@ export default function SideBar({ isOpen, setIsOpen }) {
 
       {/* Navigation Links */}
       <nav className="space-y-2">
-        <NavLink
-          to="/admin"
-          end
-          className={({ isActive }) =>
-            `${baseClasses} ${isActive ? activeClass : inactiveClass}`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          Dashboard
-        </NavLink>
-
-        <NavLink
-          to="/admin/products"
-          className={({ isActive }) =>
-            `${baseClasses} ${isActive ? activeClass : inactiveClass}`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          Products
-        </NavLink>
-
-        <NavLink
-          to="/admin/orders"
-          className={({ isActive }) =>
-            `${baseClasses} ${isActive ? activeClass : inactiveClass}`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          Orders
-        </NavLink>
-
-        <NavLink
-          to="/admin/users"
-          className={({ isActive }) =>
-            `${baseClasses} ${isActive ? activeClass : inactiveClass}`
-          }
-          onClick={() => setIsOpen(false)}
-        >
-          Users
-        </NavLink>
+        {navItems.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end
+            className={({ isActive }) =>
+              `${baseClasses} ${isActive ? activeClass : inactiveClass}`
+            }
+            onClick={() => setIsOpen(false)}
+          >
+            {label}
+          </NavLink>
+        ))}
       </nav>
 
       {/* Footer */}

@@ -6,30 +6,22 @@ import { Outlet } from "react-router-dom";
 export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Example admin info (can be fetched dynamically later)
-  const admin = {
-    name: "Mohammed Ihsan",
-    email: "ihsan@baeby.com",
-  };
-
   return (
     <div className="flex min-h-screen bg-[#111827] text-gray-100 relative">
       {/* Sidebar */}
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
       {/* Main Section */}
-      <div className="flex-1 flex flex-col ">
+      <div className="flex-1 flex flex-col">
+        <TopBar onMenuClick={() => setIsSidebarOpen(true)} />
 
-        <TopBar
-          admin={admin}
-          onMenuClick={() => setIsSidebarOpen(true)}
-        />
+        {/* Page Content */}
         <main className="flex-1 p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>
 
-      {/* Overlay for mobile */}
+      {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
           onClick={() => setIsSidebarOpen(false)}

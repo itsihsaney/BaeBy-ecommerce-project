@@ -123,11 +123,11 @@ function Orders() {
                   {order.product || "—"}
                 </p>
                 <p className="text-gray-500 text-sm">
-                  Price: ${order.price || order.totalAmount}
+                  Price: {order.price || order.totalAmount}
                 </p>
               </div>
               <p className="font-semibold text-gray-900">
-                Total: ${order.price || order.totalAmount}
+                Total: {order.price || order.totalAmount}
               </p>
             </div>
           </div>

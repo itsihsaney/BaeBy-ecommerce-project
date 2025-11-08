@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-const COLORS = ["#C084FC", "#E879F9", "#F472B6", "#F9A8D4"]; // modern rose palette
+const COLORS = ["#C084FC", "#E879F9", "#F472B6", "#F9A8D4"];
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -25,6 +25,12 @@ export default function Dashboard() {
   const [profit, setProfit] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Helper to clean "$" and ensure number
+  const cleanPrice = (val) => {
+    if (!val) return 0;
+    return parseFloat(val.toString().replace(/[^0-9.]/g, "")) || 0;
+  };
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -34,9 +40,11 @@ export default function Dashboard() {
           axios.get("http://localhost:5001/products"),
         ]);
 
+        // ✅ Calculate totals correctly
         const totalSales = orders.data.reduce(
           (sum, o) =>
-            sum + (parseFloat(o.price) || parseFloat(o.totalAmount) || 0),
+            sum +
+            cleanPrice(o.price || o.totalAmount || 0),
           0
         );
 
@@ -55,7 +63,7 @@ export default function Dashboard() {
         setProfit(calculatedProfit.toFixed(2));
         setRecentOrders(latestOrders);
       } catch (err) {
-        console.error(err);
+        console.error("Dashboard fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -64,7 +72,11 @@ export default function Dashboard() {
   }, []);
 
   if (loading)
-    return <p className="text-purple-300 text-lg p-6">Loading dashboard...</p>;
+    return (
+      <p className="text-fuchsia-300 text-lg p-6 animate-pulse">
+        Loading dashboard...
+      </p>
+    );
 
   const barData = [
     { name: "Users", value: stats.users },
@@ -79,14 +91,13 @@ export default function Dashboard() {
   ];
 
   return (
-    
     <div className="min-h-screen bg-[#111827] text-gray-200 p-6">
-      {/* Header */}
+      {/* ===== Header ===== */}
       <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-pink-400 via-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
         Baeby Admin Dashboard
       </h1>
 
-      {/* Stat Cards */}
+      {/* ===== Stat Cards ===== */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <AnimatedStatCard title="Total Users" value={stats.users} color="from-fuchsia-600 to-pink-500" />
         <AnimatedStatCard title="Total Products" value={stats.products} color="from-violet-500 to-fuchsia-400" />
@@ -99,7 +110,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Charts Section */}
+      {/* ===== Charts Section ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
         <ChartCard title="Data Overview">
           <ResponsiveContainer width="100%" height={280}>
@@ -151,8 +162,9 @@ export default function Dashboard() {
         </ChartCard>
       </div>
 
-      {/* Bottom Section */}
+      {/* ===== Recent Orders + Insights ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* 🧾 Recent Orders */}
         <div className="bg-[#1F2937] rounded-2xl shadow-lg p-6 border border-purple-600/30">
           <h2 className="text-xl font-semibold mb-4 text-purple-300">
             Recent Orders
@@ -163,7 +175,7 @@ export default function Dashboard() {
                 <tr className="bg-purple-900/20 text-purple-300 text-sm uppercase">
                   <th className="py-3 px-4 text-left">Order ID</th>
                   <th className="py-3 px-4 text-left">Customer</th>
-                  <th className="py-3 px-4 text-left">Amount</th>
+                  <th className="py-3 px-4 text-left">Amount ($)</th>
                   <th className="py-3 px-4 text-left">Status</th>
                 </tr>
               </thead>
@@ -173,17 +185,19 @@ export default function Dashboard() {
                     key={order.id}
                     className="border-t border-purple-800/20 hover:bg-purple-900/10 transition"
                   >
-                    <td className="py-3 px-4">{order.id}</td>
-                    <td className="py-3 px-4">{order.name}</td>
-                    <td className="py-3 px-4">
-                      ${order.price || order.totalAmount}
+                    <td className="py-3 px-4 text-gray-300">{order.id}</td>
+                    <td className="py-3 px-4 text-gray-300">{order.name}</td>
+                    <td className="py-3 px-4 text-pink-300 font-semibold">
+                      ${cleanPrice(order.price || order.totalAmount).toFixed(2)}
                     </td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           order.status?.toLowerCase().includes("pending")
                             ? "bg-yellow-500/20 text-yellow-300"
-                            : "bg-green-500/20 text-green-300"
+                            : order.status?.toLowerCase().includes("delivered")
+                            ? "bg-green-500/20 text-green-300"
+                            : "bg-blue-500/20 text-blue-300"
                         }`}
                       >
                         {order.status}
@@ -196,7 +210,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Insights */}
+        {/* 💡 Insights */}
         <div className="bg-[#1F2937] rounded-2xl shadow-lg p-6 border border-purple-600/30">
           <h2 className="text-xl font-semibold mb-4 text-purple-300">
             Business Insights
@@ -213,7 +227,7 @@ export default function Dashboard() {
   );
 }
 
-/* Chart Wrapper */
+/* ===== Chart Wrapper ===== */
 function ChartCard({ title, children }) {
   return (
     <div className="bg-[#1F2937] rounded-2xl shadow-lg p-6 border border-purple-700/30">
@@ -223,13 +237,13 @@ function ChartCard({ title, children }) {
   );
 }
 
-/* Stat Card */
+/* ===== Animated Stat Card ===== */
 function AnimatedStatCard({ title, value, color, isCurrency = false }) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
     let start = 0;
-    const end = parseFloat(value.toString().replace(/₹/g, ""));
+    const end = parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
     const duration = 1000;
     const increment = end / (duration / 16);
 
@@ -239,7 +253,7 @@ function AnimatedStatCard({ title, value, color, isCurrency = false }) {
         start = end;
         clearInterval(timer);
       }
-      setDisplayValue(isCurrency ? `₹${start.toFixed(0)}` : start.toFixed(0));
+      setDisplayValue(isCurrency ? `$${start.toFixed(2)}` : start.toFixed(0));
     }, 16);
 
     return () => clearInterval(timer);
@@ -258,7 +272,7 @@ function AnimatedStatCard({ title, value, color, isCurrency = false }) {
   );
 }
 
-/* Mini Card */
+/* ===== Insight Card ===== */
 function InsightCard({ title, value }) {
   return (
     <div className="bg-[#111827] border border-purple-700/30 rounded-xl p-4 text-center hover:bg-purple-900/20 transition">

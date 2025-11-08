@@ -10,7 +10,7 @@
     },
     {
       "id": "1761833706127",
-      "name": "Saras",
+      "name": "Saras S ",
       "email": "saras@gmail.com",
       "password": "saras",
       "role": "user",
@@ -97,20 +97,12 @@
       "status": "active"
     },
     {
-      "id": "1762159989293",
-      "name": "Tester HERE",
-      "email": "tester@gamail.com",
-      "password": "test",
-      "role": "user",
-      "status": "inactive"
-    },
-    {
       "id": "1762161431764",
       "name": "Ashitha",
       "email": "ashitha@gmail.com",
       "password": "121212",
       "role": "user",
-      "status": "block"
+      "status": "active"
     },
     {
       "id": "1762162128926",
@@ -129,102 +121,70 @@
       "status": "active"
     },
     {
-      "id": "1762249834848",
-      "name": "Ihsan",
-      "email": "ihsan@gmail.com",
-      "password": "ihsan",
+      "id": "1762517165292",
+      "name": "aswin",
+      "email": "aswin@123",
+      "password": "12345678",
+      "role": "user",
+      "status": "active"
+    },
+    {
+      "id": "1762590792009",
+      "name": "Safuvan",
+      "email": "safuvan1234@gmail.com",
+      "password": "safuvan",
       "role": "user",
       "status": "active"
     }
   ],
   "orders": [
     {
-      "id": "1",
-      "name": "Mohammed Ihsan",
-      "date": "01/11/2025, 15:05:46",
-      "email": "ihsan@gmail.com",
-      "address": "Palakkad, Kerala",
-      "paymentMethod": "UPI",
-      "totalAmount": 49.99,
-      "status": "Delivered"
-    },
-    {
-      "id": "1761989746949",
-      "method": "upi",
-      "name": "Mohammed Ihsan",
-      "address": "KINFRA",
-      "phone": "09876543",
-      "upiId": "HA@okaxis",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": 34.99,
-      "status": "Paid",
-      "date": "01/11/2025, 15:05:46"
-    },
-    {
-      "id": "1762192922958",
-      "method": "card",
-      "name": "Mohammed Ihsan",
-      "address": "Kinfra",
-      "phone": "9287263212",
-      "cardNumber": "4524451651643416",
-      "expiry": "02/03",
-      "cvv": "111",
-      "product": "Tear Free Baby Shampoo-50ML",
-      "price": 12.49,
-      "status": "Paid",
-      "date": "11/3/2025, 11:32:02 PM"
-    },
-    {
-      "id": "1762241063625",
+      "id": 1762580372099,
       "method": "cod",
       "name": "Mohammed Ihsan",
       "address": "Pullissery, Mannarkkad",
       "phone": "08921996927",
-      "product": "MICKEY MOUSE SWEATSHIRT",
-      "price": 29.99,
-      "status": "Pending COD",
-      "date": "04/11/2025, 12:54:23"
-    },
-    {
-      "id": "1762263477109",
-      "method": "cod",
-      "name": "Ihsan",
-      "address": "Palakkad",
-      "phone": "8276362726",
-      "product": "MICKEY MOUSE SWEATSHIRT",
-      "price": 29.99,
-      "status": "Pending COD",
-      "date": "04/11/2025, 19:07:57"
-    },
-    {
-      "id": 1762447577727,
-      "method": "cod",
-      "name": "Mohammed Ihsan",
-      "address": "Kinfra",
-      "phone": "9287263212",
       "upiId": "",
       "cardNumber": "",
       "expiry": "",
       "cvv": "",
-      "product": "Custom Order",
-      "price": "N/A",
+      "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER",
+      "price": "$97.47",
+      "totalAmount": "$97.47",
       "status": "Pending COD",
-      "date": "11/6/2025, 10:16:17 PM"
+      "date": "08/11/2025, 11:09:32"
     },
     {
-      "id": 1762447631326,
+      "id": 1762580467657,
       "method": "cod",
       "name": "Mohammed Ihsan",
-      "address": "Kinfra",
-      "phone": "9287263212",
+      "address": "Pullissery, Mannarkkad",
+      "phone": "08921996927",
       "upiId": "",
       "cardNumber": "",
       "expiry": "",
       "cvv": "",
-      "product": "Custom Order",
-      "price": "N/A",
+      "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER, ZARA x BAEBY REDDY CLOTH COAT, FLORAL PRINT LACE DRESS, PETER PAN COLLAR CARDIGAN, MICKEY MOUSE SWEATSHIRT, GINGHAM CHECK OVERSHIRT, EMBROIDERED T-SHIRT WITH PETER PAN COLLAR, MARINE VELVET TROUSERS, ZARA x BAEBY VELVET CULOTTES, SPARKLY VELVET BOW SCRUNCHIE, WIDE-WALE CORDUROY TROUSERS, Rattle Easy Grasp Bear, 2in1 Animal Cottage, Chicco x BaeBy Xylophone (Happy) , 4in1 Evo Trike, Cuddly Teddy Bear, Speedy Red Balance Bike, Ducati Monster Sit N Ride Bike, Chicco x BaeBy Play Set Rattles -4Pcs , BaeBy Lotion | Deep Hydration, Tear Free Baby Shampoo-50ML, Baby Body Butter-50 Gm, BaeBy Sunscreen , BaeBy Milky Mineral Sunscreen, BaeBy Lotion | Deep Hydration, Milk Pump Wellbeing, BaeBy Lotion | Deep Hydration",
+      "price": "$868.20",
+      "totalAmount": "$868.20",
       "status": "Pending COD",
-      "date": "11/6/2025, 10:17:11 PM"
+      "date": "08/11/2025, 11:11:07"
+    },
+    {
+      "id": 1762590838547,
+      "method": "upi",
+      "name": "Safuvan ",
+      "address": "Kinfra",
+      "phone": "9876543212",
+      "upiId": "safuvan@oksbi",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER, GINGHAM CHECK OVERSHIRT",
+      "price": "$196.44",
+      "totalAmount": "$196.44",
+      "status": "Paid",
+      "date": "08/11/2025, 14:03:58"
     }
   ],
   "products": [

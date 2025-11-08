@@ -26,32 +26,46 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Toast
+  // ✅ Toast helper
   const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 2500);
   };
 
-  // 🟢 Update status via modal
+  // ✅ Normalize currency (remove $, ensure number)
+  const normalizePrice = (value) => {
+    if (!value) return 0;
+    return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
+  };
+
+  // ✅ Update order status (Edit modal save)
   const handleUpdateStatus = async () => {
     if (!newStatus) return;
+
     try {
-      await axios.patch(`http://localhost:5001/orders/${editingOrder.id}`, {
-        status: newStatus,
-      });
+      const updatedOrder = { ...editingOrder, status: newStatus };
+
+      await axios.patch(
+        `http://localhost:5001/orders/${String(editingOrder.id)}`,
+        updatedOrder
+      );
+
+      // Update UI instantly
       setOrders((prev) =>
         prev.map((o) =>
           o.id === editingOrder.id ? { ...o, status: newStatus } : o
         )
       );
+
       showToast(`Order #${editingOrder.id} updated to ${newStatus}`, "success");
       setEditingOrder(null);
     } catch (err) {
+      console.error("Update error:", err);
       showToast("Failed to update order", "error");
     }
   };
 
-  // 🔴 Cancel order
+  // ✅ Cancel order
   const handleCancelOrder = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
@@ -63,7 +77,7 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Filtered orders
+  // ✅ Filter orders
   const filteredOrders = orders.filter((o) => {
     if (filter === "all") return true;
     return o.status?.toLowerCase().includes(filter);
@@ -118,7 +132,9 @@ export default function AdminOrders() {
       {loading && (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-fuchsia-400 w-8 h-8" />
-          <span className="ml-3 text-fuchsia-300 text-lg">Loading Orders...</span>
+          <span className="ml-3 text-fuchsia-300 text-lg">
+            Loading Orders...
+          </span>
         </div>
       )}
 
@@ -130,7 +146,7 @@ export default function AdminOrders() {
         </div>
       )}
 
-      {/* ===== Table ===== */}
+      {/* ===== Orders Table ===== */}
       {!loading && filteredOrders.length > 0 && (
         <div className="overflow-x-auto bg-[#1F2937]/80 backdrop-blur-md border border-fuchsia-700/20 rounded-2xl shadow-lg">
           <table className="min-w-full border-collapse">
@@ -153,7 +169,9 @@ export default function AdminOrders() {
                   key={order.id}
                   className="border-t border-fuchsia-800/20 hover:bg-fuchsia-800/10 transition-all duration-200"
                 >
-                  <td className="py-3 px-4 text-sm text-gray-300">{order.id}</td>
+                  <td className="py-3 px-4 text-sm text-gray-300">
+                    {order.id}
+                  </td>
                   <td className="py-3 px-4 text-sm text-gray-200 font-medium">
                     {order.name}
                   </td>
@@ -161,7 +179,7 @@ export default function AdminOrders() {
                     {order.product || "—"}
                   </td>
                   <td className="py-3 px-4 text-center text-fuchsia-300 font-semibold">
-                    ${order.price || order.totalAmount}
+                    ${normalizePrice(order.price || order.totalAmount).toFixed(2)}
                   </td>
                   <td className="py-3 px-4 text-center text-gray-300 capitalize">
                     {order.method || order.paymentMethod || "—"}
@@ -185,7 +203,7 @@ export default function AdminOrders() {
                     {order.date}
                   </td>
 
-                  {/* Actions */}
+                  {/* ===== Actions ===== */}
                   <td className="py-3 px-4 text-center flex justify-center gap-3">
                     <button
                       onClick={() => {
@@ -233,7 +251,7 @@ export default function AdminOrders() {
                 onChange={(e) => setNewStatus(e.target.value)}
                 className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
               >
-                <option value="Pending">Pending</option>
+                <option value="Pending COD">Pending COD</option>
                 <option value="Paid">Paid</option>
                 <option value="Delivered">Delivered</option>
               </select>

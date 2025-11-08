@@ -18,7 +18,8 @@ export default function AdminLayout() {
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
       {/* Main Section */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ">
+
         <TopBar
           admin={admin}
           onMenuClick={() => setIsSidebarOpen(true)}

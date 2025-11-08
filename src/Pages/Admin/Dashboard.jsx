@@ -93,7 +93,7 @@ export default function Dashboard() {
         <AnimatedStatCard title="Total Orders" value={stats.orders} color="from-pink-500 to-purple-500" />
         <AnimatedStatCard
           title="Total Sales"
-          value={`₹${stats.totalSales}`}
+          value={`$${stats.totalSales}`}
           color="from-purple-600 to-fuchsia-500"
           isCurrency
         />
@@ -176,7 +176,7 @@ export default function Dashboard() {
                     <td className="py-3 px-4">{order.id}</td>
                     <td className="py-3 px-4">{order.name}</td>
                     <td className="py-3 px-4">
-                      ₹{order.price || order.totalAmount}
+                      ${order.price || order.totalAmount}
                     </td>
                     <td className="py-3 px-4">
                       <span
@@ -202,10 +202,10 @@ export default function Dashboard() {
             Business Insights
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <InsightCard title="Total Profit" value={`₹${profit}`} />
+            <InsightCard title="Total Profit" value={`$${profit}`} />
             <InsightCard title="Conversion Rate" value="5.2%" />
             <InsightCard title="Returning Customers" value="41%" />
-            <InsightCard title="Avg. Order Value" value="₹1,350" />
+            <InsightCard title="Avg. Order Value" value="$150" />
           </div>
         </div>
       </div>

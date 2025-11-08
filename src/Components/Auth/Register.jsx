@@ -1,41 +1,58 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import axios from "axios";
 
 function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
 
-  const handleChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
-  setInfo("");
+    e.preventDefault();
+    setError("");
+    setInfo("");
 
-  if (!form.name.trim() || !form.email.trim() || !form.password) {
-    setError("Please fill all fields");
-    return;
-  }
+    if (!form.name.trim() || !form.email.trim() || !form.password) {
+      setError("Please fill all fields");
+      return;
+    }
 
-  const res = await register({
-    name: form.name.trim(),
-    email: form.email.trim().toLowerCase(),
-    password: form.password,
-  });
+    try {
+      // Create user with default role/status
+      const newUser = {
+        id: Date.now().toString(),
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+        role: "user",
+        status: "active",
+      };
 
-  if (res.success) {
-    setInfo("Registered! Redirecting to login...");
-    setTimeout(() => navigate("/login"), 1000);
-  } else {
-    setError(res.message);
-  }
-};
+      const res = await register(newUser);
 
+      if (res.success) {
+        setInfo("Registered successfully! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 1200);
+      } else {
+        setError(res.message || "Something went wrong. Try again!");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      setError("Registration failed. Try again later.");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">
@@ -52,6 +69,7 @@ function Register() {
           {info && <div className="text-green-600 text-sm text-center mb-3">{info}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name */}
             <div className="relative">
               <input
                 id="name"
@@ -71,6 +89,7 @@ function Register() {
               </label>
             </div>
 
+            {/* Email */}
             <div className="relative">
               <input
                 id="email"
@@ -90,6 +109,7 @@ function Register() {
               </label>
             </div>
 
+            {/* Password */}
             <div className="relative">
               <input
                 id="password"
@@ -109,6 +129,7 @@ function Register() {
               </label>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full py-3 rounded-full font-semibold text-white bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 shadow-lg"
@@ -125,8 +146,10 @@ function Register() {
           </p>
         </div>
 
-        <div className="absolute -inset-1 rounded-3xl blur-xl opacity-30 pointer-events-none"
-             style={{ background: "linear-gradient(90deg,#ff7ab6,#8b5cf6,#60a5fa)" }} />
+        <div
+          className="absolute -inset-1 rounded-3xl blur-xl opacity-30 pointer-events-none"
+          style={{ background: "linear-gradient(90deg,#ff7ab6,#8b5cf6,#60a5fa)" }}
+        />
       </div>
     </div>
   );

@@ -6,26 +6,32 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", role: "", status: "active" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "user",
+    status: "active",
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
-  // Fetch users from db.json
+  // 🧩 Fetch all users when page loads
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  const fetchUsers = () => {
-    axios
-      .get("http://localhost:5001/users")
-      .then((res) => {
-        setUsers(res.data);
-        setLoading(false);
-      })
-      .catch((err) => console.error("Error fetching users:", err));
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get("http://localhost:5001/users");
+      setUsers(res.data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Toggle status
+  // 🟢 Toggle User Status
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       const updatedStatus = currentStatus === "active" ? "inactive" : "active";
@@ -38,18 +44,19 @@ export default function Users() {
     }
   };
 
-  // Delete user
+  // 🔴 Delete User
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`http://localhost:5001/users/${id}`);
-      setUsers((prev) => prev.filter((u) => u.id !== id));
+      const safeId = Number(id) || id;
+      await axios.delete(`http://localhost:5001/users/${safeId}`);
+      await fetchUsers();
     } catch (err) {
       console.error("Error deleting user:", err);
     }
   };
 
-  // Open edit modal
+  // ✏ Open Edit Modal
   const openEditModal = (user) => {
     setIsAdding(false);
     setEditingUser(user);
@@ -61,40 +68,36 @@ export default function Users() {
     });
   };
 
-  // Open add modal
+  // ➕ Open Add Modal
   const openAddModal = () => {
     setEditingUser(null);
     setIsAdding(true);
     setFormData({ name: "", email: "", role: "user", status: "active" });
   };
 
-  // Close modal
+  // ❌ Close Modal
   const closeModal = () => {
     setEditingUser(null);
     setIsAdding(false);
   };
 
-  // Handle form update
+  // 🧠 Track input changes inside modal
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save (Add or Edit)
+  // 💾 Save Edited / New User
   const handleSave = async () => {
     try {
       if (isAdding) {
-        const newUser = { id: Date.now().toString(), ...formData };
+        const newUser = { id: Date.now(), ...formData };
         await axios.post("http://localhost:5001/users", newUser);
-        setUsers((prev) => [...prev, newUser]);
       } else {
-        await axios.patch(`http://localhost:5001/users/${editingUser.id}`, formData);
-        setUsers((prev) =>
-          prev.map((u) =>
-            u.id === editingUser.id ? { ...u, ...formData } : u
-          )
-        );
+        const safeId = Number(editingUser.id) || editingUser.id;
+        await axios.patch(`http://localhost:5001/users/${safeId}`, formData);
       }
+      await fetchUsers();
       closeModal();
     } catch (err) {
       console.error("Error saving user:", err);
@@ -104,27 +107,29 @@ export default function Users() {
   if (loading)
     return <p className="text-fuchsia-400 text-lg p-6 font-medium">Loading users...</p>;
 
-  // Filtered users
+  // 🔍 Filtered Search
   const filteredUsers = users.filter(
     (u) =>
-      u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (u.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (u.email || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Stats
+  // 📊 Stats
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.status === "active").length;
   const inactiveUsers = users.filter((u) => u.status === "inactive").length;
 
   return (
-    <div className="sticky top-0 z-40 bg-[#111827]/90 backdrop-blur-md border-b border-fuchsia-700/20 shadow-md p-4 rounded-b-lg mb-8">
-      {/* Topbar */}
+    <div className="p-6 bg-[#111827] text-gray-100 min-h-screen">
+      {/* ===== HEADER + SEARCH ===== */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
             User Management
           </h2>
-          <p className="text-sm text-gray-400 mt-1">Manage all user accounts, roles & activity</p>
+          <p className="text-sm text-gray-400 mt-1">
+            Manage all user accounts, roles & activity
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
@@ -144,14 +149,14 @@ export default function Users() {
         </div>
       </div>
 
-      {/* Stats Bar */}
+      {/* ===== STATS ===== */}
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-6 mb-8">
         <StatCard title="Total Users" value={totalUsers} color="from-fuchsia-600 to-pink-500" />
         <StatCard title="Active" value={activeUsers} color="from-green-600 to-emerald-500" />
         <StatCard title="Inactive" value={inactiveUsers} color="from-gray-600 to-gray-400" />
       </div>
 
-      {/* User Cards Grid */}
+      {/* ===== USER CARDS ===== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredUsers.map((user) => (
           <div
@@ -159,8 +164,8 @@ export default function Users() {
             className="bg-[#1F2937]/80 backdrop-blur-md border border-fuchsia-700/20 rounded-2xl shadow-md p-5 hover:shadow-fuchsia-600/20 transition-all duration-300 flex flex-col justify-between"
           >
             <div>
-              <h3 className="text-lg font-semibold mb-1 text-white">{user.name}</h3>
-              <p className="text-sm text-gray-400 mb-3">{user.email}</p>
+              <h3 className="text-lg font-semibold mb-1 text-white">{user.name || "Unnamed"}</h3>
+              <p className="text-sm text-gray-400 mb-3">{user.email || "No Email"}</p>
 
               {/* Role Badge */}
               <span
@@ -170,7 +175,7 @@ export default function Users() {
                     : "bg-[#374151] text-gray-300"
                 }`}
               >
-                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
               </span>
 
               {/* Status Toggle */}
@@ -209,7 +214,7 @@ export default function Users() {
         ))}
       </div>
 
-      {/* Edit/Add Modal */}
+      {/* ===== EDIT / ADD MODAL ===== */}
       {(editingUser || isAdding) && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/30 w-96 relative">
@@ -247,7 +252,7 @@ export default function Users() {
                 options={[
                   { label: "Active", value: "active" },
                   { label: "Inactive", value: "inactive" },
-                  { label: "Blocked", value: "block" },
+                  { label: "Blocked", value: "blocked" },
                 ]}
               />
 

@@ -24,6 +24,7 @@ export default function SideBar({ isOpen, setIsOpen }) {
             src="/BaeBy Official Logo.jpg"
             alt="Baeby Logo"
             className="h-10 w-10 object-contain rounded-lg shadow-md"
+            
           />
           <h2 className="text-2xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
             Baeby Admin

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
-  
   const product = location.state?.product;
 
   const [method, setMethod] = useState("cod");
@@ -23,15 +22,50 @@ function Payment() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // 🧠 Function to clean price strings like "$50" or "₹59.99"
+  const cleanPrice = (value) => {
+    if (!value) return 0;
+    return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
+  };
+
+  // 🧩 Debug: Check what comes from cart or product
+  useEffect(() => {
+    console.log("🧾 Product received in Payment.jsx:", product);
+  }, [product]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let orderProducts = [];
+    let totalAmount = 0;
+
+    if (product && !Array.isArray(product)) {
+      // Single product checkout
+      orderProducts = [product.name];
+      totalAmount = cleanPrice(product.price || product.amount);
+    } else if (Array.isArray(product)) {
+      // Cart checkout
+      orderProducts = product.map((p) => p.name);
+      totalAmount = product.reduce(
+        (sum, p) => sum + cleanPrice(p.price || p.amount) * (p.quantity || 1),
+        0
+      );
+    }
+
+    // ✅ Protect against zero prices
+    if (totalAmount <= 0) {
+      alert("Error: Product price missing or invalid.");
+      console.error("🛑 Invalid product data:", product);
+      return;
+    }
 
     const newOrder = {
       id: Date.now(),
       method,
       ...form,
-      product: product ? product.name : "Custom Order",
-      price: product ? product.price : "N/A",
+      product: orderProducts.join(", "),
+      price: `$${totalAmount.toFixed(2)}`,
+      totalAmount: `$${totalAmount.toFixed(2)}`,
       status: method === "cod" ? "Pending COD" : "Paid",
       date: new Date().toLocaleString(),
     };
@@ -52,15 +86,30 @@ function Payment() {
           Complete Your <span className="text-pink-500">Payment</span>
         </h2>
 
-        {/* Product Summary (optional) */}
+        {/* 🧾 Product Summary */}
         {product && (
           <div className="mb-6 text-center bg-pink-50 border border-pink-200 rounded-xl py-3">
-            <h3 className="font-semibold text-gray-700">{product.name}</h3>
-            <p className="text-pink-600 font-bold">${product.price}</p>
+            <h3 className="font-semibold text-gray-700">
+              {Array.isArray(product)
+                ? `${product.length} item(s) in your cart`
+                : product.name}
+            </h3>
+            <p className="text-pink-600 font-bold">
+              {Array.isArray(product)
+                ? `$${product
+                    .reduce(
+                      (sum, p) =>
+                        sum +
+                        cleanPrice(p.price || p.amount) * (p.quantity || 1),
+                      0
+                    )
+                    .toFixed(2)}`
+                : `$${cleanPrice(product.price || product.amount).toFixed(2)}`}
+            </p>
           </div>
         )}
 
-        {/* Payment Method Selection */}
+        {/* 💳 Payment Method Selection */}
         <div className="flex justify-around mb-6">
           {[
             { key: "cod", label: "Cash on Delivery" },
@@ -82,7 +131,7 @@ function Payment() {
           ))}
         </div>
 
-        {/* Payment Form */}
+        {/* 🧾 Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -112,7 +161,7 @@ function Payment() {
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
           />
 
-          {/* Card Fields */}
+          {/* 💳 Card Fields */}
           {method === "card" && (
             <>
               <input
@@ -150,12 +199,12 @@ function Payment() {
             </>
           )}
 
-          {/* UPI Field */}
+          {/*  UPI Field */}
           {method === "upi" && (
             <input
               type="text"
               name="upiId"
-              placeholder="UPI ID "
+              placeholder="UPI ID (e.g., name@okaxis)"
               value={form.upiId}
               onChange={handleChange}
               required
@@ -163,7 +212,6 @@ function Payment() {
             />
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl hover:bg-pink-600 transition transform hover:scale-[1.02]"

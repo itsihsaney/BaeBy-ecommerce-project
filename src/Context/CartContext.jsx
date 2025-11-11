@@ -64,7 +64,7 @@ export function CartProvider({ children }) {
     else showToast("Quantity decreased ");
   };
 
-  //  Custom Toast (without any package)
+  //  Custom Toast 
   const showToast = (message) => {
     const toast = document.createElement("div");
     toast.textContent = message;

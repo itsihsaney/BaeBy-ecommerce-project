@@ -102,7 +102,7 @@
       "email": "ashitha@gmail.com",
       "password": "121212",
       "role": "user",
-      "status": "active"
+      "status": "inactive"
     },
     {
       "id": "1762162128926",
@@ -143,11 +143,27 @@
       "password": "test",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": "1762617578366",
+      "name": "Muhammed Shah",
+      "email": "shahu@gmail.com",
+      "password": "shahu",
+      "role": "admin",
+      "status": "active"
+    },
+    {
+      "id": "1762678515043",
+      "name": "Naseema",
+      "email": "naseema1@gmail.com",
+      "password": "naseema",
+      "role": "user",
+      "status": "active"
     }
   ],
   "orders": [
     {
-      "id": 1762580372099,
+      "id": "1762580372099",
       "method": "cod",
       "name": "Mohammed Ihsan",
       "address": "Pullissery, Mannarkkad",
@@ -163,7 +179,7 @@
       "date": "08/11/2025, 11:09:32"
     },
     {
-      "id": 1762580467657,
+      "id": "1762580467657",
       "method": "cod",
       "name": "Mohammed Ihsan",
       "address": "Pullissery, Mannarkkad",
@@ -179,7 +195,7 @@
       "date": "08/11/2025, 11:11:07"
     },
     {
-      "id": 1762590838547,
+      "id": "1762590838547",
       "method": "upi",
       "name": "Safuvan ",
       "address": "Kinfra",
@@ -195,7 +211,7 @@
       "date": "08/11/2025, 14:03:58"
     },
     {
-      "id": 1762598302803,
+      "id": "1762598302803",
       "method": "upi",
       "name": "Mohammed Ihsan",
       "address": "Pullissery, Mannarkkad",
@@ -209,6 +225,98 @@
       "totalAmount": "$34.99",
       "status": "Paid",
       "date": "08/11/2025, 16:08:22"
+    },
+    {
+      "id": "1762617717899",
+      "method": "cod",
+      "name": "Muhammed Shah",
+      "address": "Pullissery, Mannarkkad",
+      "phone": "8590698873",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "Chicco x BaeBy Xylophone (Happy) ",
+      "price": "$9.99",
+      "totalAmount": "$9.99",
+      "status": "Pending COD",
+      "date": "08/11/2025, 21:31:57"
+    },
+    {
+      "id": "1762618011541",
+      "method": "cod",
+      "name": "Muhammed Shah",
+      "address": "Pullissery, Mannarkkad",
+      "phone": "8590698873",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "4in1 Evo Trike, Chicco x BaeBy Xylophone (Happy) , 2in1 Animal Cottage, Rattle Easy Grasp Bear, Chicco x BaeBy Play Set Rattles -4Pcs , Ducati Monster Sit N Ride Bike, Speedy Red Balance Bike, Cuddly Teddy Bear",
+      "price": "$290.43",
+      "totalAmount": "$290.43",
+      "status": "Delivered",
+      "date": "08/11/2025, 21:36:51"
+    },
+    {
+      "id": "1762678588625",
+      "method": "cod",
+      "name": "Naseema",
+      "address": "naseema1@gmail.com",
+      "phone": "9876543234",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": "$34.99",
+      "totalAmount": "$34.99",
+      "status": "Delivered",
+      "date": "09/11/2025, 14:26:28"
+    },
+    {
+      "id": 1762847379140,
+      "method": "cod",
+      "name": "Mohammed Ihsan",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "upiId": "",
+      "cardNumber": "",
+      "expiry": "",
+      "cvv": "",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": "$59.98",
+      "totalAmount": "$59.98",
+      "status": "Pending COD",
+      "date": "11/11/2025, 13:19:39"
+    },
+    {
+      "id": 1762848116830,
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Shah",
+      "address": "KINFRA",
+      "phone": "09876543",
+      "method": "cod",
+      "product": "EMBROIDERED HEART DRESS",
+      "price": "$34.99",
+      "totalAmount": "$34.99",
+      "status": "Pending COD",
+      "date": "11/11/2025, 13:31:56"
+    },
+    {
+      "id": 1762848271242,
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Sana Fathima",
+      "address": "KizhakkanHouse",
+      "phone": "23456785445",
+      "method": "cod",
+      "product": "ZARA x BAEBY REDDY CLOTH COAT",
+      "price": "$42.99",
+      "totalAmount": "$42.99",
+      "status": "Pending COD",
+      "date": "11/11/2025, 13:34:31"
     }
   ],
   "products": [
@@ -320,7 +428,7 @@
       "id": "14",
       "name": "Chicco x BaeBy Xylophone (Happy) ",
       "description": "Recommended For Age 1+ years",
-      "price": 9.99,
+      "price": 8.99,
       "category": "toys",
       "image": "https://www.chicco.in/dw/image/v2/BGMM_PRD/on/demandware.static/-/Sites-chicco-master/default/dw6d0d9b8c/ed-Activity-and-Entertainment/Toys/8058664188239_Happy%20Music%20My%20First%20Xylophone/8058664188239%20(1).jpg?sw=800&sh=800&sm=fit"
     },

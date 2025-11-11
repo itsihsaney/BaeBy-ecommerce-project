@@ -20,7 +20,7 @@ function Cart() {
   if (cart.length === 0) return;
   showToast("Redirecting to payment...");
   
-  // ✅ Pass the cart data to Payment page
+  // Pass the cart data to Payment page
   navigate("/payment", { state: { product: cart } });
 };
 

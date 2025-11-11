@@ -81,7 +81,7 @@ function Clothes() {
                   className="w-full h-52 object-cover"
                 />
 
-                {/* 📝 Product Info */}
+                {/*  Product Info */}
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-700">
                     {product.name}

@@ -15,7 +15,7 @@ function ProductNav({ onSortChange, onFilterChange }) {
   return (
     <header className="bg-white shadow-sm sticky top-20 z-40 border-t border-pink-100">
       <nav className="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex justify-between items-center relative">
-        {/* Left - Sort */}
+        {/* ---------------- SORT ---------------- */}
         <div className="relative">
           <button
             onClick={() => {
@@ -29,8 +29,14 @@ function ProductNav({ onSortChange, onFilterChange }) {
           </button>
 
           {showSort && (
-            <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg border border-pink-100 w-44 z-50">
+            <div className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg border border-pink-100 w-48 z-50">
               <ul className="text-sm text-gray-700">
+                <li
+                  className="px-4 py-2 hover:bg-pink-50 cursor-pointer text-gray-500 font-medium border-b"
+                  onClick={() => onSortChange?.("default")}
+                >
+                   Default Sort
+                </li>
                 <li
                   className="px-4 py-2 hover:bg-pink-50 cursor-pointer"
                   onClick={() => onSortChange?.("lowToHigh")}
@@ -48,7 +54,7 @@ function ProductNav({ onSortChange, onFilterChange }) {
           )}
         </div>
 
-        {/* Center - Categories */}
+        {/* ---------------- CATEGORIES ---------------- */}
         <ul className="flex justify-center flex-wrap gap-6 font-medium text-gray-600">
           {categories.map((cat) => (
             <li key={cat.path}>
@@ -68,7 +74,7 @@ function ProductNav({ onSortChange, onFilterChange }) {
           ))}
         </ul>
 
-        {/* Right - Filter */}
+        {/* ---------------- FILTER ---------------- */}
         <div className="relative">
           <button
             onClick={() => {
@@ -82,8 +88,14 @@ function ProductNav({ onSortChange, onFilterChange }) {
           </button>
 
           {showFilter && (
-            <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg border border-pink-100 w-44 z-50">
+            <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg border border-pink-100 w-48 z-50">
               <ul className="text-sm text-gray-700">
+                <li
+                  className="px-4 py-2 hover:bg-pink-50 cursor-pointer text-gray-500 font-medium border-b"
+                  onClick={() => onFilterChange?.("default")}
+                >
+                  Clear Filter
+                </li>
                 <li
                   className="px-4 py-2 hover:bg-pink-50 cursor-pointer"
                   onClick={() => onFilterChange?.("under20")}

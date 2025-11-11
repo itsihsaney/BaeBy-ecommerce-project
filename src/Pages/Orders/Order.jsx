@@ -22,10 +22,11 @@ function Orders() {
         const { data } = await axios.get(API_URL);
         // Filter by user's name or email
         const userOrders = data.filter(
-          (order) =>
-            order.name?.toLowerCase() === user.name?.toLowerCase() ||
-            order.email === user.email
-        );
+  (order) =>
+    order.userEmail === user.email ||
+    order.userName?.toLowerCase() === user.name?.toLowerCase()
+);
+
         setOrders(userOrders);
       } catch (err) {
         console.error("Error fetching orders:", err);
@@ -102,14 +103,17 @@ function Orders() {
             {/* Order details */}
             <div className="text-sm text-gray-600 space-y-1">
               <p>
+  <span className="font-medium">Name:</span> {order.shippingName || order.name}
+</p>
+              <p>
+  <span className="font-medium">Address:</span> {order.address}
+</p>
+              <p>
                 <span className="font-medium">Date:</span> {order.date}
               </p>
               <p>
                 <span className="font-medium">Payment:</span>{" "}
                 {order.method?.toUpperCase()}
-              </p>
-              <p>
-                <span className="font-medium">Address:</span> {order.address}
               </p>
               <p>
                 <span className="font-medium">Phone:</span> {order.phone}

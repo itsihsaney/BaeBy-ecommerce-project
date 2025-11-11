@@ -25,7 +25,7 @@ export default function Dashboard() {
   const [profit, setProfit] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Helper to clean "$" and ensure number
+  //  Helper to clean "$" and ensure number
   const cleanPrice = (val) => {
     if (!val) return 0;
     return parseFloat(val.toString().replace(/[^0-9.]/g, "")) || 0;
@@ -40,7 +40,7 @@ export default function Dashboard() {
           axios.get("http://localhost:5001/products"),
         ]);
 
-        // ✅ Calculate totals correctly
+        //  Calculate totals correctly
         const totalSales = orders.data.reduce(
           (sum, o) =>
             sum +
@@ -164,7 +164,7 @@ export default function Dashboard() {
 
       {/* ===== Recent Orders + Insights ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* 🧾 Recent Orders */}
+        {/*  Recent Orders */}
         <div className="bg-[#1F2937] rounded-2xl shadow-lg p-6 border border-purple-600/30">
           <h2 className="text-xl font-semibold mb-4 text-purple-300">
             Recent Orders
@@ -186,7 +186,7 @@ export default function Dashboard() {
                     className="border-t border-purple-800/20 hover:bg-purple-900/10 transition"
                   >
                     <td className="py-3 px-4 text-gray-300">{order.id}</td>
-                    <td className="py-3 px-4 text-gray-300">{order.name}</td>
+                    <td className="py-3 px-4 text-gray-300">{order.shippingName || order.name}</td>
                     <td className="py-3 px-4 text-pink-300 font-semibold">
                       ${cleanPrice(order.price || order.totalAmount).toFixed(2)}
                     </td>
@@ -210,16 +210,16 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* 💡 Insights */}
+        {/*  Insights */}
         <div className="bg-[#1F2937] rounded-2xl shadow-lg p-6 border border-purple-600/30">
           <h2 className="text-xl font-semibold mb-4 text-purple-300">
             Business Insights
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <InsightCard title="Total Profit" value={`$${profit}`} />
-            <InsightCard title="Conversion Rate" value="5.2%" />
+            <InsightCard title="Conversion Rate" value="7.2%" />
             <InsightCard title="Returning Customers" value="41%" />
-            <InsightCard title="Avg. Order Value" value="$150" />
+            <InsightCard title="Avg. Order Value" value="$167" />
           </div>
         </div>
       </div>

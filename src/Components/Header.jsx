@@ -165,7 +165,7 @@ function Header() {
         </div>
       </nav>
 
-      {/* 📱 Mobile Menu */}
+      {/*  Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-pink-50/70 border-t border-pink-100 backdrop-blur-sm">
           <ul className="flex flex-col items-center py-4 space-y-4 font-medium text-gray-700">

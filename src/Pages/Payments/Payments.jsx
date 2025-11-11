@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 
 function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
   const product = location.state?.product;
+
+  const { user } = useAuth();
+
 
   const [method, setMethod] = useState("cod");
   const [form, setForm] = useState({
@@ -59,16 +63,21 @@ function Payment() {
       return;
     }
 
-    const newOrder = {
-      id: Date.now(),
-      method,
-      ...form,
-      product: orderProducts.join(", "),
-      price: `$${totalAmount.toFixed(2)}`,
-      totalAmount: `$${totalAmount.toFixed(2)}`,
-      status: method === "cod" ? "Pending COD" : "Paid",
-      date: new Date().toLocaleString(),
-    };
+     const newOrder = {
+  id: Date.now(),
+  userEmail: user?.email || "guest",   
+  userName: user?.name || "Guest",
+  shippingName: form.name,           
+  address: form.address,
+  phone: form.phone,
+  method,
+  product: orderProducts.join(", "),
+  price: `$${totalAmount.toFixed(2)}`,
+  totalAmount: `$${totalAmount.toFixed(2)}`,
+  status: method === "cod" ? "Pending COD" : "Paid",
+  date: new Date().toLocaleString(),
+};
+
 
     try {
       await axios.post("http://localhost:5001/orders", newOrder);

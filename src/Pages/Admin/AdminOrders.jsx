@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PackageCheck, Loader2, XCircle, Edit3 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ message: "", type: "" });
-  const [filter, setFilter] = useState("all");
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+
+  // ✅ useSearchParams to manage filter in URL
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterFromUrl = searchParams.get("filter") || "all";
+  const [filter, setFilter] = useState(filterFromUrl);
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  // ✅ Fetch orders
+  // 🧠 Sync filter from URL on refresh or manual change
+  useEffect(() => {
+    const urlFilter = searchParams.get("filter") || "all";
+    setFilter(urlFilter);
+  }, [searchParams]);
+
+  //  Fetch orders
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:5001/orders");
@@ -26,19 +37,19 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Toast helper
+  //  Toast helper
   const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 2500);
   };
 
-  // ✅ Normalize currency (remove $, ensure number)
+  //  Normalize currency
   const normalizePrice = (value) => {
     if (!value) return 0;
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
-  // ✅ Update order status (Edit modal save)
+  //  Update order status
   const handleUpdateStatus = async () => {
     if (!newStatus) return;
 
@@ -65,7 +76,7 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Cancel order
+  //  Cancel order
   const handleCancelOrder = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
@@ -77,11 +88,18 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Filter orders
+  // ✅ Filter logic based on URL param
   const filteredOrders = orders.filter((o) => {
     if (filter === "all") return true;
     return o.status?.toLowerCase().includes(filter);
   });
+
+  // ✅ Update filter (and URL)
+  const handleFilterChange = (type) => {
+    setFilter(type);
+    if (type === "all") setSearchParams({});
+    else setSearchParams({ filter: type });
+  };
 
   return (
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
@@ -116,7 +134,7 @@ export default function AdminOrders() {
         {["all", "pending", "paid", "delivered"].map((type) => (
           <button
             key={type}
-            onClick={() => setFilter(type)}
+            onClick={() => handleFilterChange(type)}
             className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${
               filter === type
                 ? "bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white shadow-md"
@@ -173,7 +191,7 @@ export default function AdminOrders() {
                     {order.id}
                   </td>
                   <td className="py-3 px-4 text-sm text-gray-200 font-medium">
-                    {order.name}
+                    {order.shippingName || order.name}
                   </td>
                   <td className="py-3 px-4 text-sm text-gray-400">
                     {order.product || "—"}

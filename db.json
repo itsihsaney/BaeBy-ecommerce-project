@@ -191,7 +191,7 @@
       "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER, ZARA x BAEBY REDDY CLOTH COAT, FLORAL PRINT LACE DRESS, PETER PAN COLLAR CARDIGAN, MICKEY MOUSE SWEATSHIRT, GINGHAM CHECK OVERSHIRT, EMBROIDERED T-SHIRT WITH PETER PAN COLLAR, MARINE VELVET TROUSERS, ZARA x BAEBY VELVET CULOTTES, SPARKLY VELVET BOW SCRUNCHIE, WIDE-WALE CORDUROY TROUSERS, Rattle Easy Grasp Bear, 2in1 Animal Cottage, Chicco x BaeBy Xylophone (Happy) , 4in1 Evo Trike, Cuddly Teddy Bear, Speedy Red Balance Bike, Ducati Monster Sit N Ride Bike, Chicco x BaeBy Play Set Rattles -4Pcs , BaeBy Lotion | Deep Hydration, Tear Free Baby Shampoo-50ML, Baby Body Butter-50 Gm, BaeBy Sunscreen , BaeBy Milky Mineral Sunscreen, BaeBy Lotion | Deep Hydration, Milk Pump Wellbeing, BaeBy Lotion | Deep Hydration",
       "price": "$868.20",
       "totalAmount": "$868.20",
-      "status": "Pending COD",
+      "status": "Paid",
       "date": "08/11/2025, 11:11:07"
     },
     {
@@ -239,7 +239,7 @@
       "product": "Chicco x BaeBy Xylophone (Happy) ",
       "price": "$9.99",
       "totalAmount": "$9.99",
-      "status": "Pending COD",
+      "status": "Delivered",
       "date": "08/11/2025, 21:31:57"
     },
     {
@@ -275,7 +275,7 @@
       "date": "09/11/2025, 14:26:28"
     },
     {
-      "id": 1762847379140,
+      "id": "1762847379140",
       "method": "cod",
       "name": "Mohammed Ihsan",
       "address": "KINFRA",
@@ -287,11 +287,11 @@
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": "$59.98",
       "totalAmount": "$59.98",
-      "status": "Pending COD",
+      "status": "Paid",
       "date": "11/11/2025, 13:19:39"
     },
     {
-      "id": 1762848116830,
+      "id": "1762848116830",
       "userEmail": "mdihsan0010@gmail.com",
       "userName": "Mohammed Ihsan",
       "shippingName": "Shah",
@@ -301,11 +301,11 @@
       "product": "EMBROIDERED HEART DRESS",
       "price": "$34.99",
       "totalAmount": "$34.99",
-      "status": "Pending COD",
+      "status": "Delivered",
       "date": "11/11/2025, 13:31:56"
     },
     {
-      "id": 1762848271242,
+      "id": "1762848271242",
       "userEmail": "mdihsan0010@gmail.com",
       "userName": "Mohammed Ihsan",
       "shippingName": "Sana Fathima",
@@ -315,8 +315,22 @@
       "product": "ZARA x BAEBY REDDY CLOTH COAT",
       "price": "$42.99",
       "totalAmount": "$42.99",
-      "status": "Pending COD",
+      "status": "Paid",
       "date": "11/11/2025, 13:34:31"
+    },
+    {
+      "id": "1762957377651",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Mohammed Ihsan",
+      "address": "Pullissery, Mannarkkad",
+      "phone": "34526656546",
+      "method": "cod",
+      "product": "GINGHAM CHECK OVERSHIRT",
+      "price": "$28.99",
+      "totalAmount": "$28.99",
+      "status": "Pending COD",
+      "date": "12/11/2025, 19:52:57"
     }
   ],
   "products": [
@@ -514,11 +528,11 @@
     },
     {
       "id": "26",
-      "name": "BaeBy Milky Mineral Sunscreen",
-      "description": "Protect Like Mother",
-      "price": 11.49,
+      "name": "BaeBy Lotion | Deep Hydration",
+      "description": "Natural Lotion",
+      "price": 12.49,
       "category": "skincare",
-      "image": "/public/Sunscreen2.png"
+      "image": "/Cream.jpg"
     },
     {
       "id": "27",

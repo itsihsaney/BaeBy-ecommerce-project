@@ -12,7 +12,7 @@ export default function TopBar({ onMenuClick }) {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
-  // ✅ Load admin info (from localStorage or API)
+  //  Load admin info (from localStorage or API)
   useEffect(() => {
     const storedAdmin = localStorage.getItem("admin");
     if (storedAdmin) {

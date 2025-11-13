@@ -10,7 +10,7 @@ export default function AdminOrders() {
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
-  // ✅ useSearchParams to manage filter in URL
+  //  useSearchParams to manage filter in URL
   const [searchParams, setSearchParams] = useSearchParams();
   const filterFromUrl = searchParams.get("filter") || "all";
   const [filter, setFilter] = useState(filterFromUrl);
@@ -19,7 +19,7 @@ export default function AdminOrders() {
     fetchOrders();
   }, []);
 
-  // 🧠 Sync filter from URL on refresh or manual change
+  //  Sync filter from URL on refresh or manual change
   useEffect(() => {
     const urlFilter = searchParams.get("filter") || "all";
     setFilter(urlFilter);
@@ -88,13 +88,13 @@ export default function AdminOrders() {
     }
   };
 
-  // ✅ Filter logic based on URL param
+  //  Filter logic based on URL param
   const filteredOrders = orders.filter((o) => {
     if (filter === "all") return true;
     return o.status?.toLowerCase().includes(filter);
   });
 
-  // ✅ Update filter (and URL)
+  //  Update filter (and URL)
   const handleFilterChange = (type) => {
     setFilter(type);
     if (type === "all") setSearchParams({});

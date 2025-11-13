@@ -91,13 +91,14 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#111827] text-gray-200 p-6">
+    <div className="min-h-screen  bg-[#111827] text-gray-200 p-6 ">
       {/* ===== Header ===== */}
       <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-pink-400 via-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
         Baeby Admin Dashboard
       </h1>
 
       {/* ===== Stat Cards ===== */}
+      
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <AnimatedStatCard title="Total Users" value={stats.users} color="from-fuchsia-600 to-pink-500" />
         <AnimatedStatCard title="Total Products" value={stats.products} color="from-violet-500 to-fuchsia-400" />
@@ -111,7 +112,7 @@ export default function Dashboard() {
       </div>
 
       {/* ===== Charts Section ===== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10 ">
         <ChartCard title="Data Overview">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={barData}>

@@ -7,7 +7,7 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#111827] text-gray-100 relative">
+    <div className="flex min-h-screen bg-[#111827] text-gray-100 relative  ">
       {/* Sidebar */}
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
@@ -16,7 +16,7 @@ export default function AdminLayout() {
         <TopBar onMenuClick={() => setIsSidebarOpen(true)} />
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 w-full overflow-y-auto ">
           <Outlet />
         </main>
       </div>

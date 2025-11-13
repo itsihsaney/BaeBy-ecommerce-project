@@ -16,7 +16,7 @@ export default function AdminProducts() {
   });
   const [editProduct, setEditProduct] = useState(null);
 
-  // ✅ Fetch Products
+  //  Fetch Products
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:5001/products");
@@ -33,13 +33,13 @@ export default function AdminProducts() {
     fetchProducts();
   }, []);
 
-  // ✅ Helper to clean price
+  // Helper to clean price
   const cleanPrice = (value) => {
     if (!value) return 0;
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
-  // 🗑️ Delete Product
+  //  Delete Product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -60,7 +60,7 @@ export default function AdminProducts() {
 
     try {
       const product = {
-        id: Date.now(),
+        id: Date.now().toString(),
         ...newProduct,
         price: cleanPrice(newProduct.price),
       };
@@ -211,7 +211,7 @@ export default function AdminProducts() {
   );
 }
 
-/* 🧩 Product Form Component */
+/*  Product Form Component */
 function ProductForm({ product, setProduct }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -228,7 +228,7 @@ function ProductForm({ product, setProduct }) {
   );
 }
 
-/* 🧩 Input Field */
+/*  Input Field */
 function Input({ label, name, value, onChange, type = "text" }) {
   return (
     <div>
@@ -244,7 +244,7 @@ function Input({ label, name, value, onChange, type = "text" }) {
   );
 }
 
-/* 💠 Reusable Modal */
+/*  Reusable Modal */
 function Modal({ title, onClose, onSave, children }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">

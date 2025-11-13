@@ -20,7 +20,7 @@ export default function Users() {
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", email: "", role: "", status: "" });
 
-  // ✅ Fetch users
+  //  Fetch users
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:5001/users");
@@ -36,13 +36,13 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  // ✅ Toast
+  //  Toast
   const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 2500);
   };
 
-  // ✅ Delete user
+  //  Delete user
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
@@ -54,7 +54,7 @@ export default function Users() {
     }
   };
 
-  // ✅ Edit user modal setup
+  //  Edit user modal setup
   const openEditModal = (user) => {
     setEditingUser(user);
     setEditForm({
@@ -87,12 +87,12 @@ export default function Users() {
     }
   };
 
-  // ✅ Stats
+  //  Stats
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.status === "active").length;
   const inactiveUsers = users.filter((u) => u.status === "inactive").length;
 
-  // ✅ Filter + Search
+  //  Filter + Search
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -114,7 +114,7 @@ export default function Users() {
 
   return (
     <div className="p-6 bg-[#111827] min-h-screen text-gray-100 relative">
-      {/* ✅ Toast */}
+      {/*  Toast */}
       {toast.message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 ${
@@ -138,14 +138,14 @@ export default function Users() {
         </p>
       </div>
 
-      {/* ✅ Stats */}
+      {/*  Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <StatCard title="Total Users" value={totalUsers} icon={<UsersIcon />} color="from-fuchsia-600 to-pink-500" />
         <StatCard title="Active" value={activeUsers} icon={<UserCheck />} color="from-green-600 to-emerald-500" />
         <StatCard title="Inactive" value={inactiveUsers} icon={<UserX />} color="from-rose-600 to-pink-500" />
       </div>
 
-      {/* ✅ Search + Filter */}
+      {/*  Search + Filter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
         <div className="relative w-full sm:w-1/2">
           <Search className="absolute left-3 top-3 text-gray-400" size={18} />
@@ -174,7 +174,7 @@ export default function Users() {
         </div>
       </div>
 
-      {/* ✅ User Cards */}
+      {/* User Cards */}
       {!loading && filteredUsers.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredUsers.map((user) => (

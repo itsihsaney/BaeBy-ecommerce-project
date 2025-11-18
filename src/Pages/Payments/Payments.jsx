@@ -140,7 +140,7 @@ function Payment() {
           ))}
         </div>
 
-        {/* 🧾 Payment Form */}
+        {/*  Payment Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -170,7 +170,7 @@ function Payment() {
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
           />
 
-          {/* 💳 Card Fields */}
+          {/*  Card Fields */}
           {method === "card" && (
             <>
               <input

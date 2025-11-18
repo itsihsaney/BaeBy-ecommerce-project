@@ -8,7 +8,7 @@ function Products() {
   const [sortType, setSortType] = useState(searchParams.get("sort") || null);
   const [filterType, setFilterType] = useState(searchParams.get("filter") || null);
 
-  // 🔹 Handle sort change (includes reset option)
+  //  Handle sort change (includes reset option)
   const handleSortChange = (type) => {
     if (type === "default") {
       setSortType(null);
@@ -31,7 +31,7 @@ function Products() {
     });
   };
 
-  // 🔹 Handle filter change (includes reset option)
+  //  Handle filter change (includes reset option)
   const handleFilterChange = (filter) => {
     if (filter === "default") {
       setFilterType(null);
@@ -54,7 +54,7 @@ function Products() {
     });
   };
 
-  // 🔹 Restore from URL after refresh
+  //  Restore from URL after refresh
   useEffect(() => {
     const savedSort = searchParams.get("sort");
     const savedFilter = searchParams.get("filter");

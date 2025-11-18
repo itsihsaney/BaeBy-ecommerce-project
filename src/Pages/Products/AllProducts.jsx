@@ -26,14 +26,14 @@ function AllProducts() {
   const processedProducts = useMemo(() => {
     let updated = [...products];
 
-    // 🔹 Category filter (if /products/clothes, etc.)
+    //  Category filter (if /products/clothes, etc.)
     if (category) {
       updated = updated.filter(
         (product) => product.category?.toLowerCase() === category.toLowerCase()
       );
     }
 
-    // 🔹 Filter by price range
+    //  Filter by price range
     if (filterType === "under20") {
       updated = updated.filter((p) => p.price < 20);
     } else if (filterType === "20to40") {
@@ -42,7 +42,7 @@ function AllProducts() {
       updated = updated.filter((p) => p.price > 40);
     }
 
-    // 🔹 Sorting
+    //  Sorting
     if (sortType === "lowToHigh" || sortType === "price-low-high") {
       updated.sort((a, b) => a.price - b.price);
     } else if (sortType === "highToLow" || sortType === "price-high-low") {
@@ -53,7 +53,7 @@ function AllProducts() {
       updated.sort((a, b) => b.name.localeCompare(a.name));
     }
 
-    // 🔹 Search (by name, description, or category)
+    //  Search (by name, description, or category)
     if (searchTerm.trim() !== "") {
       const lower = searchTerm.toLowerCase();
       updated = updated.filter(

@@ -155,7 +155,7 @@ function ProductDetails() {
   const { user } = useAuth();
   const { cart, addToCart, updateQuantity, clearCart } = useCart();
 
-  // ✅ Fetch single product
+  //  Fetch single product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -194,12 +194,12 @@ function ProductDetails() {
     setTimeout(() => setAdded(false), 1500);
   };
 
-  // ✅ Buy Now handler
+  //  Buy Now handler
   const handleBuyNow = () => {
     navigate("/payment", { state: { product } });
   };
 
-  // ✅ Loading / Error / Not found states
+  // Loading / Error / Not found states
   if (loading)
     return (
       <div className="min-h-screen flex justify-center items-center text-gray-600">
@@ -221,7 +221,7 @@ function ProductDetails() {
       </div>
     );
 
-  // ✅ UI
+  //  UI
   return (
     <div className="min-h-screen bg-pink-50 flex flex-col md:flex-row items-center justify-center px-6 py-12 gap-10">
       {/* Left: Product Image */}

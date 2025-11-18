@@ -9,34 +9,10 @@
       "status": "active"
     },
     {
-      "id": "1761833706127",
-      "name": "Saras S ",
-      "email": "saras@gmail.com",
-      "password": "saras",
-      "role": "user",
-      "status": "active"
-    },
-    {
       "id": "1761844743271",
       "name": "Jaasir",
       "email": "jsro@gmail.com",
       "password": "123456",
-      "role": "user",
-      "status": "active"
-    },
-    {
-      "id": "1761892681646",
-      "name": "Safuvan",
-      "email": "safuvan@gmail.com",
-      "password": "0987654321",
-      "role": "user",
-      "status": "active"
-    },
-    {
-      "id": "1761971126848",
-      "name": "Safuvan K",
-      "email": "safuvan1@gmail.com",
-      "password": "1111",
       "role": "user",
       "status": "active"
     },
@@ -175,7 +151,7 @@
       "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER",
       "price": "$97.47",
       "totalAmount": "$97.47",
-      "status": "Pending COD",
+      "status": "Delivered",
       "date": "08/11/2025, 11:09:32"
     },
     {
@@ -207,7 +183,7 @@
       "product": "EMBROIDERED HEART DRESS, SPARKLY JACQUARD KNIT JUMPER, GINGHAM CHECK OVERSHIRT",
       "price": "$196.44",
       "totalAmount": "$196.44",
-      "status": "Paid",
+      "status": "Delivered",
       "date": "08/11/2025, 14:03:58"
     },
     {
@@ -239,7 +215,7 @@
       "product": "Chicco x BaeBy Xylophone (Happy) ",
       "price": "$9.99",
       "totalAmount": "$9.99",
-      "status": "Delivered",
+      "status": "Pending COD",
       "date": "08/11/2025, 21:31:57"
     },
     {
@@ -255,7 +231,7 @@
       "product": "4in1 Evo Trike, Chicco x BaeBy Xylophone (Happy) , 2in1 Animal Cottage, Rattle Easy Grasp Bear, Chicco x BaeBy Play Set Rattles -4Pcs , Ducati Monster Sit N Ride Bike, Speedy Red Balance Bike, Cuddly Teddy Bear",
       "price": "$290.43",
       "totalAmount": "$290.43",
-      "status": "Delivered",
+      "status": "Paid",
       "date": "08/11/2025, 21:36:51"
     },
     {
@@ -354,7 +330,7 @@
       "id": "3",
       "name": "SPARKLY JACQUARD KNIT JUMPER",
       "description": "Soft knitted jumper with subtle shimmer detail.",
-      "price": 27.49,
+      "price": 27.39,
       "category": "clothes",
       "image": "https://static.zara.net/assets/public/abfc/64aa/61f14eeeb39a/09f658990863/05624502442-e1/05624502442-e1.jpg?ts=1761308273073&w=1900"
     },

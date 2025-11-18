@@ -36,26 +36,34 @@ export default function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
+    <>
+<Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={12}
+        toastOptions={{
+          style: { zIndex: 99999999 },
+        }}
+      />
     <AuthProvider>
       <WishlistProvider>
         <CartProvider>
           <ScrollToTop />
-          {!isAdminRoute && <Header />}
-          <Toaster position="top-center" reverseOrder={false} />
+            {!isAdminRoute && <Header />}
 
           <Routes>
-            {/* 🏠 Home Routes */}
+            {/*  Home Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
 
-            {/* 🔐 Auth */}
+            {/*  Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* 🚫 Not Authorized */}
+            {/*  Not Authorized */}
             <Route path="/not-authorized" element={<NotAuthorized />} />
 
-            {/* 🛒 Protected Routes (User) */}
+            {/*  Protected Routes (User) */}
             <Route
               path="/cart"
               element={
@@ -73,13 +81,13 @@ export default function App() {
               }
             />
 
-            {/* 🛍️ Products */}
+            {/*  Products */}
             <Route path="/products" element={<Products />}>
               <Route index element={<AllProducts />} />
               <Route path=":category" element={<AllProducts />} />
             </Route>
 
-            {/* 💳 Payment & Orders */}
+            {/*  Payment & Orders */}
             <Route
               path="/payment"
               element={
@@ -98,14 +106,14 @@ export default function App() {
               }
             />
 
-            {/* 🌟 Other Pages */}
+            {/*  Other Pages */}
             <Route path="/gen-z-picks" element={<GenzPicks />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/returns" element={<Return />} />
 
-            {/* ⚙️ ADMIN SIDE (Protected) */}
+            {/*  ADMIN SIDE (Protected) */}
             <Route
               path="/admin"
               element={
@@ -125,5 +133,6 @@ export default function App() {
         </CartProvider>
       </WishlistProvider>
     </AuthProvider>
+    </>
   );
 }

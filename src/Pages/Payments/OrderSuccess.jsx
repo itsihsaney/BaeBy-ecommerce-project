@@ -12,7 +12,7 @@ function OrderSuccess() {
   const order = location.state?.order || {};
   const fromPayment = location.state?.fromPayment || false;
 
-  // ✅ Clear cart only if coming from a real payment success
+  //  Clear cart only if coming from a real payment success
   useEffect(() => {
     if (fromPayment) {
       clearCart();
@@ -28,10 +28,10 @@ function OrderSuccess() {
 
   return (
     <div className="min-h-screen bg-pink-50 flex flex-col items-center justify-center text-center px-6">
-      {/* ✅ Success Icon */}
+      {/*  Success Icon */}
       <FaCheckCircle className="text-pink-500 text-6xl mb-6 animate-bounce" />
 
-      {/* ✅ Title */}
+      {/*  Title */}
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">
         Order Placed Successfully!
       </h1>
@@ -42,7 +42,7 @@ function OrderSuccess() {
         Your order has been received and is being processed.
       </p>
 
-      {/* ✅ Order Info Card */}
+      {/*  Order Info Card */}
       {order?.id ? (
         <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mb-8 border border-pink-100">
           <h2 className="text-lg font-bold text-gray-800 mb-3">
@@ -69,7 +69,7 @@ function OrderSuccess() {
         </div>
       )}
 
-      {/* ✅ Buttons */}
+      {/*  Buttons */}
       <div className="flex flex-wrap justify-center gap-4">
         <Link
           to="/products"
@@ -85,7 +85,7 @@ function OrderSuccess() {
         </Link>
       </div>
 
-      {/* ✅ Footer message */}
+      {/*  Footer message */}
       <p className="text-gray-400 text-sm mt-10">
         Need help?{" "}
         <Link to="/contact" className="text-pink-500 hover:underline">

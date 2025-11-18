@@ -7,7 +7,7 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[#111827] text-gray-100 relative  ">
+    <div className="flex min-h-screen bg-[#111827] text-gray-100 ">
       {/* Sidebar */}
       <SideBar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 

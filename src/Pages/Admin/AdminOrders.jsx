@@ -10,22 +10,31 @@ export default function AdminOrders() {
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
-  //  useSearchParams to manage filter in URL
+  const itemsPerPage = 6;
+
+  // ------------------ URL PARAMS ----------------------
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Get filter from URL or default "all"
   const filterFromUrl = searchParams.get("filter") || "all";
   const [filter, setFilter] = useState(filterFromUrl);
+
+  // Pagination from URL
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  // ----------------------------------------------------
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  //  Sync filter from URL on refresh or manual change
+  // sync URL -> filter
   useEffect(() => {
     const urlFilter = searchParams.get("filter") || "all";
     setFilter(urlFilter);
   }, [searchParams]);
 
-  //  Fetch orders
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:5001/orders");
@@ -37,19 +46,17 @@ export default function AdminOrders() {
     }
   };
 
-  //  Toast helper
   const showToast = (message, type = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast({ message: "", type: "" }), 2500);
   };
 
-  //  Normalize currency
   const normalizePrice = (value) => {
     if (!value) return 0;
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
-  //  Update order status
+  // ------------------------- STATUS UPDATE ----------------------------
   const handleUpdateStatus = async () => {
     if (!newStatus) return;
 
@@ -61,49 +68,64 @@ export default function AdminOrders() {
         updatedOrder
       );
 
-      // Update UI instantly
+      // instant UI update
       setOrders((prev) =>
         prev.map((o) =>
           o.id === editingOrder.id ? { ...o, status: newStatus } : o
         )
       );
 
-      showToast(`Order #${editingOrder.id} updated to ${newStatus}`, "success");
+      showToast(`Order #${editingOrder.id} updated to ${newStatus}`);
       setEditingOrder(null);
     } catch (err) {
-      console.error("Update error:", err);
-      showToast("Failed to update order", "error");
+      showToast("Failed to update", "error");
     }
   };
 
-  //  Cancel order
+  // ------------------------- CANCEL ORDER ----------------------------
   const handleCancelOrder = async (id) => {
-    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    if (!window.confirm("Are you sure?")) return;
+
     try {
       await axios.delete(`http://localhost:5001/orders/${id}`);
       setOrders((prev) => prev.filter((o) => o.id !== id));
-      showToast("Order canceled successfully", "success");
+      showToast("Order canceled");
     } catch (err) {
-      showToast("Failed to cancel order", "error");
+      showToast("Failed to cancel", "error");
     }
   };
 
-  //  Filter logic based on URL param
+  // ------------------------- FILTER ----------------------------
   const filteredOrders = orders.filter((o) => {
     if (filter === "all") return true;
     return o.status?.toLowerCase().includes(filter);
   });
 
-  //  Update filter (and URL)
+  // ------------------------- PAGINATION ----------------------------
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setSearchParams({ filter, page });
+  };
+
+  // ------------------------- FILTER Change ----------------------------
   const handleFilterChange = (type) => {
     setFilter(type);
+    setCurrentPage(1); // reset page when filter changes
+
     if (type === "all") setSearchParams({});
-    else setSearchParams({ filter: type });
+    else setSearchParams({ filter: type, page: 1 });
   };
 
   return (
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
-      {/* ===== Toast ===== */}
+      
+      {/* TOAST */}
       {toast.message && (
         <div
           className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 ${
@@ -116,7 +138,7 @@ export default function AdminOrders() {
         </div>
       )}
 
-      {/* ===== Header ===== */}
+      {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
           Orders Management
@@ -129,7 +151,7 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      {/* ===== Filter Buttons ===== */}
+      {/* FILTER BUTTONS */}
       <div className="flex flex-wrap gap-3 mb-6">
         {["all", "pending", "paid", "delivered"].map((type) => (
           <button
@@ -137,7 +159,7 @@ export default function AdminOrders() {
             onClick={() => handleFilterChange(type)}
             className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${
               filter === type
-                ? "bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white shadow-md"
+                ? "bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white"
                 : "bg-[#1F2937] text-gray-400 border border-fuchsia-800/30 hover:text-fuchsia-300"
             }`}
           >
@@ -146,27 +168,25 @@ export default function AdminOrders() {
         ))}
       </div>
 
-      {/* ===== Loading ===== */}
+      {/* LOADING */}
       {loading && (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-fuchsia-400 w-8 h-8" />
-          <span className="ml-3 text-fuchsia-300 text-lg">
-            Loading Orders...
-          </span>
+          <span className="ml-3 text-fuchsia-300 text-lg">Loading...</span>
         </div>
       )}
 
-      {/* ===== Empty ===== */}
+      {/* EMPTY */}
       {!loading && filteredOrders.length === 0 && (
         <div className="flex flex-col items-center justify-center h-64 text-gray-400">
           <PackageCheck size={50} className="text-fuchsia-500 mb-3" />
-          <p className="text-lg">No orders found for this filter.</p>
+          <p className="text-lg">No orders found.</p>
         </div>
       )}
 
-      {/* ===== Orders Table ===== */}
+      {/* ORDERS TABLE */}
       {!loading && filteredOrders.length > 0 && (
-        <div className="overflow-x-auto bg-[#1F2937]/80 backdrop-blur-md border border-fuchsia-700/20 rounded-2xl shadow-lg">
+        <div className="overflow-x-auto bg-[#1F2937]/80 border border-fuchsia-700/20 rounded-2xl shadow-lg">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-gradient-to-r from-fuchsia-700/40 to-pink-600/30 text-fuchsia-100 text-sm uppercase tracking-wider">
@@ -182,23 +202,27 @@ export default function AdminOrders() {
             </thead>
 
             <tbody>
-              {filteredOrders.map((order) => (
+              {currentOrders.map((order) => (
                 <tr
                   key={order.id}
-                  className="border-t border-fuchsia-800/20 hover:bg-fuchsia-800/10 transition-all duration-200"
+                  className="border-t border-fuchsia-800/20 hover:bg-fuchsia-800/10 transition"
                 >
-                  <td className="py-3 px-4 text-sm text-gray-300">
-                    {order.id}
-                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-300">{order.id}</td>
+
                   <td className="py-3 px-4 text-sm text-gray-200 font-medium">
                     {order.shippingName || order.name}
                   </td>
+
                   <td className="py-3 px-4 text-sm text-gray-400">
                     {order.product || "—"}
                   </td>
+
                   <td className="py-3 px-4 text-center text-fuchsia-300 font-semibold">
-                    ${normalizePrice(order.price || order.totalAmount).toFixed(2)}
+                    ${normalizePrice(order.price || order.totalAmount).toFixed(
+                      2
+                    )}
                   </td>
+
                   <td className="py-3 px-4 text-center text-gray-300 capitalize">
                     {order.method || order.paymentMethod || "—"}
                   </td>
@@ -221,21 +245,21 @@ export default function AdminOrders() {
                     {order.date}
                   </td>
 
-                  {/* ===== Actions ===== */}
+                  {/* ACTIONS */}
                   <td className="py-3 px-4 text-center flex justify-center gap-3">
                     <button
                       onClick={() => {
                         setEditingOrder(order);
                         setNewStatus(order.status);
                       }}
-                      className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90 shadow-md transition"
+                      className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
                     >
                       <Edit3 size={14} /> Edit
                     </button>
 
                     <button
                       onClick={() => handleCancelOrder(order.id)}
-                      className="flex items-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90 shadow-md transition"
+                      className="flex items-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
                     >
                       <XCircle size={14} /> Cancel
                     </button>
@@ -247,27 +271,68 @@ export default function AdminOrders() {
         </div>
       )}
 
-      {/* ===== Edit Modal ===== */}
+      {/* PAGINATION */}
+      {!loading && filteredOrders.length > 0 && (
+        <div className="flex justify-center gap-3 mt-8">
+
+          {/* Prev */}
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
+          >
+            Prev
+          </button>
+
+          {/* Page Numbers */}
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`px-3 py-2 rounded-lg ${
+                currentPage === i + 1
+                  ? "bg-fuchsia-600"
+                  : "bg-gray-700"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          {/* Next */}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
+          >
+            Next
+          </button>
+
+        </div>
+      )}
+
+      {/* EDIT MODAL */}
       {editingOrder && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/30 w-96 relative">
+          <div className="bg-[#1E1E2A] p-6 rounded-2xl border border-fuchsia-700/30 w-96 relative">
             <button
               onClick={() => setEditingOrder(null)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-fuchsia-400 transition"
+              className="absolute top-3 right-3 text-gray-400 hover:text-fuchsia-400"
             >
               ✖
             </button>
 
-            <h3 className="text-xl font-semibold mb-4 text-fuchsia-300">
+            <h3 className="text-xl font-semibold text-fuchsia-300 mb-4">
               Edit Order #{editingOrder.id}
             </h3>
 
             <div className="space-y-4">
-              <label className="block text-sm text-gray-400 mb-1">Status</label>
+              <label className="block text-sm text-gray-400">Status</label>
+
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
+                className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200"
               >
                 <option value="Pending COD">Pending COD</option>
                 <option value="Paid">Paid</option>
@@ -276,7 +341,7 @@ export default function AdminOrders() {
 
               <button
                 onClick={handleUpdateStatus}
-                className="w-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white py-2 rounded-lg font-medium shadow-md hover:opacity-90 transition"
+                className="w-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white mt-4 py-2 rounded-lg"
               >
                 Save Changes
               </button>
@@ -284,6 +349,7 @@ export default function AdminOrders() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

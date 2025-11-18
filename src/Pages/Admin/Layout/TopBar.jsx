@@ -12,7 +12,7 @@ export default function TopBar({ onMenuClick }) {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
-  //  Load admin info (from localStorage or API)
+  // Load admin info (from localStorage or API)
   useEffect(() => {
     const storedAdmin = localStorage.getItem("admin");
     if (storedAdmin) {
@@ -52,7 +52,7 @@ export default function TopBar({ onMenuClick }) {
   return (
     <>
       {/* ===== TopBar Header ===== */}
-      <header className="sticky top-0 z-[9999] bg-[#1F2937]/95 backdrop-blur-md shadow-lg border-b border-fuchsia-700/30 px-6 py-4 flex justify-between items-center">
+      <header className="sticky top-0 z-[1000] bg-[#1F2937]/95 backdrop-blur-md shadow-lg border-b border-fuchsia-700/30 px-6 py-4 flex justify-between items-center">
         {/* Left: Menu + Title */}
         <div className="flex items-center gap-4">
           <button

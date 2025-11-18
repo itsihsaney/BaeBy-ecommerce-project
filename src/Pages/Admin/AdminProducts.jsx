@@ -2,8 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, Trash2, Loader2, Edit3, Package } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
 
 export default function AdminProducts() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Read page from URL (default = 1)
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -16,13 +22,16 @@ export default function AdminProducts() {
   });
   const [editProduct, setEditProduct] = useState(null);
 
-  //  Fetch Products
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  const itemsPerPage = 8;
+
+  // Fetch Products
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:5001/products");
       setProducts(res.data);
     } catch (err) {
-      console.error("Error fetching products:", err);
       toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
@@ -33,13 +42,13 @@ export default function AdminProducts() {
     fetchProducts();
   }, []);
 
-  // Helper to clean price
+  // Clean Price
   const cleanPrice = (value) => {
     if (!value) return 0;
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
-  //  Delete Product
+  // Delete Product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -51,7 +60,7 @@ export default function AdminProducts() {
     }
   };
 
-  // ➕ Add Product
+  // Add Product
   const handleAddProduct = async () => {
     if (!newProduct.name || !newProduct.category || !newProduct.price) {
       toast.error("Please fill all fields");
@@ -65,7 +74,7 @@ export default function AdminProducts() {
         price: cleanPrice(newProduct.price),
       };
       await axios.post("http://localhost:5001/products", product);
-      toast.success("Product added successfully");
+      toast.success("Product added");
       setShowAddModal(false);
       setNewProduct({ name: "", category: "", price: "", image: "" });
       fetchProducts();
@@ -74,7 +83,7 @@ export default function AdminProducts() {
     }
   };
 
-  // ✏ Edit Product
+  // Edit Product
   const openEditModal = (product) => {
     setEditProduct({ ...product, price: cleanPrice(product.price) });
     setShowEditModal(true);
@@ -91,12 +100,24 @@ export default function AdminProducts() {
         `http://localhost:5001/products/${editProduct.id}`,
         { ...editProduct, price: cleanPrice(editProduct.price) }
       );
-      toast.success("Product updated successfully");
+      toast.success("Updated successfully");
       setShowEditModal(false);
       fetchProducts();
     } catch {
       toast.error("Failed to update product");
     }
+  };
+
+  // Pagination Logic
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  // Update page + URL
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setSearchParams({ page });
   };
 
   if (loading)
@@ -111,7 +132,7 @@ export default function AdminProducts() {
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
       <Toaster position="top-right" />
 
-      {/* ===== Header ===== */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
           Products Management
@@ -124,7 +145,7 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      {/* ===== Product Grid ===== */}
+      {/* Product Grid */}
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 text-gray-400">
           <Package size={50} className="text-fuchsia-500 mb-3" />
@@ -132,42 +153,31 @@ export default function AdminProducts() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {currentProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-[#1F2937]/80 backdrop-blur-md border border-fuchsia-700/20 rounded-2xl shadow-md hover:shadow-fuchsia-600/30 transition-all duration-300 overflow-hidden"
+              className="bg-[#1F2937]/80 border border-fuchsia-700/20 rounded-2xl shadow-md hover:shadow-fuchsia-600/30 transition duration-300 overflow-hidden"
             >
               <img
-                src={
-                  product.image ||
-                  "https://via.placeholder.com/300x200?text=No+Image"
-                }
-                alt={product.name}
+                src={product.image || "https://via.placeholder.com/300x200?text=No+Image"}
                 className="h-48 w-full object-cover"
               />
-              <div className="p-4 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold mb-1 text-white">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 mb-2 capitalize">
-                    {product.category}
-                  </p>
-                  <p className="text-fuchsia-300 font-semibold mb-3">
-                    ${cleanPrice(product.price).toFixed(2)}
-                  </p>
-                </div>
 
-                <div className="flex justify-between gap-2">
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-white">{product.name}</h3>
+                <p className="text-sm text-gray-400 capitalize">{product.category}</p>
+                <p className="text-fuchsia-300 font-semibold">${cleanPrice(product.price)}</p>
+
+                <div className="flex justify-between mt-3">
                   <button
                     onClick={() => openEditModal(product)}
-                    className="flex items-center justify-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 shadow-md transition"
+                    className="bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-2 rounded text-white"
                   >
                     <Edit3 size={16} /> Edit
                   </button>
                   <button
                     onClick={() => handleDelete(product.id)}
-                    className="flex items-center justify-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 shadow-md transition"
+                    className="bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-2 rounded text-white"
                   >
                     <Trash2 size={16} /> Delete
                   </button>
@@ -178,40 +188,57 @@ export default function AdminProducts() {
         </div>
       )}
 
-      {/* ===== Add Product Modal ===== */}
-      {showAddModal && (
-        <Modal
-          title="Add New Product"
-          onClose={() => setShowAddModal(false)}
-          onSave={handleAddProduct}
+      {/* Pagination */}
+      <div className="flex justify-center gap-3 mt-8">
+
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
         >
-          <ProductForm
-            product={newProduct}
-            setProduct={setNewProduct}
-            isEdit={false}
-          />
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePageChange(i + 1)}
+            className={`px-3 py-2 rounded-lg ${
+              currentPage === i + 1 ? "bg-fuchsia-600" : "bg-gray-700"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
+        >
+          Next
+        </button>
+
+      </div>
+
+      {/* Add Product Modal */}
+      {showAddModal && (
+        <Modal title="Add New Product" onClose={() => setShowAddModal(false)} onSave={handleAddProduct}>
+          <ProductForm product={newProduct} setProduct={setNewProduct} />
         </Modal>
       )}
 
-      {/* ===== Edit Product Modal ===== */}
+      {/* Edit Product Modal */}
       {showEditModal && (
-        <Modal
-          title={`Edit Product: ${editProduct.name}`}
-          onClose={() => setShowEditModal(false)}
-          onSave={handleEditSave}
-        >
-          <ProductForm
-            product={editProduct}
-            setProduct={setEditProduct}
-            isEdit={true}
-          />
+        <Modal title={`Edit Product`} onClose={() => setShowEditModal(false)} onSave={handleEditSave}>
+          <ProductForm product={editProduct} setProduct={setEditProduct} isEdit />
         </Modal>
       )}
     </div>
   );
 }
 
-/*  Product Form Component */
+/* Product Form Component */
 function ProductForm({ product, setProduct }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -228,7 +255,7 @@ function ProductForm({ product, setProduct }) {
   );
 }
 
-/*  Input Field */
+/* Input Component */
 function Input({ label, name, value, onChange, type = "text" }) {
   return (
     <div>
@@ -238,32 +265,21 @@ function Input({ label, name, value, onChange, type = "text" }) {
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-1 focus:ring-fuchsia-500"
+        className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200"
       />
     </div>
   );
 }
 
-/*  Reusable Modal */
+/* Modal Component */
 function Modal({ title, onClose, onSave, children }) {
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/30 w-96 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-fuchsia-400 transition"
-        >
-          ✖
-        </button>
-
-        <h3 className="text-xl font-semibold mb-4 text-fuchsia-300">{title}</h3>
-
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <div className="bg-[#1E1E2A] p-6 rounded-xl border border-fuchsia-700/30 w-96 relative">
+        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400">✖</button>
+        <h3 className="text-xl font-semibold text-fuchsia-300 mb-4">{title}</h3>
         {children}
-
-        <button
-          onClick={onSave}
-          className="w-full mt-6 bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white py-2 rounded-lg font-medium shadow-md hover:opacity-90 transition"
-        >
+        <button onClick={onSave} className="w-full mt-6 bg-gradient-to-r from-fuchsia-600 to-pink-500 py-2 rounded text-white">
           Save
         </button>
       </div>

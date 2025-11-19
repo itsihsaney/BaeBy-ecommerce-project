@@ -137,7 +137,7 @@ export default function Dashboard() {
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                outerRadius={90}
+                outerRadius={100}
                 fill="#C084FC"
                 dataKey="value"
                 label

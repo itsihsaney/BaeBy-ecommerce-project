@@ -29,7 +29,7 @@ export default function AdminOrders() {
     fetchOrders();
   }, []);
 
-  // sync URL -> filter
+  // sync URL / filter
   useEffect(() => {
     const urlFilter = searchParams.get("filter") || "all";
     setFilter(urlFilter);
@@ -224,7 +224,7 @@ export default function AdminOrders() {
                   </td>
 
                   <td className="py-3 px-4 text-center text-gray-300 capitalize">
-                    {order.method || order.paymentMethod || "—"}
+                    {(order.method || order.paymentMethod || "—")?.toUpperCase()}
                   </td>
 
                   <td

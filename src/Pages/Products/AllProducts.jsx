@@ -102,7 +102,7 @@ useEffect(() => {
         {category ? `Baby ${category.charAt(0).toUpperCase() + category.slice(1)}` : "All Products"}
       </h2>
 
-      {/* 🔍 Search Bar */}
+      {/*  Search Bar */}
       <div className="flex justify-center mb-8">
         <input
           type="text"

@@ -187,22 +187,6 @@
       "date": "08/11/2025, 14:03:58"
     },
     {
-      "id": "1762598302803",
-      "method": "upi",
-      "name": "Mohammed Ihsan",
-      "address": "Pullissery, Mannarkkad",
-      "phone": "87654345678",
-      "upiId": "ihsan@oksbi",
-      "cardNumber": "",
-      "expiry": "",
-      "cvv": "",
-      "product": "EMBROIDERED HEART DRESS",
-      "price": "$34.99",
-      "totalAmount": "$34.99",
-      "status": "Paid",
-      "date": "08/11/2025, 16:08:22"
-    },
-    {
       "id": "1762617717899",
       "method": "cod",
       "name": "Muhammed Shah",
@@ -293,20 +277,6 @@
       "totalAmount": "$42.99",
       "status": "Paid",
       "date": "11/11/2025, 13:34:31"
-    },
-    {
-      "id": "1762957377651",
-      "userEmail": "mdihsan0010@gmail.com",
-      "userName": "Mohammed Ihsan",
-      "shippingName": "Mohammed Ihsan",
-      "address": "Pullissery, Mannarkkad",
-      "phone": "34526656546",
-      "method": "cod",
-      "product": "GINGHAM CHECK OVERSHIRT",
-      "price": "$28.99",
-      "totalAmount": "$28.99",
-      "status": "Pending COD",
-      "date": "12/11/2025, 19:52:57"
     }
   ],
   "products": [

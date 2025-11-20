@@ -276,7 +276,7 @@ export default function Users() {
 
       {deleteUser && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-rose-600/40 w-96 relative ">
+          <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/30 w-96 relative ">
           <button onClick={()=> setDeleteUser(null)}
             className="absolute top-3 right-3 text-gray-400 hover:text-rose-400 transition"> ✖ </button>
 

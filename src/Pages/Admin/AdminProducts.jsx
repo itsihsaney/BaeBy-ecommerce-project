@@ -26,6 +26,11 @@ export default function AdminProducts() {
 
   const itemsPerPage = 8;
 
+  const [deleteProduct,setDeleteProduct] = useState(null);
+  const [deleting,setDeleting]= useState(false);
+
+  const [searchQuery,setSearchQuery] = useState("");
+
   // Fetch Products
   const fetchProducts = async () => {
     try {
@@ -48,17 +53,26 @@ export default function AdminProducts() {
     return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
   };
 
+
   // Delete Product
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-    try {
-      await axios.delete(`http://localhost:5001/products/${id}`);
-      toast.success("Product deleted");
-      fetchProducts();
-    } catch {
-      toast.error("Failed to delete product");
-    }
-  };
+const confirmDeleteProduct = async () => {
+  if (!deleteProduct) return;
+
+  setDeleting(true);
+  try {
+    await axios.delete(`http://localhost:5001/products/${deleteProduct.id}`);
+    // remove from UI
+    setProducts((prev) => prev.filter((p) => p.id !== deleteProduct.id));
+    toast.success("Product deleted successfully");
+    setDeleteProduct(null);
+  } catch (err) {
+    console.error("Delete error:", err);
+    toast.error("Failed to delete product");
+  } finally {
+    setDeleting(false);
+  }
+};
+
 
   // Add Product
   const handleAddProduct = async () => {
@@ -108,11 +122,16 @@ export default function AdminProducts() {
     }
   };
 
+  // filter products for search
+const filteredPrdoucts = products.filter((p)=>
+   p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+   p.category.toLowerCase().includes(searchQuery.toLowerCase()))
+
   // Pagination Logic
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const currentProducts = filteredPrdoucts.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredPrdoucts.length / itemsPerPage);
 
   // Update page + URL
   const handlePageChange = (page) => {
@@ -134,16 +153,33 @@ export default function AdminProducts() {
 
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
-          Products Management
-        </h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-fuchsia-600 to-pink-500 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 shadow-md transition"
-        >
-          <Plus size={18} /> Add Product
-        </button>
-      </div>
+
+  <h2 className="text-3xl font-bold bg-gradient-to-r from-fuchsia-400 to-pink-500 bg-clip-text text-transparent">
+    Products Management
+  </h2>
+
+  <div className="flex items-center gap-3">
+    <input
+      type="text"
+      placeholder="Search Products..."
+      value={searchQuery}
+      onChange={(e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+      }}
+      className="bg-[#1F2937] border border-fuchsia-700/40 px-4 py-2 rounded-lg text-gray-200 w-60 focus:outline-none focus:border-fuchsia-500"
+    />
+
+    <button
+      onClick={() => setShowAddModal(true)}
+      className="flex items-center gap-2 bg-gradient-to-r from-fuchsia-600 to-pink-500 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 shadow-md transition"
+    >
+      <Plus size={18} /> Add Product
+    </button>
+  </div>
+
+</div>
+
 
       {/* Product Grid */}
       {products.length === 0 ? (
@@ -176,7 +212,7 @@ export default function AdminProducts() {
                     <Edit3 size={16} /> Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => setDeleteProduct(product)}
                     className="bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-2 rounded text-white"
                   >
                     <Trash2 size={16} /> Delete
@@ -187,6 +223,44 @@ export default function AdminProducts() {
           ))}
         </div>
       )}
+{/* ===== Delete Modal ===== */}
+{deleteProduct && (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/40 w-96 relative">
+      <button
+        onClick={() => setDeleteProduct(null)}
+        className="absolute top-3 right-3 text-gray-400 hover:text-rose-400 transition"
+      >
+        ✖
+      </button>
+
+      <h3 className="text-xl font-semibold mb-4 text-fuchsia-300">Confirm Delete</h3>
+
+      <p className="text-gray-300 mb-6">
+        Are you sure you want to delete{" "}
+        <span className="text-white font-semibold">{deleteProduct.name || `#${deleteProduct.id}`}</span>?
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setDeleteProduct(null)}
+          className="px-4 py-2 bg-gray-600/40 rounded-md text-gray-300 hover:bg-gray-600/60"
+        >
+          No
+        </button>
+
+        <button
+          onClick={confirmDeleteProduct}
+          disabled={deleting}
+          className="bg-gradient-to-r from-fuchsia-600 to-pink-500 px-6 py-2 rounded-lg text-white font-medium hover:opacity-90 transition"
+        >
+          {deleting ? "Deleting..." : "Yes, Delete"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Pagination */}
       <div className="flex justify-center gap-3 mt-8">

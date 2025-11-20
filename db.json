@@ -14,7 +14,7 @@
       "email": "jsro@gmail.com",
       "password": "123456",
       "role": "user",
-      "status": "active"
+      "status": "inactive"
     },
     {
       "id": "1761972159270",
@@ -30,7 +30,7 @@
       "email": "suhailaslam1@gmail.com",
       "password": "asdfasdf",
       "role": "user",
-      "status": "active"
+      "status": "inactive"
     },
     {
       "id": "1761988258615",
@@ -78,7 +78,7 @@
       "email": "ashitha@gmail.com",
       "password": "121212",
       "role": "user",
-      "status": "inactive"
+      "status": "active"
     },
     {
       "id": "1762162128926",
@@ -86,7 +86,7 @@
       "email": "rashad@gmail.com",
       "password": "1212",
       "role": "user",
-      "status": "active"
+      "status": "inactive"
     },
     {
       "id": "1762183009462",
@@ -215,7 +215,7 @@
       "product": "4in1 Evo Trike, Chicco x BaeBy Xylophone (Happy) , 2in1 Animal Cottage, Rattle Easy Grasp Bear, Chicco x BaeBy Play Set Rattles -4Pcs , Ducati Monster Sit N Ride Bike, Speedy Red Balance Bike, Cuddly Teddy Bear",
       "price": "$290.43",
       "totalAmount": "$290.43",
-      "status": "Paid",
+      "status": "Pending COD",
       "date": "08/11/2025, 21:36:51"
     },
     {
@@ -247,7 +247,7 @@
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": "$59.98",
       "totalAmount": "$59.98",
-      "status": "Paid",
+      "status": "Delivered",
       "date": "11/11/2025, 13:19:39"
     },
     {
@@ -277,6 +277,76 @@
       "totalAmount": "$42.99",
       "status": "Paid",
       "date": "11/11/2025, 13:34:31"
+    },
+    {
+      "id": "1763527979902",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Muhammed Shah",
+      "address": "ihsaney house",
+      "phone": "9876543212",
+      "method": "cod",
+      "product": "ZARA x BAEBY REDDY CLOTH COAT",
+      "price": "$42.99",
+      "totalAmount": "$42.99",
+      "status": "Paid",
+      "date": "19/11/2025, 10:22:59"
+    },
+    {
+      "id": "1763528038186",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Mohammed Ihsan",
+      "address": "Ihsaney",
+      "phone": "98778927523",
+      "method": "cod",
+      "product": "SPARKLY JACQUARD KNIT JUMPER",
+      "price": "$27.39",
+      "totalAmount": "$27.39",
+      "status": "Pending COD",
+      "date": "19/11/2025, 10:23:58"
+    },
+    {
+      "id": "1763528134223",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Mohammed Ihsan",
+      "address": "Ihsaney",
+      "phone": "09876543535",
+      "method": "cod",
+      "product": "Speedy Red Balance Bike",
+      "price": "$8859.51",
+      "totalAmount": "$8859.51",
+      "status": "Pending COD",
+      "date": "19/11/2025, 10:25:34"
+    },
+    {
+      "id": "1763542630228",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "Muhammed Shah",
+      "address": "Ihsaney",
+      "phone": "6737783784",
+      "method": "cod",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": "$29.99",
+      "totalAmount": "$29.99",
+      "status": "Pending COD",
+      "date": "19/11/2025, 14:27:10"
+    },
+    {
+      "id": "1763552491576",
+      "userEmail": "mdihsan0010@gmail.com",
+      "userName": "Mohammed Ihsan",
+      "shippingName": "NewMan",
+      "address": "new",
+      "phone": "111111111111",
+      "method": "cod",
+      "product": "ZARA x BAEBY VELVET CULOTTES",
+      "price": "$27.99",
+      "totalAmount": "$27.99",
+      "status": "Pending COD",
+      "date": "19/11/2025, 17:11:31"
     }
   ],
   "products": [

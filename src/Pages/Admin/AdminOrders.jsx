@@ -10,7 +10,7 @@ export default function AdminOrders() {
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 8;
 
   // ------------------ URL PARAMS ----------------------
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,7 +38,7 @@ export default function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:5001/orders");
-      setOrders(res.data);
+      setOrders(res.data.sort((a,b) => Number (b.id) - Number (a.id)));
     } catch (err) {
       showToast("Failed to fetch orders", "error");
     } finally {
@@ -64,7 +64,7 @@ export default function AdminOrders() {
       const updatedOrder = { ...editingOrder, status: newStatus };
 
       await axios.patch(
-        `http://localhost:5001/orders/${String(editingOrder.id)}`,
+        `http://localhost:5001/orders/${(editingOrder.id)}`,
         updatedOrder
       );
 

@@ -176,7 +176,7 @@ export default function Dashboard() {
                 <tr className="bg-purple-900/20 text-purple-300 text-sm uppercase">
                   <th className="py-3 px-4 text-left">Order ID</th>
                   <th className="py-3 px-4 text-left">Customer</th>
-                  <th className="py-3 px-4 text-left">Amount ($)</th>
+                  <th className="py-3 px-4 text-left">Amount</th>
                   <th className="py-3 px-4 text-left">Status</th>
                 </tr>
               </thead>
@@ -219,8 +219,8 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <InsightCard title="Total Profit" value={`$${profit}`} />
             <InsightCard title="Conversion Rate" value="7.2%" />
-            <InsightCard title="Returning Customers" value="41%" />
-            <InsightCard title="Avg. Order Value" value="$167" />
+            <InsightCard title="Returning Customers" value="11%" />
+            <InsightCard title="Avg. Order Value" value="$758" />
           </div>
         </div>
       </div>

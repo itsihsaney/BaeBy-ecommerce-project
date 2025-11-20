@@ -99,7 +99,7 @@ export default function Dashboard() {
 
       {/* ===== Stat Cards ===== */}
       
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 ">
         <AnimatedStatCard title="Total Users" value={stats.users} color="from-fuchsia-600 to-pink-500" />
         <AnimatedStatCard title="Total Products" value={stats.products} color="from-violet-500 to-fuchsia-400" />
         <AnimatedStatCard title="Total Orders" value={stats.orders} color="from-pink-500 to-purple-500" />

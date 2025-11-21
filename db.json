@@ -135,6 +135,14 @@
       "password": "naseema",
       "role": "user",
       "status": "active"
+    },
+    {
+      "id": "1763626375937",
+      "name": "Unknown by Neethu",
+      "email": "neethu@gmail.com",
+      "password": "neethu",
+      "role": "admin",
+      "status": "active"
     }
   ],
   "orders": [
@@ -303,7 +311,7 @@
       "product": "SPARKLY JACQUARD KNIT JUMPER",
       "price": "$27.39",
       "totalAmount": "$27.39",
-      "status": "Pending COD",
+      "status": "Paid",
       "date": "19/11/2025, 10:23:58"
     },
     {
@@ -317,7 +325,7 @@
       "product": "Speedy Red Balance Bike",
       "price": "$8859.51",
       "totalAmount": "$8859.51",
-      "status": "Pending COD",
+      "status": "Delivered",
       "date": "19/11/2025, 10:25:34"
     },
     {
@@ -331,7 +339,7 @@
       "product": "MICKEY MOUSE SWEATSHIRT",
       "price": "$29.99",
       "totalAmount": "$29.99",
-      "status": "Pending COD",
+      "status": "Delivered",
       "date": "19/11/2025, 14:27:10"
     },
     {
@@ -345,8 +353,36 @@
       "product": "ZARA x BAEBY VELVET CULOTTES",
       "price": "$27.99",
       "totalAmount": "$27.99",
-      "status": "Pending COD",
+      "status": "Paid",
       "date": "19/11/2025, 17:11:31"
+    },
+    {
+      "id": "1763626686738",
+      "userEmail": "neethu@gmail.com",
+      "userName": "Unknown by Neethu",
+      "shippingName": "Neethu unni",
+      "address": "KINFRA",
+      "phone": "2345678765",
+      "method": "upi",
+      "product": "EMBROIDERED T-SHIRT WITH PETER PAN COLLAR",
+      "price": "$22.99",
+      "totalAmount": "$22.99",
+      "status": "Pending COD",
+      "date": "20/11/2025, 13:48:06"
+    },
+    {
+      "id": "1763626763653",
+      "userEmail": "neethu@gmail.com",
+      "userName": "Unknown by Neethu",
+      "shippingName": "Neethu unni",
+      "address": "KINFRA",
+      "phone": "65768546567",
+      "method": "cod",
+      "product": "MICKEY MOUSE SWEATSHIRT",
+      "price": "$29.99",
+      "totalAmount": "$29.99",
+      "status": "Pending COD",
+      "date": "20/11/2025, 13:49:23"
     }
   ],
   "products": [
@@ -362,7 +398,7 @@
       "id": "2",
       "name": "EMBROIDERED HEART DRESS",
       "description": "Elegant cotton dress with fine heart embroidery.",
-      "price": 34.99,
+      "price": 26.99,
       "category": "clothes",
       "image": "https://static.zara.net/assets/public/b4ca/4c0f/2b7d43818f0b/d7380f9bcb31/06681614809-e1/06681614809-e1.jpg?ts=1761304723202&w=1900"
     },

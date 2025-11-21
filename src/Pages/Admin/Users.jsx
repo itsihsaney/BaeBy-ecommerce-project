@@ -7,7 +7,6 @@ import {
   Users as UsersIcon,
   Edit3,
   Trash2,
-  Loader2,
   Search,
   Filter,
 } from "lucide-react";

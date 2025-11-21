@@ -98,38 +98,40 @@ export default function Dashboard() {
       </h1>
 
       {/* ===== Stat Cards ===== */}
-      
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 ">
-        <AnimatedStatCard title="Total Users" value={stats.users} color="from-fuchsia-600 to-pink-500" />
-        <AnimatedStatCard title="Total Products" value={stats.products} color="from-violet-500 to-fuchsia-400" />
-        <AnimatedStatCard title="Total Orders" value={stats.orders} color="from-pink-500 to-purple-500" />
-        <AnimatedStatCard
-          title="Total Sales"
-          value={`$${stats.totalSales}`}
-          color="from-purple-600 to-fuchsia-500"
-          isCurrency
-        />
+      <div className="flex w-[100%] gap-10 mb-10 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6  w-[100%] ">
+          <AnimatedStatCard title="Total Users" value={stats.users} color="from-fuchsia-600 to-pink-500" />
+          <AnimatedStatCard title="Total Products" value={stats.products} color="from-violet-500 to-fuchsia-400" />
+          <AnimatedStatCard title="Total Orders" value={stats.orders} color="from-pink-500 to-purple-500" />
+          <AnimatedStatCard
+            title="Total Sales"
+            value={`$${stats.totalSales}`}
+            color="from-purple-600 to-fuchsia-500"
+            isCurrency
+          />
+        </div>
+
+        {/* ===== Charts Section ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-6  w-[100%] ">
+          <ChartCard title="Data Overview">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={barData}>
+                <XAxis dataKey="name" stroke="#D8B4FE" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1F2937",
+                    border: "1px solid #C084FC",
+                    borderRadius: "8px",
+                  }}
+                  itemStyle={{ color: "#F9A8D4" }}
+                />
+                <Bar dataKey="value" fill="#C084FC" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
       </div>
-
-      {/* ===== Charts Section ===== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10 ">
-        <ChartCard title="Data Overview">
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={barData}>
-              <XAxis dataKey="name" stroke="#D8B4FE" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1F2937",
-                  border: "1px solid #C084FC",
-                  borderRadius: "8px",
-                }}
-                itemStyle={{ color: "#F9A8D4" }}
-              />
-              <Bar dataKey="value" fill="#C084FC" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
+      <div className="gap-6 mb-10">
         <ChartCard title="Category Breakdown">
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -193,13 +195,12 @@ export default function Dashboard() {
                     </td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status?.toLowerCase().includes("pending")
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${order.status?.toLowerCase().includes("pending")
                             ? "bg-yellow-500/20 text-yellow-300"
                             : order.status?.toLowerCase().includes("delivered")
-                            ? "bg-green-500/20 text-green-300"
-                            : "bg-blue-500/20 text-blue-300"
-                        }`}
+                              ? "bg-green-500/20 text-green-300"
+                              : "bg-blue-500/20 text-blue-300"
+                          }`}
                       >
                         {order.status}
                       </span>

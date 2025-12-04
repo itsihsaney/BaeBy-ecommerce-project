@@ -16,7 +16,7 @@ export const ProductsProvider = ({ children }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/products");
+        const res = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products");
         setClothes(res.data.clothes || []);
         setToys(res.data.toys || []);
         setSkinCare(res.data.skinCare || []);

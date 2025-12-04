@@ -37,7 +37,7 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/orders");
+      const res = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders");
       setOrders(res.data.sort((a,b) => Number (b.id) - Number (a.id)));
     } catch (err) {
       showToast("Failed to fetch orders", "error");
@@ -64,7 +64,7 @@ export default function AdminOrders() {
       const updatedOrder = { ...editingOrder, status: newStatus };
 
       await axios.patch(
-        `http://localhost:5001/orders/${(editingOrder.id)}`,
+        `https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders/${(editingOrder.id)}`,
         updatedOrder
       );
 
@@ -87,7 +87,7 @@ export default function AdminOrders() {
     if (!window.confirm("Are you sure?")) return;
 
     try {
-      await axios.delete(`http://localhost:5001/orders/${id}`);
+      await axios.delete(`https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders/${id}`);
       setOrders((prev) => prev.filter((o) => o.id !== id));
       showToast("Order canceled");
     } catch (err) {

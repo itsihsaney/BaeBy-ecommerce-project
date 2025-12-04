@@ -80,7 +80,7 @@ function Payment() {
 
 
     try {
-      await axios.post("http://localhost:5001/orders", newOrder);
+      await axios.post("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders", newOrder);
       navigate("/order-success", { state: { order: newOrder } });
     } catch (error) {
       console.error("Error saving order:", error);

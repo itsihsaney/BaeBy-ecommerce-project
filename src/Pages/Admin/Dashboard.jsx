@@ -36,8 +36,8 @@ export default function Dashboard() {
       try {
         const [users, orders, products] = await Promise.all([
           axios.get("http://localhost:5001/users"),
-          axios.get("http://localhost:5001/orders"),
-          axios.get("http://localhost:5001/products"),
+          axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders"),
+          axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products"),
         ]);
 
         //  Calculate totals correctly

@@ -34,7 +34,7 @@ export default function AdminProducts() {
   // Fetch Products
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5001/products");
+      const res = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products");
       setProducts(res.data);
     } catch (err) {
       toast.error("Failed to fetch products");
@@ -60,7 +60,7 @@ const confirmDeleteProduct = async () => {
 
   setDeleting(true);
   try {
-    await axios.delete(`http://localhost:5001/products/${deleteProduct.id}`);
+    await axios.delete(`https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products/${deleteProduct.id}`);
     // remove from UI
     setProducts((prev) => prev.filter((p) => p.id !== deleteProduct.id));
     toast.success("Product deleted successfully");
@@ -87,7 +87,7 @@ const confirmDeleteProduct = async () => {
         ...newProduct,
         price: cleanPrice(newProduct.price),
       };
-      await axios.post("http://localhost:5001/products", product);
+      await axios.post("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products", product);
       toast.success("Product added");
       setShowAddModal(false);
       setNewProduct({ name: "", category: "", price: "", image: "" });
@@ -111,7 +111,7 @@ const confirmDeleteProduct = async () => {
 
     try {
       await axios.patch(
-        `http://localhost:5001/products/${editProduct.id}`,
+        `https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products/${editProduct.id}`,
         { ...editProduct, price: cleanPrice(editProduct.price) }
       );
       toast.success("Updated successfully");

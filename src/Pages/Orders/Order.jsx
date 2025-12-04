@@ -9,7 +9,7 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5001/orders";
+  const API_URL = "https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders";
 
   useEffect(() => {
     if (!user) {

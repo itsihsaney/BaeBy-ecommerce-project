@@ -13,23 +13,28 @@ export const ProductsProvider = ({ children }) => {
   //  Active Category
   const [activeCategory, setActiveCategory] = useState("Clothes");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products");
-        setClothes(res.data.clothes || []);
-        setToys(res.data.toys || []);
-        setSkinCare(res.data.skinCare || []);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setError("Failed to load products.");
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get("http://localhost:5001/api/products");
 
-    fetchProducts();
-  }, []);
+      const allProducts = res.data;
+
+      setClothes(allProducts.filter(item => item.category === "clothes"));
+      setToys(allProducts.filter(item => item.category === "toys"));
+      setSkinCare(allProducts.filter(item => item.category === "skinCare"));
+
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to load products.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
 
   return (
     <ProductsContext.Provider

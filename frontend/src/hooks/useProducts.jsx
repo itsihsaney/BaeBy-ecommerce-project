@@ -9,12 +9,15 @@ const useProducts = (category) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products");
+        const response = await axios.get("http://localhost:5001/api/products");
+
         const filtered = category
           ? response.data.filter((item) => item.category === category)
           : response.data;
+
         setProducts(filtered);
       } catch (err) {
+        console.error(err);
         setError("Failed to fetch products");
       } finally {
         setLoading(false);

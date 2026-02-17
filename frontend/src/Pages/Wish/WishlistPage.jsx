@@ -30,11 +30,15 @@ function WishlistPage() {
             >
               <img
                 src={item.image}
-                alt={item.name}
+                alt={item.name || item.title}
                 className="w-40 h-40 object-cover rounded-lg mb-4"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+                }}
               />
               <h3 className="font-semibold text-lg text-gray-800">
-                {item.name}
+                {item.name || item.title}
               </h3>
               <p className="text-gray-600 mb-3">${item.price}</p>
 

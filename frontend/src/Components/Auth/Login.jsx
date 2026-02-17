@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 function Login() {
-  const { setUser, user } = useAuth();
+  const { login, setUser, user } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -30,28 +30,22 @@ function Login() {
     setError("");
 
     try {
-      const { data } = await axios.get("http://localhost:5001/users");
+      const res = await login(form.email, form.password);
 
-      const foundUser = data.find(
-        (u) =>
-          u.email.trim().toLowerCase() === form.email.trim().toLowerCase() &&
-          u.password === form.password
-      );
-
-      if (!foundUser) {
-        setError("Invalid email or password");
-        toast.error("Invalid login credentials");
+      if (!res.success) {
+        setError(res.message);
+        toast.error(res.message);
         return;
       }
 
+      const loggedUser = res.user;
+
       //  If it's an admin, show modal
-      if (foundUser.role === "admin") {
-        setTempUser(foundUser);
+      if (loggedUser.role === "admin") {
+        setTempUser(loggedUser);
         setShowRoleModal(true);
       } else {
-        // Normal user flow
-        setUser(foundUser);
-        localStorage.setItem("user", JSON.stringify(foundUser));
+        // Normal user flow handled by context (setUser is called inside login)
         toast.success("You are successfully logged in!");
         navigate("/");
       }

@@ -30,17 +30,11 @@ function Register() {
     }
 
     try {
-      // Create user with default role/status
-      const newUser = {
-        id: Date.now().toString(),
+      const res = await register({
         name: form.name.trim(),
         email: form.email.trim().toLowerCase(),
-        password: form.password,
-        role: "user",
-        status: "active",
-      };
-
-      const res = await register(newUser);
+        password: form.password
+      });
 
       if (res.success) {
         setInfo("Registered successfully! Redirecting to login...");

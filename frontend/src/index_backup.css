@@ -1,15 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Outfit', sans-serif;
-  color: #1a1a1a;
-  background-color: #fafafa;
-}
 
 /* Hide scrollbar but keep scrolling */
 .scrollbar-hide::-webkit-scrollbar {

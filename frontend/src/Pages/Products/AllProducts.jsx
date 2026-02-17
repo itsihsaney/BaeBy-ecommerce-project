@@ -1,39 +1,40 @@
-
-import React, { useState, useMemo , useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate, useParams, useOutletContext, useSearchParams } from "react-router-dom";
 import useProducts from "../../hooks/useProducts";
 import { useCart } from "../../Context/CartContext";
 import { useWishlist } from "../../Context/WishlistContext";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaEye, FaShoppingBag } from "react-icons/fa";
 import { useAuth } from "../../Context/AuthContext";
 
 function AllProducts() {
-  const { category } = useParams(); //  dynamic category from URL (clothes, skincare, toys)
-  const { products, loading, error } = useProducts(category); //  hook can fetch category-wise products
+  const { category } = useParams();
+  const { products, loading, error } = useProducts(category);
   const { addToCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { sortType, filterType } = useOutletContext();
 
-  // Search + Pagination
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
   const productsPerPage = 8;
 
-  // Combined logic for Filter + Sort + Search
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
+
   const processedProducts = useMemo(() => {
     let updated = [...products];
 
-    //  Category filter (if /products/clothes, etc.)
     if (category) {
       updated = updated.filter(
         (product) => product.category?.toLowerCase() === category.toLowerCase()
       );
     }
 
-    //  Filter by price range
     if (filterType === "under20") {
       updated = updated.filter((p) => p.price < 20);
     } else if (filterType === "20to40") {
@@ -42,32 +43,26 @@ function AllProducts() {
       updated = updated.filter((p) => p.price > 40);
     }
 
-    //  Sorting
     if (sortType === "lowToHigh" || sortType === "price-low-high") {
       updated.sort((a, b) => a.price - b.price);
     } else if (sortType === "highToLow" || sortType === "price-high-low") {
       updated.sort((a, b) => b.price - a.price);
     } else if (sortType === "name-az") {
-      updated.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortType === "name-za") {
-      updated.sort((a, b) => b.name.localeCompare(a.name));
+      updated.sort((a, b) => (a.name || a.title || "").localeCompare(b.name || b.title || ""));
     }
 
-    //  Search (by name, description, or category)
     if (searchTerm.trim() !== "") {
       const lower = searchTerm.toLowerCase();
       updated = updated.filter(
         (p) =>
-          p.name.toLowerCase().includes(lower) ||
-          p.description?.toLowerCase().includes(lower) ||
-          p.category?.toLowerCase().includes(lower)
+          (p.name || p.title || "").toLowerCase().includes(lower) ||
+          p.description?.toLowerCase().includes(lower)
       );
     }
 
     return updated;
   }, [products, sortType, filterType, searchTerm, category]);
 
-  // Pagination
   const totalPages = Math.ceil(processedProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const currentProducts = processedProducts.slice(
@@ -76,150 +71,167 @@ function AllProducts() {
   );
 
   const handlePageChange = (page) => {
-  if (page < 1 || page > totalPages) return;
-  setCurrentPage(page);
-  const newParams = new URLSearchParams(searchParams);
-  newParams.set("page", page);
-  if (searchTerm) newParams.set("search", searchTerm);
-  setSearchParams(newParams);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("page", page.toString());
+    if (searchTerm) newParams.set("search", searchTerm);
+    setSearchParams(newParams);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-useEffect(() => {
-  const pageFromUrl = Number(searchParams.get("page"));
-  if (pageFromUrl && pageFromUrl !== currentPage) {
-    setCurrentPage(pageFromUrl);
-  }
-}, [searchParams]);
+  if (loading) return (
+    <div className="flex justify-center items-center py-20">
+      <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
+    </div>
+  );
 
-
-  if (loading) return <p className="text-center text-gray-500 py-10">Loading...</p>;
-  if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
+  if (error) return (
+    <div className="text-center py-20">
+      <p className="text-xl text-red-500 font-semibold">{error}</p>
+      <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full">Retry</button>
+    </div>
+  );
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-        {category ? `Baby ${category.charAt(0).toUpperCase() + category.slice(1)}` : "All Products"}
-      </h2>
+    <section className={`transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+          {category ? `${category.charAt(0).toUpperCase() + category.slice(1)}` : "All Collections"}
+          <span className="block w-12 h-1 bg-pink-500 mt-2"></span>
+        </h2>
 
-      {/*  Search Bar */}
-      <div className="flex justify-center mb-8">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setSearchParams({ search: e.target.value });
-            setCurrentPage(1);
-          }}
-          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all"
-        />
+        <div className="relative group w-full max-w-sm">
+          <input
+            type="text"
+            placeholder="Search our treasures..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setSearchParams(prev => {
+                prev.set("search", e.target.value);
+                prev.set("page", "1");
+                return prev;
+              });
+              setCurrentPage(1);
+            }}
+            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 transition-all text-gray-700 font-medium"
+          />
+          <FaShoppingBag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-pink-400 transition-colors" />
+        </div>
       </div>
 
       {processedProducts.length === 0 ? (
-        <p className="text-center text-gray-500">No products found.</p>
+        <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-50">
+          <p className="text-gray-400 text-lg">We couldn't find any products matching your selection.</p>
+        </div>
       ) : (
         <>
-          {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {currentProducts.map((product) => {
               const isWishlisted = wishlist.some((item) => item.id === product.id);
+              const name = product.name || product.title;
+
               return (
                 <div
                   key={product.id}
-                  className="relative bg-white shadow-md rounded-2xl overflow-hidden transition-transform transform hover:scale-105 hover:shadow-lg"
+                  className="group relative flex flex-col bg-white rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border border-gray-50"
                 >
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-pink-600 rounded-full shadow-sm">
+                      {product.category || 'Essential'}
+                    </span>
+                  </div>
+
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       user ? toggleWishlist(product) : navigate("/login");
                     }}
-                    className={`absolute top-3 right-3 text-xl transition-all ${
-                      isWishlisted
-                        ? "text-pink-600 scale-125"
-                        : "text-gray-400 hover:text-pink-500"
-                    }`}
+                    className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 ${isWishlisted
+                        ? "bg-pink-500 text-white shadow-pink-200 shadow-xl"
+                        : "bg-white/80 text-gray-400 hover:text-pink-500 hover:bg-white"
+                      }`}
                   >
-                    <FaHeart />
+                    <FaHeart className={isWishlisted ? "animate-bounce" : "transition-transform active:scale-150"} />
                   </button>
 
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-52 object-cover"
-                  />
+                  <div className="relative h-72 overflow-hidden cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+                    <img
+                      src={product.image}
+                      alt={name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+                      }}
+                    />
 
-                  <div className="p-4 text-center">
-                    <h3 className="text-lg font-semibold text-gray-700">{product.name}</h3>
-                    <p className="text-sm text-gray-500 mb-2 line-clamp-2">
-                      {product.description}
-                    </p>
-                    <p className="text-pink-600 font-bold text-lg">${product.price}</p>
-
-                    <div className="flex justify-center gap-3 mt-3">
+                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                       <button
-                        onClick={() => {
-                          user ? addToCart(product) : navigate("/login");
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/product/${product.id}`);
                         }}
-                        className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
+                        className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-800 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-pink-500 hover:text-white"
                       >
-                        Add to Cart
-                      </button>
-                      <button
-                        onClick={() => navigate(`/product/${product.id}`)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-full transition-all duration-200 shadow-md"
-                      >
-                        View
+                        <FaEye />
                       </button>
                     </div>
+                  </div>
+
+                  <div className="p-6 flex flex-col items-center">
+                    <h3 className="text-center font-bold text-gray-800 text-lg mb-1 line-clamp-1 group-hover:text-pink-600 transition-colors">
+                      {name}
+                    </h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-xs text-gray-400 line-through tracking-wider">$ {(product.price * 1.2).toFixed(2)}</span>
+                      <span className="text-xl font-black text-gray-900 tracking-tight">${product.price}</span>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        user ? addToCart(product) : navigate("/login");
+                      }}
+                      className="w-full py-3 bg-gray-900 border-2 border-gray-900 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all duration-300 hover:bg-transparent hover:text-gray-900 active:scale-95"
+                    >
+                      Add to Bag
+                    </button>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center items-center gap-3 mt-12">
+          <div className="flex justify-center items-center gap-6 mt-20">
             <button
               onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`px-5 py-2 rounded-full text-sm font-medium shadow-md transition-all duration-200 ${
-                currentPage === 1
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-pink-500 hover:bg-pink-600 text-white"
-              }`}
+              className={`p-3 rounded-full border transition-all ${currentPage === 1
+                  ? "border-gray-100 text-gray-300"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-100"
+                }`}
             >
-              ← Prev
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
 
-            <div className="flex gap-2">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => handlePageChange(i + 1)}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 ${
-                    currentPage === i + 1
-                      ? "bg-pink-600 text-white shadow-md scale-110"
-                      : "bg-gray-100 text-gray-700 hover:bg-pink-100 hover:text-pink-600"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
+            <span className="text-sm font-bold text-gray-500 tracking-widest uppercase">
+              Page <span className="text-gray-900">{currentPage}</span> of {totalPages}
+            </span>
 
             <button
-              onClick={() =>
-                currentPage < totalPages && handlePageChange(currentPage + 1)
-              }
+              onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`px-5 py-2 rounded-full text-sm font-medium shadow-md transition-all duration-200 ${
-                currentPage === totalPages
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-pink-500 hover:bg-pink-600 text-white"
-              }`}
+              className={`p-3 rounded-full border transition-all ${currentPage === totalPages
+                  ? "border-gray-100 text-gray-300"
+                  : "border-gray-200 text-gray-600 hover:bg-gray-100"
+                }`}
             >
-              Next →
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </>

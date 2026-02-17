@@ -9,13 +9,16 @@ const useProducts = (category) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/api/products");
+        const url = category
+          ? `http://localhost:5001/api/products?category=${category}`
+          : "http://localhost:5001/api/products";
 
-        const filtered = category
-          ? response.data.filter((item) => item.category === category)
-          : response.data;
+        const response = await axios.get(url);
 
-        setProducts(filtered);
+        // Handle both old array structure (if any) and new object structure
+        const productData = response.data.products || response.data;
+
+        setProducts(productData);
       } catch (err) {
         console.error(err);
         setError("Failed to fetch products");

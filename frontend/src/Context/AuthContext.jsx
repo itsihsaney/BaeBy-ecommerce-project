@@ -5,84 +5,80 @@ import { useWishlist } from "./WishlistContext";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
-const API_URL = "http://localhost:5001/users";
+const API_URL = "http://localhost:5001/api/auth";
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const { clearCart } = useCart();
   const { clearWishlist } = useWishlist();
 
-  // Load user from localStorage
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
+    const savedToken = localStorage.getItem("token");
+    if (savedUser && savedToken) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
+      return JSON.parse(savedUser);
+    }
+    return null;
   });
-
-  // Keep user in sync with localStorage
-  useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
-  }, [user]);
 
   // Register
   const register = async (userData) => {
     try {
-      const { data: users } = await axios.get(API_URL);
-      const exists = users.some((u) => u.email === userData.email);
-
-      if (exists) return { success: false, message: "Email already registered" };
-
-      const newUser = { id: Date.now(), ...userData };
-      await axios.post(API_URL, newUser);
-
-      setUser(newUser);
-      localStorage.setItem("user", JSON.stringify(newUser));
-
-      return { success: true, message: "Registration successful" };
+      const { data } = await axios.post(`${API_URL}/register`, userData);
+      return { success: true, message: data.message };
     } catch (err) {
       console.error(err);
-      return { success: false, message: "Server error" };
+      return {
+        success: false,
+        message: err.response?.data?.message || err.response?.data?.errors?.[0] || "Registration failed"
+      };
     }
   };
 
   // Login
   const login = async (email, password) => {
     try {
-      const { data: users } = await axios.get(API_URL);
-      const found = users.find(
-        (u) => u.email === email && u.password === password
-      );
+      const { data } = await axios.post(`${API_URL}/login`, { email, password });
 
-      if (!found)
-        return { success: false, message: "Invalid email or password" };
+      const { token, user: userData } = data;
 
-      setUser(found);
-      localStorage.setItem("user", JSON.stringify(found));
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
 
-      return { success: true, user: found };
+      // Set default axios header
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      return { success: true, user: userData };
     } catch (err) {
       console.error(err);
-      return { success: false, message: "Server error" };
+      return {
+        success: false,
+        message: err.response?.data?.message || err.response?.data?.errors?.[0] || "Login failed"
+      };
     }
   };
 
-  // Logout  clear everything
+  // Logout
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     localStorage.removeItem("cart");
     localStorage.removeItem("wishlist");
+
+    delete axios.defaults.headers.common["Authorization"];
 
     if (clearCart) clearCart();
     if (clearWishlist) clearWishlist();
 
-    window.dispatchEvent(new Event("storage")); // to refresh other components
-
-    navigate("/login"); // redirect after logout
+    window.dispatchEvent(new Event("storage"));
+    navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, register,setUser,login, logout }}>
+    <AuthContext.Provider value={{ user, register, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

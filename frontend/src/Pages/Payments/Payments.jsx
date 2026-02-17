@@ -45,11 +45,11 @@ function Payment() {
 
     if (product && !Array.isArray(product)) {
       // Single product checkout
-      orderProducts = [product.name];
+      orderProducts = [product.name || product.title];
       totalAmount = cleanPrice(product.price || product.amount);
     } else if (Array.isArray(product)) {
       // Cart checkout
-      orderProducts = product.map((p) => p.name);
+      orderProducts = product.map((p) => p.name || p.title);
       totalAmount = product.reduce(
         (sum, p) => sum + cleanPrice(p.price || p.amount) * (p.quantity || 1),
         0
@@ -63,20 +63,20 @@ function Payment() {
       return;
     }
 
-     const newOrder = {
-  id: Date.now().toString(),
-  userEmail: user?.email || "guest",   
-  userName: user?.name || "Guest",
-  shippingName: form.name,           
-  address: form.address,
-  phone: form.phone,
-  method,
-  product: orderProducts.join(", "),
-  price: `$${totalAmount.toFixed(2)}`,
-  totalAmount: `$${totalAmount.toFixed(2)}`,
-  status: method === "cod" ? "Pending COD" : "Paid",
-  date: new Date().toLocaleString(),
-};
+    const newOrder = {
+      id: Date.now().toString(),
+      userEmail: user?.email || "guest",
+      userName: user?.name || "Guest",
+      shippingName: form.name,
+      address: form.address,
+      phone: form.phone,
+      method,
+      product: orderProducts.join(", "),
+      price: `$${totalAmount.toFixed(2)}`,
+      totalAmount: `$${totalAmount.toFixed(2)}`,
+      status: method === "cod" ? "Pending COD" : "Paid",
+      date: new Date().toLocaleString(),
+    };
 
 
     try {
@@ -101,18 +101,18 @@ function Payment() {
             <h3 className="font-semibold text-gray-700">
               {Array.isArray(product)
                 ? `${product.length} item(s) in your cart`
-                : product.name}
+                : (product.name || product.title)}
             </h3>
             <p className="text-pink-600 font-bold">
               {Array.isArray(product)
                 ? `$${product
-                    .reduce(
-                      (sum, p) =>
-                        sum +
-                        cleanPrice(p.price || p.amount) * (p.quantity || 1),
-                      0
-                    )
-                    .toFixed(2)}`
+                  .reduce(
+                    (sum, p) =>
+                      sum +
+                      cleanPrice(p.price || p.amount) * (p.quantity || 1),
+                    0
+                  )
+                  .toFixed(2)}`
                 : `$${cleanPrice(product.price || product.amount).toFixed(2)}`}
             </p>
           </div>
@@ -128,11 +128,10 @@ function Payment() {
             <button
               key={opt.key}
               type="button"
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                method === opt.key
-                  ? "bg-pink-500 text-white shadow-md"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${method === opt.key
+                ? "bg-pink-500 text-white shadow-md"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
               onClick={() => setMethod(opt.key)}
             >
               {opt.label}

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const CartContext = createContext();
 
@@ -8,57 +9,108 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
 
-  //  Sync cart to localStorage
+  // Fetch cart from backend if logged in
+  useEffect(() => {
+    const fetchCart = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const { data } = await axios.get("http://localhost:5001/api/cart");
+          const formattedCart = data.map((item) => ({
+            ...item.product,
+            id: item.product.id,
+            dbId: item.id,
+            quantity: item.quantity,
+          }));
+          setCart(formattedCart);
+        } catch (err) {
+          console.error("Failed to fetch cart:", err);
+        }
+      }
+    };
+    fetchCart();
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  //  Add item to cart
-  const addToCart = (item) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((p) => p.id === item.id);
-      if (existing) {
-        showToast(`${item.name} quantity increased `);
-        return prevCart.map((p) =>
-          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
-        );
-      } else {
-        showToast(`${item.name} added to cart `);
-        return [...prevCart, { ...item, quantity: 1 }];
+  const addToCart = async (item) => {
+    const token = localStorage.getItem("token");
+    const existing = cart.find((p) => p.id === item.id);
+    if (existing) {
+      showToast(`${item.name || item.title} is already in your cart`);
+      return;
+    }
+
+    if (token) {
+      try {
+        const res = await axios.post("http://localhost:5001/api/cart", {
+          productId: item.id,
+        });
+
+        if (res.status === 200 && res.data.message === "Product already in cart") {
+          showToast(res.data.message);
+          return;
+        }
+
+        setCart((prev) => [...prev, { ...item, quantity: 1 }]);
+        showToast(`${item.name || item.title} added to cart`);
+      } catch (err) {
+        console.error("Add to cart error:", err);
+        showToast("Failed to add to cart");
       }
-    });
+    } else {
+      setCart((prev) => [...prev, { ...item, quantity: 1 }]);
+      showToast(`${item.name || item.title} added to cart`);
+    }
   };
 
-  
-
-  //  Remove item
-  const removeFromCart = (id) => {
+  const removeFromCart = async (id) => {
+    const token = localStorage.getItem("token");
     const removedItem = cart.find((i) => i.id === id);
-    showToast(`${removedItem?.name || "Item"} removed `);
+
+    if (token) {
+      try {
+        await axios.delete(`http://localhost:5001/api/cart/${id}`);
+      } catch (err) {
+        console.error("Remove from cart error:", err);
+      }
+    }
+
+    showToast(`${removedItem?.name || removedItem?.title || "Item"} removed `);
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  //  Clear cart
   const clearCart = () => {
     setCart([]);
     showToast("Cart cleared ");
   };
 
-  //  Update quantity (increase/decrease)
-  const updateQuantity = (id, action) => {
+  const updateQuantity = async (id, action) => {
+    const token = localStorage.getItem("token");
+    let newQuantity = 1;
+
     setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity:
-                action === "increase"
-                  ? item.quantity + 1
-                  : Math.max(1, item.quantity - 1),
-            }
-          : item
-      )
+      prevCart.map((item) => {
+        if (item.id === id) {
+          newQuantity = action === "increase" ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      })
     );
+
+    if (token) {
+      try {
+        await axios.put("http://localhost:5001/api/cart", {
+          productId: id,
+          quantity: newQuantity,
+        });
+      } catch (err) {
+        console.error("Update quantity error:", err);
+      }
+    }
 
     if (action === "increase") showToast("Quantity increased ");
     else showToast("Quantity decreased ");

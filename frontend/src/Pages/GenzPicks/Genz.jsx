@@ -7,10 +7,10 @@ function GenzPicks() {
   const [picks, setPicks] = useState([]);
   const scrollRef = useRef(null);
   const navigate = useNavigate();
- 
+
 
   useEffect(() => {
-    fetch("http://localhost:5001/genz-picks")
+    fetch("http://localhost:5001/api/products/genz")
       .then((res) => res.json())
       .then((data) => setPicks(data))
       .catch((err) => console.error("Error fetching GenZ Picks:", err));
@@ -30,7 +30,7 @@ function GenzPicks() {
     navigate(`/product/${item.id}`);
   };
 
-  
+
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -48,6 +48,10 @@ function GenzPicks() {
               src={item.image}
               alt={item.name}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1519750157634-b6d493a0f77c?q=80&w=1200";
+              }}
             />
 
             {/* Overlay */}
@@ -62,7 +66,7 @@ function GenzPicks() {
                 </button>
 
                 {/*  Add to Wishlist */}
-                
+
               </div>
             </div>
           </div>

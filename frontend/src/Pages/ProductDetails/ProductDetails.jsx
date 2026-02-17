@@ -21,7 +21,7 @@ function ProductDetails() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`https://6931218d11a8738467cd5cde.mockapi.io/api/v1/products/${id}`);
+        const res = await axios.get(`http://localhost:5001/api/products/${id}`);
         setProduct(res.data);
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -46,7 +46,7 @@ function ProductDetails() {
 
     addToCart({
       id: product.id,
-      name: product.name,
+      name: product.name || product.title,
       price: product.price,
       image: product.image,
       quantity: 1,
@@ -92,13 +92,17 @@ function ProductDetails() {
           src={product.image}
           alt={product.name}
           className="rounded-2xl shadow-lg w-80 md:w-96 object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+          }}
         />
       </div>
 
       {/* Right: Product Info */}
       <div className="flex-1 max-w-md space-y-6">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-          {product.name}
+          {product.name || product.title}
         </h1>
 
         <p className="text-gray-600">{product.description}</p>
@@ -135,11 +139,10 @@ function ProductDetails() {
           ) : (
             <button
               onClick={handleAddToCart}
-              className={`border border-pink-600 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                added
-                  ? "bg-pink-600 text-white scale-105"
-                  : "text-pink-600 hover:bg-pink-600 hover:text-white"
-              }`}
+              className={`border border-pink-600 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${added
+                ? "bg-pink-600 text-white scale-105"
+                : "text-pink-600 hover:bg-pink-600 hover:text-white"
+                }`}
             >
               {added ? "Added ✓" : "Add to Cart"}
             </button>

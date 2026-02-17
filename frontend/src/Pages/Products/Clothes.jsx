@@ -8,7 +8,7 @@ import { useAuth } from "../../Context/AuthContext";
 
 function Clothes() {
   const { products, loading, error } = useProducts("clothes");
-  const { cart, addToCart ,removeFromCart } = useCart();
+  const { cart, addToCart, removeFromCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -65,11 +65,10 @@ function Clothes() {
                 {/*  Wishlist Button */}
                 <button
                   onClick={() => toggleWishlist(product)}
-                  className={`absolute top-3 right-3 text-xl transition-all ${
-                    isWishlisted
-                      ? "text-pink-600 scale-125"
-                      : "text-gray-400 hover:text-pink-500"
-                  }`}
+                  className={`absolute top-3 right-3 text-xl transition-all ${isWishlisted
+                    ? "text-pink-600 scale-125"
+                    : "text-gray-400 hover:text-pink-500"
+                    }`}
                 >
                   <FaHeart />
                 </button>
@@ -79,12 +78,16 @@ function Clothes() {
                   src={product.image}
                   alt={product.name}
                   className="w-full h-52 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+                  }}
                 />
 
                 {/*  Product Info */}
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-700">
-                    {product.name}
+                    {product.name || product.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-2 line-clamp-2">
                     {product.description}
@@ -94,26 +97,26 @@ function Clothes() {
                   {/*  Buttons */}
                   <div className="flex justify-center gap-3 mt-3">
                     {isInCart(product.id) ? (
-  <button
-    onClick={() => removeFromCart(product.id)}
-    className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
-  >
-    Takeout
-  </button>
-) : (
-  <button
-    onClick={() => {
-      if (!user) {
-        navigate("/login");
-        return;
-      }
-      addToCart(product);
-    }}
-    className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md "
-  >
-    Add to Cart
-  </button>
-)}
+                      <button
+                        onClick={() => removeFromCart(product.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md"
+                      >
+                        Takeout
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (!user) {
+                            navigate("/login");
+                            return;
+                          }
+                          addToCart(product);
+                        }}
+                        className="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full transition-all duration-200 shadow-md "
+                      >
+                        Add to Cart
+                      </button>
+                    )}
 
 
                     <button

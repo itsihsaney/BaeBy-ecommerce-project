@@ -4,7 +4,7 @@ import { useAuth } from "../Context/AuthContext";
 
 function Home() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth
+  const { user, logout } = useAuth();
 
   return (
     <div className="w-full h-full overflow-x-hidden scroll-smooth">
@@ -26,17 +26,17 @@ function Home() {
           <p className="mt-4 text-lg md:text-2xl font-light">
             Trendy Picks for Gen Z Kids
           </p>
-{/* Cop the Look button (always visible, Gen Z glow style) */}
-<div className="mt-6 flex items-center justify-center">
-  <button
-    onClick={() => navigate("/gen-z-picks")}
-    className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 
+          {/* Cop the Look button (always visible, Gen Z glow style) */}
+          <div className="mt-6 flex items-center justify-center">
+            <button
+              onClick={() => navigate("/gen-z-picks")}
+              className="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 
                text-white font-semibold shadow-lg hover:from-pink-600 hover:to-violet-600 
                transition-all"
-  >
-    Cop the Look
-  </button>
-</div>
+            >
+              Cop the Look
+            </button>
+          </div>
 
         </div>
 

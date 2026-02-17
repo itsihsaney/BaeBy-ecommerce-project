@@ -13,16 +13,16 @@ function Cart() {
     0
   );
 
-  
+
 
   //  Checkout function
   const handleCheckout = () => {
-  if (cart.length === 0) return;
-  showToast("Redirecting to payment...");
-  
-  // Pass the cart data to Payment page
-  navigate("/payment", { state: { product: cart } });
-};
+    if (cart.length === 0) return;
+    showToast("Redirecting to payment...");
+
+    // Pass the cart data to Payment page
+    navigate("/payment", { state: { product: cart } });
+  };
 
 
   //  Simple toast for checkout message
@@ -44,13 +44,13 @@ function Cart() {
   if (!cart || cart.length === 0) {
     return (
       <div className="min-h-screen bg-pink-50 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-         Your Cart is empty 
-      </h1>
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+          Your Cart is empty
+        </h1>
         <p className="text-center text-gray-600 text-lg">
-         Big yikes. You forgot.
+          Big yikes. You forgot.
         </p>
-         
+
       </div>
     );
   }
@@ -71,11 +71,15 @@ function Cart() {
             <div className="flex items-center gap-4">
               <img
                 src={item.image}
-                alt={item.name}
+                alt={item.name || item.title}
                 className="w-50 h-50 object-cover rounded-2xl shadow-sm"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+                }}
               />
               <div>
-                <h3 className="font-semibold text-gray-800">{item.name}</h3>
+                <h3 className="font-semibold text-gray-800">{item.name || item.title}</h3>
                 <p className="text-gray-600">${item.price}</p>
               </div>
             </div>

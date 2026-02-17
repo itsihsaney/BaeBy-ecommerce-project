@@ -12,31 +12,31 @@ function Toys() {
   const navigate = useNavigate();
   const { sortType, filterType } = useOutletContext(); //  gets sorting/filtering
 
-   //  Apply Sorting & Filtering with useMemo (for performance)
-     const processedProducts = useMemo(() => {
-       let updatedProducts = [...products];
-   
-       // 1️ Apply Filter
-       if (filterType === "under20") {
-         updatedProducts = updatedProducts.filter((p) => p.price < 20);
-       } else if (filterType === "20to40") {
-         updatedProducts = updatedProducts.filter((p) => p.price >= 20 && p.price <= 40);
-       } else if (filterType === "above40") {
-         updatedProducts = updatedProducts.filter((p) => p.price > 40);
-       }
-   
-       // 2️ Apply Sort
-       if (sortType === "lowToHigh") {
-         updatedProducts.sort((a, b) => a.price - b.price);
-       } else if (sortType === "highToLow") {
-         updatedProducts.sort((a, b) => b.price - a.price);
-       }
-   
-       return updatedProducts;
-     }, [products, sortType, filterType]);
-   
-     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
-     if (error) return <p className="text-center text-red-500">{error}</p>;
+  //  Apply Sorting & Filtering with useMemo (for performance)
+  const processedProducts = useMemo(() => {
+    let updatedProducts = [...products];
+
+    // 1️ Apply Filter
+    if (filterType === "under20") {
+      updatedProducts = updatedProducts.filter((p) => p.price < 20);
+    } else if (filterType === "20to40") {
+      updatedProducts = updatedProducts.filter((p) => p.price >= 20 && p.price <= 40);
+    } else if (filterType === "above40") {
+      updatedProducts = updatedProducts.filter((p) => p.price > 40);
+    }
+
+    // 2️ Apply Sort
+    if (sortType === "lowToHigh") {
+      updatedProducts.sort((a, b) => a.price - b.price);
+    } else if (sortType === "highToLow") {
+      updatedProducts.sort((a, b) => b.price - a.price);
+    }
+
+    return updatedProducts;
+  }, [products, sortType, filterType]);
+
+  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-10">
@@ -63,11 +63,10 @@ function Toys() {
                 {/* Wishlist Icon */}
                 <button
                   onClick={() => toggleWishlist(product)}
-                  className={`absolute top-3 right-3 text-xl transition-all ${
-                    isWishlisted
-                      ? "text-pink-600 scale-125"
-                      : "text-gray-400 hover:text-pink-500"
-                  }`}
+                  className={`absolute top-3 right-3 text-xl transition-all ${isWishlisted
+                    ? "text-pink-600 scale-125"
+                    : "text-gray-400 hover:text-pink-500"
+                    }`}
                 >
                   <FaHeart />
                 </button>
@@ -76,10 +75,14 @@ function Toys() {
                   src={product.image}
                   alt={product.name}
                   className="w-full h-52 object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1545558014-da2097e852ca?q=80&w=800";
+                  }}
                 />
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-700">
-                    {product.name}
+                    {product.name || product.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-2 line-clamp-2">
                     {product.description}

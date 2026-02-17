@@ -1,41 +1,53 @@
-import React, { useState, useContext } from "react";
-import { FaShoppingCart, FaUser, FaHeart } from "react-icons/fa";
+import React, { useState, useContext, useEffect } from "react";
+import { FaShoppingCart, FaUser, FaHeart, FaSearch } from "react-icons/fa";
 import { BiSolidLogInCircle } from "react-icons/bi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import AuthContext from "../Context/AuthContext";
 import { useCart } from "../Context/CartContext";
 import { useWishlist } from "../Context/WishlistContext";
 
-
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useContext(AuthContext);
-  const { cart , clearCart } = useCart(); // use updated CartContext (cart not cartItems)
-  const { wishlist ,clearWishlist } = useWishlist();
+  const { cart, clearCart } = useCart();
+  const { wishlist, clearWishlist } = useWishlist();
   const navigate = useNavigate();
 
-  //  Total cart items
+  // Scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const itemCount = Array.isArray(cart)
     ? cart.reduce((sum, item) => sum + item.quantity, 0)
     : 0;
 
-  //  Total wishlist items
   const wishlistCount = Array.isArray(wishlist) ? wishlist.length : 0;
 
   return (
-    <header className="backdrop-blur-md bg-gradient-to-r from-pink-100/70 to-white/50 shadow-md sticky top-0 z-50 border-b border-pink-200/40">
-      <nav className="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex justify-between items-center">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled
+        ? "bg-white/80 backdrop-blur-lg shadow-lg py-2"
+        : "bg-transparent py-4 text-gray-800"
+        }`}
+    >
+      <nav className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
         {/*  Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2 group">
           <img
             src="/BaeBy Official Logo.png"
             alt="BaeBy Logo"
-            className="h-16 w-auto object-contain drop-shadow-[0_0_10px_#ffb6c1]"
+            className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
 
         {/*  Navbar Links (Desktop) */}
-        <ul className="hidden md:flex space-x-8 text-gray-700 font-medium">
+        <ul className="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wide uppercase">
           {["Home", "Products", "Gen Z Picks"].map((item) => {
             const path =
               item === "Home"
@@ -46,11 +58,10 @@ function Header() {
                 <NavLink
                   to={path}
                   className={({ isActive }) =>
-                    `transition-all duration-200 relative ${
-                      isActive
-                        ? "text-pink-500 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-pink-500"
-                        : "hover:text-pink-500"
-                    }`
+                    `relative transition-colors duration-300 ${isActive
+                      ? "text-pink-600"
+                      : "text-gray-600 hover:text-pink-500"
+                    } after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-pink-500 after:transition-all hover:after:w-full ${isActive ? 'after:w-full' : ''}`
                   }
                 >
                   {item}
@@ -61,15 +72,16 @@ function Header() {
         </ul>
 
         {/* Right Side Icons */}
-        <div className="flex items-center gap-5">
-          {/*  Wishlist Icon */}
+        <div className="flex items-center gap-6">
+          {/* Wishlist Icon */}
           <div
-            className="relative cursor-pointer"
+            className="relative cursor-pointer group"
             onClick={() => navigate("/wishlist")}
+            title="Wishlist"
           >
-            <FaHeart className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
+            <FaHeart className="text-xl text-gray-700 group-hover:text-pink-500 transition-all duration-300 transform group-hover:scale-110" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
+              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
                 {wishlistCount}
               </span>
             )}
@@ -77,88 +89,67 @@ function Header() {
 
           {/* Cart Icon */}
           <div
-            className="relative cursor-pointer"
+            className="relative cursor-pointer group"
             onClick={() => navigate("/cart")}
+            title="Cart"
           >
-            <FaShoppingCart className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
+            <FaShoppingCart className="text-xl text-gray-700 group-hover:text-pink-500 transition-all duration-300 transform group-hover:scale-110" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-3 bg-pink-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ">
+              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse">
                 {itemCount}
               </span>
             )}
           </div>
 
           {/*  User / Login */}
-          <Link to="/orders" className="hover:text-pink-600">My Orders</Link>
-          {user ? (
-            <div className="flex items-center gap-3">
-              <FaUser className="text-2xl text-pink-500 drop-shadow-[0_0_8px_#ffb6c1]" />
-              <span className="text-gray-700 font-medium">
-                Hi,{" "}
-                <span className="text-pink-500 font-semibold">
-                  {user.name}
-                </span>
-              </span>
-              <button
-                onClick={ ()=> {
-                  logout()
-                  clearCart()
-                  clearWishlist()
-                }}
-                className="ml-2 px-4 py-1.5 rounded-full bg-pink-500 text-white shadow-[0_0_8px_#ffb6c1] hover:shadow-[0_0_14px_#ff80ab] transition-all duration-300"
-              >
-                Logout
-              </button>
-              
-            </div>
-          ) : (
-            <>
-              <Link to="/">
-                <FaUser className="text-2xl text-gray-700 hover:text-pink-500 transition-all" />
-              </Link>
+          <div className="hidden lg:flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-4">
+                <div
+                  className="flex items-center gap-2 cursor-pointer group"
+                  onClick={() => navigate("/orders")}
+                >
+                  <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center border border-pink-200 group-hover:bg-pink-200 transition-colors">
+                    <FaUser className="text-pink-600 text-sm" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-pink-600">
+                    {user?.name?.split(' ')[0] || "User"}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    clearCart();
+                    clearWishlist();
+                  }}
+                  className="px-5 py-2 rounded-full bg-gray-900 text-white text-xs font-bold hover:bg-pink-600 transition-all duration-300 transform active:scale-95"
+                >
+                  LOGOUT
+                </button>
+              </div>
+            ) : (
               <Link
                 to="/login"
-                className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full bg-pink-500 text-white font-medium shadow-[0_0_8px_#ffb6c1] hover:shadow-[0_0_14px_#ff80ab] hover:bg-pink-700 transition-all duration-300"
+                className="flex items-center gap-2 px-5 py-2 rounded-full bg-gray-900 text-white text-xs font-bold hover:bg-pink-600 transition-all duration-300 transform active:scale-95"
               >
-                <BiSolidLogInCircle size={18} />
-                Login
+                <BiSolidLogInCircle size={16} />
+                LOGIN
               </Link>
-            </>
-          )}
+            )}
+          </div>
 
           {/*  Hamburger (Mobile) */}
           <button
-            className="md:hidden text-3xl text-pink-500"
-            aria-label="Open menu"
+            className="md:hidden text-2xl text-gray-800 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? (
-              <svg
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
           </button>
@@ -166,44 +157,53 @@ function Header() {
       </nav>
 
       {/*  Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-pink-50/70 border-t border-pink-100 backdrop-blur-sm">
-          <ul className="flex flex-col items-center py-4 space-y-4 font-medium text-gray-700">
-            {["Home", "Products", "Gen Z Picks"].map((item) => (
-              <li key={item}>
-                <Link
-                  to={`/${item.toLowerCase().replace(/\s+/g, "-")}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-pink-500 transition-colors"
-                >
-                  {item}
-                </Link>
-              </li>
-            ))}
-
-            {user ? (
-              <button
-                onClick={() => {
-                  logout();
-                  setMenuOpen(false);
-                }}
-                className="flex items-center gap-1 bg-pink-500 text-white px-4 py-1.5 rounded-full font-medium shadow-[0_0_8px_#ffb6c1] hover:shadow-[0_0_14px_#ff80ab] transition-all"
-              >
-                Logout
-              </button>
-            ) : (
+      <div
+        className={`fixed inset-0 bg-white/95 backdrop-blur-md z-40 transition-transform duration-500 ease-in-out md:hidden flex flex-col items-center justify-center space-y-8 ${menuOpen ? "translate-y-0" : "-translate-y-full"
+          }`}
+      >
+        <button
+          className="absolute top-6 right-6 text-3xl text-gray-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          &times;
+        </button>
+        <ul className="flex flex-col items-center space-y-8 font-bold text-2xl text-gray-800 uppercase tracking-widest">
+          {["Home", "Products", "Gen Z Picks"].map((item) => (
+            <li key={item}>
               <Link
-                to="/login"
+                to={item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, "-")}`}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-1 bg-pink-500 text-white px-4 py-1.5 rounded-full font-medium shadow-[0_0_8px_#ffb6c1] hover:shadow-[0_0_14px_#ff80ab] transition-all"
+                className="hover:text-pink-500 transition-colors"
               >
-                <BiSolidLogInCircle size={18} />
-                Login
+                {item}
               </Link>
-            )}
-          </ul>
-        </div>
-      )}
+            </li>
+          ))}
+          <li>
+            <Link to="/orders" onClick={() => setMenuOpen(false)} className="hover:text-pink-500 transition-colors">Orders</Link>
+          </li>
+        </ul>
+
+        {user ? (
+          <button
+            onClick={() => {
+              logout();
+              setMenuOpen(false);
+            }}
+            className="bg-gray-900 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-pink-600 transition-all"
+          >
+            LOGOUT
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            onClick={() => setMenuOpen(false)}
+            className="bg-gray-900 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-pink-600 transition-all"
+          >
+            LOGIN
+          </Link>
+        )}
+      </div>
     </header>
   );
 }

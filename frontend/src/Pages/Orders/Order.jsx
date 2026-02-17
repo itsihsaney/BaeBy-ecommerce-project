@@ -22,10 +22,10 @@ function Orders() {
         const { data } = await axios.get(API_URL);
         // Filter by user's name or email
         const userOrders = data.filter(
-  (order) =>
-    order.userEmail === user.email ||
-    order.userName?.toLowerCase() === user.name?.toLowerCase()
-);
+          (order) =>
+            order.userEmail === user.email ||
+            order.userName?.toLowerCase() === user.name?.toLowerCase()
+        );
 
         setOrders(userOrders);
       } catch (err) {
@@ -77,9 +77,9 @@ function Orders() {
       </h1>
 
       <div className="grid gap-6">
-        {orders.map((order) => (
+        {orders.map((order, index) => (
           <div
-            key={order.id}
+            key={`${order.id}-${index}`}
             className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100 hover:shadow-xl transition"
           >
             {/* Order header */}
@@ -88,13 +88,12 @@ function Orders() {
                 Order #{order.id}
               </h3>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  order.status === "Delivered"
+                className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === "Delivered"
                     ? "bg-green-100 text-green-700"
                     : order.status?.includes("Pending")
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-blue-100 text-blue-700"
-                }`}
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-blue-100 text-blue-700"
+                  }`}
               >
                 {order.status}
               </span>
@@ -103,11 +102,11 @@ function Orders() {
             {/* Order details */}
             <div className="text-sm text-gray-600 space-y-1">
               <p>
-  <span className="font-medium">Name:</span> {order.shippingName || order.name}
-</p>
+                <span className="font-medium">Name:</span> {order.shippingName || order.name}
+              </p>
               <p>
-  <span className="font-medium">Address:</span> {order.address}
-</p>
+                <span className="font-medium">Address:</span> {order.address}
+              </p>
               <p>
                 <span className="font-medium">Date:</span> {order.date}
               </p>

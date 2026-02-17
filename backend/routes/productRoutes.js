@@ -1,25 +1,22 @@
 import express from "express";
-import Product from "../models/Product.js";
+import { getProducts, getGenzPicks, createProduct, getProductById } from "../controllers/productController.js";
+import validateRequest from "../middlewares/validationMiddleware.js";
+import { productSchema } from "../validators/schemas.js";
+import protect from "../middlewares/authMiddleware.js";
+import adminOnly from "../middlewares/adminMiddleware.js";
 
 const router = express.Router();
 
-// GET all products
-router.get("/", async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
-});
+// GET all products (with filtering, search, pagination)
+router.get("/", getProducts);
 
 // GET genz picks
-router.get("/genz", async (req, res) => {
-  const products = await Product.find({ category: "genz" });
-  res.json(products);
-});
+router.get("/genz", getGenzPicks);
 
-// POST product (temporary for testing)
-router.post("/", async (req, res) => {
-  const newProduct = new Product(req.body);
-  const saved = await newProduct.save();
-  res.json(saved);
-});
+// GET single product
+router.get("/:id", getProductById);
+
+// POST product (Admin only)
+router.post("/", protect, adminOnly, validateRequest(productSchema), createProduct);
 
 export default router;

@@ -5,14 +5,6 @@ import jwt from "jsonwebtoken";
 import generateToken from "../utils/generateToken.js";
 
 const generateTokens = (id) => {
-    // We can keep this wrapper if we want to return both access and refresh tokens
-    // But since the user only asked for "Generate JWT" in REQUIREMENTS, 
-    // and the util returns a single token, we might need to adjust.
-    // However, the existing code returns { accessToken, refreshToken }.
-    // Let's assume the user wants to keep the refresh token logic if it was there.
-    // We will just use the utility for the access token part or update the utility.
-    // The utility I just wrote returns a single token.
-    // Let's rely on the utility for the access token standard.
     return {
         accessToken: generateToken(id),
         refreshToken: jwt.sign({ id }, process.env.REFRESH_SECRET || "refresh_secret_key", {

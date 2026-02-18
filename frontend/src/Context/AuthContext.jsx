@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import { useCart } from "./CartContext";
 import { useWishlist } from "./WishlistContext";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
-const API_URL = "http://localhost:5001/api/auth";
+// const API_URL = "http://localhost:5001/api/auth"; // API interceptor handles base URL
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -14,9 +14,9 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
-    if (savedUser && savedToken) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
+    // const savedToken = localStorage.getItem("token"); 
+    // No need to set default headers manually since interceptor handles it
+    if (savedUser) {
       return JSON.parse(savedUser);
     }
     return null;
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   // Register
   const register = async (userData) => {
     try {
-      const { data } = await axios.post(`${API_URL}/register`, userData);
+      const { data } = await api.post("/api/auth/register", userData);
       return { success: true, message: data.message };
     } catch (err) {
       console.error(err);
@@ -39,16 +39,20 @@ export const AuthProvider = ({ children }) => {
   // Login
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post(`${API_URL}/login`, { email, password });
+      // Use the global api instance (though interceptor won't have token yet, that's fine for login)
+      const { data } = await api.post("/api/auth/login", { email, password });
 
       const { token, user: userData } = data;
 
+      // Create userInfo object as requested
+      const userInfo = { ...userData, token };
+
       setUser(userData);
+
+      // Save consistent storage
       localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", token);
-
-      // Set default axios header
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       return { success: true, user: userData };
     } catch (err) {
@@ -65,10 +69,11 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
     localStorage.removeItem("cart");
     localStorage.removeItem("wishlist");
 
-    delete axios.defaults.headers.common["Authorization"];
+    // Interceptor reads directly from localStorage, so no need to clean headers manually
 
     if (clearCart) clearCart();
     if (clearWishlist) clearWishlist();

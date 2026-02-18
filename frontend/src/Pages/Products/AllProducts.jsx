@@ -168,7 +168,7 @@ function AllProducts() {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
+                        e.target.src = "https://via.placeholder.com/400x400?text=Product+Image";
                       }}
                     />
 

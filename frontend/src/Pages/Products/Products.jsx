@@ -7,7 +7,7 @@ function Products() {
 
   const [sortType, setSortType] = useState(searchParams.get("sort") || null);
   const [filterType, setFilterType] = useState(searchParams.get("filter") || null);
-  const [priceRange, setPriceRange] = useState(100);
+  const [priceRange, setPriceRange] = useState(500);
 
   const categories = [
     { name: "All Collections", path: "/products" },
@@ -84,7 +84,7 @@ function Products() {
                 <input
                   type="range"
                   min="0"
-                  max="100"
+                  max="500"
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
                   className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
@@ -105,8 +105,8 @@ function Products() {
                       key={opt.value}
                       onClick={() => handleFilterChange(opt.value)}
                       className={`text-left text-xs py-2 px-3 rounded-lg transition-all ${filterType === opt.value || (filterType === null && opt.value === "default")
-                          ? "bg-pink-50 text-pink-600 font-bold"
-                          : "text-gray-500 hover:bg-gray-50"
+                        ? "bg-pink-50 text-pink-600 font-bold"
+                        : "text-gray-500 hover:bg-gray-50"
                         }`}
                     >
                       {opt.label}
@@ -132,8 +132,8 @@ function Products() {
                     key={opt.value}
                     onClick={() => handleSortChange(opt.value)}
                     className={`text-left text-xs py-2 px-3 rounded-lg transition-all ${sortType === opt.value || (sortType === null && opt.value === "default")
-                        ? "bg-gray-900 text-white font-bold"
-                        : "text-gray-500 hover:bg-gray-50"
+                      ? "bg-gray-900 text-white font-bold"
+                      : "text-gray-500 hover:bg-gray-50"
                       }`}
                   >
                     {opt.label}
@@ -189,7 +189,7 @@ function Products() {
 
           {/* ----- MAIN CONTENT ----- */}
           <main className="flex-1 min-w-0">
-            <Outlet context={{ sortType, filterType }} />
+            <Outlet context={{ sortType, filterType, priceRange }} />
           </main>
 
         </div>

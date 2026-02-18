@@ -32,8 +32,8 @@ function Header() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled
-        ? "bg-white/80 backdrop-blur-lg shadow-lg py-2"
-        : "bg-transparent py-4 text-gray-800"
+          ? "bg-white/80 backdrop-blur-lg shadow-lg py-2"
+          : "bg-transparent py-4 text-gray-800"
         }`}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">

@@ -15,10 +15,12 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .text-glow {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }

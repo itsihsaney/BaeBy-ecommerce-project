@@ -13,7 +13,7 @@ function AllProducts() {
   const { wishlist, toggleWishlist } = useWishlist();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { sortType, filterType } = useOutletContext();
+  const { sortType, filterType, priceRange } = useOutletContext();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
@@ -33,6 +33,11 @@ function AllProducts() {
       updated = updated.filter(
         (product) => product.category?.toLowerCase() === category.toLowerCase()
       );
+    }
+
+    // Slider filter
+    if (priceRange) {
+      updated = updated.filter((p) => p.price <= priceRange);
     }
 
     if (filterType === "under20") {
@@ -61,7 +66,7 @@ function AllProducts() {
     }
 
     return updated;
-  }, [products, sortType, filterType, searchTerm, category]);
+  }, [products, sortType, filterType, searchTerm, category, priceRange]);
 
   const totalPages = Math.ceil(processedProducts.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
@@ -149,8 +154,8 @@ function AllProducts() {
                       user ? toggleWishlist(product) : navigate("/login");
                     }}
                     className={`absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 ${isWishlisted
-                        ? "bg-pink-500 text-white shadow-pink-200 shadow-xl"
-                        : "bg-white/80 text-gray-400 hover:text-pink-500 hover:bg-white"
+                      ? "bg-pink-500 text-white shadow-pink-200 shadow-xl"
+                      : "bg-white/80 text-gray-400 hover:text-pink-500 hover:bg-white"
                       }`}
                   >
                     <FaHeart className={isWishlisted ? "animate-bounce" : "transition-transform active:scale-150"} />
@@ -208,8 +213,8 @@ function AllProducts() {
               onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               className={`p-3 rounded-full border transition-all ${currentPage === 1
-                  ? "border-gray-100 text-gray-300"
-                  : "border-gray-200 text-gray-600 hover:bg-gray-100"
+                ? "border-gray-100 text-gray-300"
+                : "border-gray-200 text-gray-600 hover:bg-gray-100"
                 }`}
             >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
@@ -225,8 +230,8 @@ function AllProducts() {
               onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               className={`p-3 rounded-full border transition-all ${currentPage === totalPages
-                  ? "border-gray-100 text-gray-300"
-                  : "border-gray-200 text-gray-600 hover:bg-gray-100"
+                ? "border-gray-100 text-gray-300"
+                : "border-gray-200 text-gray-600 hover:bg-gray-100"
                 }`}
             >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5">

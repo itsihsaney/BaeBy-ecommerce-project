@@ -2,10 +2,11 @@ import Product from "../models/Product.js";
 
 export const getProducts = async (req, res, next) => {
     try {
-        const { category, minPrice, maxPrice, search, page = 1, limit = 10 } = req.query;
+        const { category, minPrice, maxPrice, search, page = 1, limit = 10, sort } = req.query;
 
         const query = {};
 
+        // 1. Search Implementation
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: "i" } },
@@ -13,6 +14,7 @@ export const getProducts = async (req, res, next) => {
             ];
         }
 
+        // 2. Advanced Filtering
         if (category) {
             query.category = category;
         }
@@ -23,17 +25,25 @@ export const getProducts = async (req, res, next) => {
             if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
+        // Pagination Logic
         const pageNum = Math.max(1, Number(page)) || 1;
         const limitNum = Math.max(1, Number(limit)) || 10;
         const skip = (pageNum - 1) * limitNum;
 
+        // Sorting Logic
+        let sortQuery = { createdAt: -1 };
+        if (sort === 'lowToHigh') sortQuery = { price: 1 };
+        if (sort === 'highToLow') sortQuery = { price: -1 };
+        if (sort === 'name-az') sortQuery = { name: 1 };
+
         const [totalProducts, products] = await Promise.all([
             Product.countDocuments(query),
-            Product.find(query).skip(skip).limit(limitNum).sort({ createdAt: -1 })
+            Product.find(query).skip(skip).limit(limitNum).sort(sortQuery)
         ]);
 
         const totalPages = Math.ceil(totalProducts / limitNum);
 
+        // 3. Standard Response Format
         res.status(200).json({
             success: true,
             message: "Products fetched successfully",

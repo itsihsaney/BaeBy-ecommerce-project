@@ -8,7 +8,6 @@ import { useAuth } from "../../Context/AuthContext";
 
 function AllProducts() {
   const { category } = useParams();
-  const { products, loading, error } = useProducts(category);
   const { addToCart } = useCart();
   const { wishlist, toggleWishlist } = useWishlist();
   const { user } = useAuth();
@@ -19,61 +18,45 @@ function AllProducts() {
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
   const productsPerPage = 8;
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+  // Debounce search effect to trigger API call and sync URL
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+
+      // Update URL only once typing stops to keep input buttery smooth
+      setSearchParams(prev => {
+        if (searchTerm) {
+          prev.set("search", searchTerm);
+        } else {
+          prev.delete("search");
+        }
+        prev.set("page", "1");
+        return prev;
+      }, { replace: true });
+
+      setCurrentPage(1);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm, setSearchParams]);
+
+  const { products, totalPages, loading, error } = useProducts({
+    category,
+    search: debouncedSearch,
+    page: currentPage,
+    limit: productsPerPage,
+    sort: sortType,
+    maxPrice: filterType === "20to40" ? 40 : (filterType === "under20" ? 20 : (priceRange || undefined)),
+    minPrice: filterType === "20to40" ? 20 : (filterType === "above40" ? 40 : undefined),
+  });
 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setVisible(true);
   }, []);
-
-  const processedProducts = useMemo(() => {
-    let updated = [...products];
-
-    if (category) {
-      updated = updated.filter(
-        (product) => product.category?.toLowerCase() === category.toLowerCase()
-      );
-    }
-
-    // Slider filter
-    if (priceRange) {
-      updated = updated.filter((p) => p.price <= priceRange);
-    }
-
-    if (filterType === "under20") {
-      updated = updated.filter((p) => p.price < 20);
-    } else if (filterType === "20to40") {
-      updated = updated.filter((p) => p.price >= 20 && p.price <= 40);
-    } else if (filterType === "above40") {
-      updated = updated.filter((p) => p.price > 40);
-    }
-
-    if (sortType === "lowToHigh" || sortType === "price-low-high") {
-      updated.sort((a, b) => a.price - b.price);
-    } else if (sortType === "highToLow" || sortType === "price-high-low") {
-      updated.sort((a, b) => b.price - a.price);
-    } else if (sortType === "name-az") {
-      updated.sort((a, b) => (a.name || a.title || "").localeCompare(b.name || b.title || ""));
-    }
-
-    if (searchTerm.trim() !== "") {
-      const lower = searchTerm.toLowerCase();
-      updated = updated.filter(
-        (p) =>
-          (p.name || p.title || "").toLowerCase().includes(lower) ||
-          p.description?.toLowerCase().includes(lower)
-      );
-    }
-
-    return updated;
-  }, [products, sortType, filterType, searchTerm, category, priceRange]);
-
-  const totalPages = Math.ceil(processedProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const currentProducts = processedProducts.slice(
-    startIndex,
-    startIndex + productsPerPage
-  );
 
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
@@ -84,19 +67,6 @@ function AllProducts() {
     setSearchParams(newParams);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  if (loading) return (
-    <div className="flex justify-center items-center py-20">
-      <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
-    </div>
-  );
-
-  if (error) return (
-    <div className="text-center py-20">
-      <p className="text-xl text-red-500 font-semibold">{error}</p>
-      <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full">Retry</button>
-    </div>
-  );
 
   return (
     <section className={`transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
@@ -111,29 +81,30 @@ function AllProducts() {
             type="text"
             placeholder="Search our treasures..."
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setSearchParams(prev => {
-                prev.set("search", e.target.value);
-                prev.set("page", "1");
-                return prev;
-              });
-              setCurrentPage(1);
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-200 transition-all text-gray-700 font-medium"
           />
           <FaShoppingBag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-pink-400 transition-colors" />
         </div>
       </div>
 
-      {processedProducts.length === 0 ? (
+      {loading && !products.length ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <p className="text-xl text-red-500 font-semibold">{error}</p>
+          <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full">Retry</button>
+        </div>
+      ) : products.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-50">
           <p className="text-gray-400 text-lg">We couldn't find any products matching your selection.</p>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-            {currentProducts.map((product) => {
+            {products.map((product) => {
               const isWishlisted = wishlist.some((item) => item.id === product.id);
               const name = product.name || product.title;
 

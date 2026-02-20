@@ -22,7 +22,9 @@ function ProductDetails() {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`http://localhost:5001/api/products/${id}`);
-        setProduct(res.data);
+        // Handle both old direct object returning and the new `{ success: true, data: {...} }` format
+        const productData = res.data.data || res.data;
+        setProduct(productData);
       } catch (err) {
         console.error("Error fetching product:", err);
         setError("Failed to load product details.");
@@ -89,13 +91,9 @@ function ProductDetails() {
       {/* Left: Product Image */}
       <div className="flex-1 flex justify-center">
         <img
-          src={product.image}
+          src="/product.jpg"
           alt={product.name}
           className="rounded-2xl shadow-lg w-80 md:w-96 object-cover"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
-          }}
         />
       </div>
 

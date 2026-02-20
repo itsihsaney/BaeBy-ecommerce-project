@@ -70,13 +70,9 @@ function Cart() {
           >
             <div className="flex items-center gap-4">
               <img
-                src={item.image}
+                src="/product.jpg"
                 alt={item.name || item.title}
                 className="w-50 h-50 object-cover rounded-2xl shadow-sm"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
-                }}
               />
               <div>
                 <h3 className="font-semibold text-gray-800">{item.name || item.title}</h3>

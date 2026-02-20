@@ -72,13 +72,9 @@ function Toys() {
                 </button>
 
                 <img
-                  src={product.image}
+                  src="/product.jpg"
                   alt={product.name}
                   className="w-full h-52 object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://images.unsplash.com/photo-1545558014-da2097e852ca?q=80&w=800";
-                  }}
                 />
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-semibold text-gray-700">

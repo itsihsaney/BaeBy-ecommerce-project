@@ -13,27 +13,34 @@ export const ProductsProvider = ({ children }) => {
   //  Active Category
   const [activeCategory, setActiveCategory] = useState("Clothes");
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://localhost:5001/api/products");
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5001/api/products?limit=1000");
 
-      const allProducts = res.data;
+        let allProducts = [];
+        if (res.data && Array.isArray(res.data.data)) {
+          allProducts = res.data.data;
+        } else if (res.data && Array.isArray(res.data.products)) {
+          allProducts = res.data.products;
+        } else if (Array.isArray(res.data)) {
+          allProducts = res.data;
+        }
 
-      setClothes(allProducts.filter(item => item.category === "clothes"));
-      setToys(allProducts.filter(item => item.category === "toys"));
-      setSkinCare(allProducts.filter(item => item.category === "skinCare"));
+        setClothes(allProducts.filter(item => item.category === "clothes"));
+        setToys(allProducts.filter(item => item.category === "toys"));
+        setSkinCare(allProducts.filter(item => item.category === "skinCare"));
 
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      setError("Failed to load products.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchProducts();
-}, []);
+    fetchProducts();
+  }, []);
 
 
   return (

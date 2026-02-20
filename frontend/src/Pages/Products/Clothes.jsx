@@ -75,13 +75,9 @@ function Clothes() {
 
                 {/* Product Image */}
                 <img
-                  src={product.image}
+                  src="/product.jpg"
                   alt={product.name}
                   className="w-full h-52 object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=800";
-                  }}
                 />
 
                 {/*  Product Info */}

@@ -10,13 +10,20 @@ const useProducts = (category) => {
     const fetchProducts = async () => {
       try {
         const url = category
-          ? `http://localhost:5001/api/products?category=${category}`
-          : "http://localhost:5001/api/products";
+          ? `http://localhost:5001/api/products?category=${category}&limit=1000`
+          : "http://localhost:5001/api/products?limit=1000";
 
         const response = await axios.get(url);
 
-        // Handle both old array structure (if any) and new object structure
-        const productData = response.data.products || response.data;
+        // Handle both old and new object structures
+        let productData = [];
+        if (response.data && Array.isArray(response.data.data)) {
+          productData = response.data.data;
+        } else if (response.data && Array.isArray(response.data.products)) {
+          productData = response.data.products;
+        } else if (Array.isArray(response.data)) {
+          productData = response.data;
+        }
 
         setProducts(productData);
       } catch (err) {

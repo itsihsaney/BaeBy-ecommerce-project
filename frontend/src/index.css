@@ -28,3 +28,10 @@ body {
 #__react-hot-toast {
   z-index: 999999 !important;
 }
+
+.product-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+}

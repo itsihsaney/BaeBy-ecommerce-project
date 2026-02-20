@@ -1,12 +1,16 @@
-export const uploadImage = (req, res) => {
+import asyncHandler from "../utils/asyncHandler.js";
+
+// @desc    Upload an image
+// @route   POST /api/upload
+// @access  Private
+export const uploadImage = asyncHandler(async (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ message: "No image file provided" });
+        res.status(400);
+        throw new Error("Please upload a file");
     }
 
-    // After multer-storage-cloudinary finishes, it adds 'path' to req.file
-    // which contains the secure_url from Cloudinary.
-    res.status(200).json({
+    res.status(200).send({
         message: "Image uploaded successfully",
-        url: req.file.path,
+        url: `/uploads/${req.file.filename}`,
     });
-};
+});

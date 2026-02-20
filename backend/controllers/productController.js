@@ -1,65 +1,78 @@
 import Product from "../models/Product.js";
 
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
     try {
         const { category, minPrice, maxPrice, search, page = 1, limit = 10 } = req.query;
 
         const query = {};
 
-        // 1. Filtering by Category
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { description: { $regex: search, $options: "i" } }
+            ];
+        }
+
         if (category) {
             query.category = category;
         }
 
-        // 2. Filtering by Price Range
         if (minPrice || maxPrice) {
             query.price = {};
             if (minPrice) query.price.$gte = Number(minPrice);
             if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
-        // 3. Search by Keyword (Regex)
-        if (search) {
-            query.name = { $regex: search, $options: "i" }; // case-insensitive
-        }
+        const pageNum = Math.max(1, Number(page)) || 1;
+        const limitNum = Math.max(1, Number(limit)) || 10;
+        const skip = (pageNum - 1) * limitNum;
 
-        // 4. Pagination
-        const skip = (page - 1) * limit;
+        const [totalProducts, products] = await Promise.all([
+            Product.countDocuments(query),
+            Product.find(query).skip(skip).limit(limitNum).sort({ createdAt: -1 })
+        ]);
 
-        const products = await Product.find(query)
-            .skip(skip)
-            .limit(Number(limit))
-            .sort({ createdAt: -1 });
+        const totalPages = Math.ceil(totalProducts / limitNum);
 
-        const total = await Product.countDocuments(query);
-
-        res.json({
-            products,
-            page: Number(page),
-            pages: Math.ceil(total / limit),
-            total,
+        res.status(200).json({
+            success: true,
+            message: "Products fetched successfully",
+            currentPage: pageNum,
+            totalPages,
+            totalProducts,
+            data: products
         });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching products" });
+        next(error);
     }
 };
 
-export const getGenzPicks = async (req, res) => {
+export const getGenzPicks = async (req, res, next) => {
     try {
         const products = await Product.find({ category: "genz" });
-        res.json(products);
+
+        res.status(200).json({
+            success: true,
+            message: "GenZ picks fetched successfully",
+            data: products
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching genz picks" });
+        next(error);
     }
 };
 
-export const createProduct = async (req, res) => {
+export const createProduct = async (req, res, next) => {
     try {
         const newProduct = new Product(req.body);
         const saved = await newProduct.save();
-        res.status(201).json(saved);
+
+        res.status(201).json({
+            success: true,
+            message: "Product created successfully",
+            data: saved
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error creating product" });
+        next(error);
     }
 };
 
@@ -75,7 +88,12 @@ export const getProductById = async (req, res, next) => {
             res.status(404);
             throw new Error("Product not found");
         }
-        res.json(product);
+
+        res.status(200).json({
+            success: true,
+            message: "Product fetched successfully",
+            data: product
+        });
     } catch (error) {
         next(error);
     }

@@ -91,7 +91,7 @@ function ProductDetails() {
       {/* Left: Product Image */}
       <div className="flex-1 flex justify-center">
         <img
-          src="/product.jpg"
+          src={product.image}
           alt={product.name}
           className="rounded-2xl shadow-lg w-80 md:w-96 object-cover"
         />

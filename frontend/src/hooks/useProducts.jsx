@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-const useProducts = ({ category, search, page = 1, limit = 10, minPrice, maxPrice, sort } = {}) => {
+const useProducts = (config = {}) => {
+  // Support both object config and string (category) for backward compatibility
+  const options = typeof config === 'string' ? { category: config } : config;
+  const { category, keyword, page = 1, limit = 10, minPrice, maxPrice, sort } = options;
   const [data, setData] = useState({
     products: [],
     currentPage: 1,
@@ -18,7 +21,7 @@ const useProducts = ({ category, search, page = 1, limit = 10, minPrice, maxPric
     try {
       const params = new URLSearchParams();
       if (category) params.append("category", category);
-      if (search) params.append("search", search);
+      if (keyword) params.append("keyword", keyword);
       if (page) params.append("page", page);
       if (limit) params.append("limit", limit);
       if (minPrice !== undefined) params.append("minPrice", minPrice);
@@ -30,9 +33,9 @@ const useProducts = ({ category, search, page = 1, limit = 10, minPrice, maxPric
 
       if (response.data.success) {
         setData({
-          products: response.data.data,
-          currentPage: response.data.currentPage,
-          totalPages: response.data.totalPages,
+          products: response.data.products,
+          currentPage: response.data.page,
+          totalPages: response.data.pages,
           totalProducts: response.data.totalProducts
         });
       }
@@ -43,7 +46,7 @@ const useProducts = ({ category, search, page = 1, limit = 10, minPrice, maxPric
     } finally {
       setLoading(false);
     }
-  }, [category, search, page, limit, minPrice, maxPrice, sort]);
+  }, [category, keyword, page, limit, minPrice, maxPrice, sort]);
 
   useEffect(() => {
     const controller = new AbortController();

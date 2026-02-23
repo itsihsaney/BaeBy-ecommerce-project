@@ -3,17 +3,19 @@ import cloudinary from "../config/cloudinary.js";
 
 export const getProducts = async (req, res, next) => {
     try {
-        const { category, minPrice, maxPrice, search, page = 1, limit = 10, sort } = req.query;
+        const { category, minPrice, maxPrice, keyword, page = 1, limit = 10, sort } = req.query;
 
-        const query = {};
+        // 1. Search Implementation using Keyword and Title field
+        const searchKeyword = keyword
+            ? {
+                title: {
+                    $regex: keyword,
+                    $options: "i",
+                },
+            }
+            : {};
 
-        // 1. Search Implementation
-        if (search) {
-            query.$or = [
-                { name: { $regex: search, $options: "i" } },
-                { description: { $regex: search, $options: "i" } }
-            ];
-        }
+        const query = { ...searchKeyword };
 
         // 2. Advanced Filtering
         if (category) {
@@ -26,32 +28,33 @@ export const getProducts = async (req, res, next) => {
             if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
-        // Pagination Logic
-        const pageNum = Math.max(1, Number(page)) || 1;
-        const limitNum = Math.max(1, Number(limit)) || 10;
+        const pageNum = Number(page) || 1;
+        const limitNum = Number(limit) || 8; // Default to 8 as per requirements
         const skip = (pageNum - 1) * limitNum;
 
-        // Sorting Logic
-        let sortQuery = { createdAt: -1 };
-        if (sort === 'lowToHigh') sortQuery = { price: 1 };
-        if (sort === 'highToLow') sortQuery = { price: -1 };
-        if (sort === 'name-az') sortQuery = { name: 1 };
+        // Sorting Logic - Added _id as tie-breaker for stable pagination
+        let sortQuery = { createdAt: -1, _id: 1 };
+        if (sort === 'lowToHigh') sortQuery = { price: 1, _id: 1 };
+        if (sort === 'highToLow') sortQuery = { price: -1, _id: 1 };
+        if (sort === 'name-az') sortQuery = { title: 1, _id: 1 };
 
         const [totalProducts, products] = await Promise.all([
             Product.countDocuments(query),
-            Product.find(query).skip(skip).limit(limitNum).sort(sortQuery)
+            Product.find(query)
+                .sort(sortQuery)
+                .skip(skip)
+                .limit(limitNum)
         ]);
 
         const totalPages = Math.ceil(totalProducts / limitNum);
 
-        // 3. Standard Response Format
+        // Standard Response Format as requested
         res.status(200).json({
             success: true,
-            message: "Products fetched successfully",
-            currentPage: pageNum,
-            totalPages,
-            totalProducts,
-            data: products
+            products,
+            page: pageNum,
+            pages: totalPages,
+            totalProducts
         });
     } catch (error) {
         next(error);

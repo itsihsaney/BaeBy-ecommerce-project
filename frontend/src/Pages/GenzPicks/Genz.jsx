@@ -49,7 +49,7 @@ function GenzPicks() {
             className="relative flex-shrink-0 w-full h-full snap-center"
           >
             <img
-              src="/product.jpg"
+              src={item.image}
               alt={item.name}
               className="w-full h-full object-cover"
             />

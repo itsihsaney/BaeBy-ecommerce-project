@@ -15,7 +15,7 @@ function AllProducts() {
   const { sortType, filterType, priceRange } = useOutletContext();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("keyword") || "");
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
   // Single source of truth for page
@@ -32,12 +32,12 @@ function AllProducts() {
 
   // 2. Sync Debounced Search to URL & Reset Page
   useEffect(() => {
-    const currentSearchInUrl = searchParams.get("search") || "";
+    const currentSearchInUrl = searchParams.get("keyword") || "";
     if (debouncedSearch !== currentSearchInUrl) {
       setSearchParams(prev => {
         const params = new URLSearchParams(prev);
-        if (debouncedSearch) params.set("search", debouncedSearch);
-        else params.delete("search");
+        if (debouncedSearch) params.set("keyword", debouncedSearch);
+        else params.delete("keyword");
         params.set("page", "1"); // Reset to page 1 on new search
         return params;
       }, { replace: true });
@@ -52,7 +52,7 @@ function AllProducts() {
 
   const { products, totalPages, loading, error } = useProducts({
     category,
-    search: debouncedSearch,
+    keyword: debouncedSearch,
     page: currentPage,
     limit: productsPerPage,
     sort: sortType,
@@ -147,7 +147,7 @@ function AllProducts() {
 
                   <div className="relative h-72 overflow-hidden cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
                     <img
-                      src="/product.jpg"
+                      src={product.image}
                       alt={name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />

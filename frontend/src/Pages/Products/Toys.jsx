@@ -72,7 +72,7 @@ function Toys() {
                 </button>
 
                 <img
-                  src="/product.jpg"
+                  src={product.image}
                   alt={product.name}
                   className="w-full h-52 object-cover"
                 />

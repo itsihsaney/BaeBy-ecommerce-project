@@ -29,7 +29,7 @@ function WishlistPage() {
               className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center transition-all hover:shadow-lg"
             >
               <img
-                src="/product.jpg"
+                src={item.image}
                 alt={item.name || item.title}
                 className="w-40 h-40 object-cover rounded-lg mb-4"
               />

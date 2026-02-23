@@ -115,7 +115,7 @@ function Home() {
           cuteness together. Our mission is to make every baby feel special with
           trendy, high-quality products.
         </p>
-        <p className="mt-4 text-gray-500 italic">— Made with ❤️ for tiny trendsetters —</p>
+        <p className="mt-4 text-gray-500 italic">— Made with love for tiny trendsetters —</p>
       </section>
     </div>
   );

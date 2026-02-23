@@ -4,6 +4,7 @@ import validateRequest from "../middlewares/validationMiddleware.js";
 import { productSchema } from "../validators/schemas.js";
 import protect from "../middlewares/authMiddleware.js";
 import adminOnly from "../middlewares/adminMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -17,6 +18,6 @@ router.get("/genz", getGenzPicks);
 router.get("/:id", getProductById);
 
 // POST product (Admin only)
-router.post("/", protect, adminOnly, validateRequest(productSchema), createProduct);
+router.post("/", protect, adminOnly, upload.single("image"), validateRequest(productSchema), createProduct);
 
 export default router;

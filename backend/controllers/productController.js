@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const getProducts = async (req, res, next) => {
     try {
@@ -73,7 +74,29 @@ export const getGenzPicks = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
     try {
-        const newProduct = new Product(req.body);
+        if (!req.file) {
+            res.status(400);
+            throw new Error("Please upload an image");
+        }
+
+        // Upload image to Cloudinary from memory
+        const uploadResult = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                { folder: "baeby_products" },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            );
+            stream.end(req.file.buffer);
+        });
+
+        const productData = {
+            ...req.body,
+            image: uploadResult.secure_url
+        };
+
+        const newProduct = new Product(productData);
         const saved = await newProduct.save();
 
         res.status(201).json({

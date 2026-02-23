@@ -18,7 +18,12 @@ connectDB();            // Connect to MongoDB
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // Allow Vite frontend
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true, // Allow cookies/headers
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));

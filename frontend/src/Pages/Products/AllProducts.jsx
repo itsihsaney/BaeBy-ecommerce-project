@@ -16,31 +16,39 @@ function AllProducts() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
-  const productsPerPage = 8;
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
-  // Debounce search effect to trigger API call and sync URL
+  // Single source of truth for page
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const productsPerPage = 8;
+
+  // 1. Debounce Search Term
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-
-      // Update URL only once typing stops to keep input buttery smooth
-      setSearchParams(prev => {
-        if (searchTerm) {
-          prev.set("search", searchTerm);
-        } else {
-          prev.delete("search");
-        }
-        prev.set("page", "1");
-        return prev;
-      }, { replace: true });
-
-      setCurrentPage(1);
     }, 400);
-
     return () => clearTimeout(handler);
-  }, [searchTerm, setSearchParams]);
+  }, [searchTerm]);
+
+  // 2. Sync Debounced Search to URL & Reset Page
+  useEffect(() => {
+    const currentSearchInUrl = searchParams.get("search") || "";
+    if (debouncedSearch !== currentSearchInUrl) {
+      setSearchParams(prev => {
+        const params = new URLSearchParams(prev);
+        if (debouncedSearch) params.set("search", debouncedSearch);
+        else params.delete("search");
+        params.set("page", "1"); // Reset to page 1 on new search
+        return params;
+      }, { replace: true });
+    }
+  }, [debouncedSearch, setSearchParams]);
+
+  // 3. Stable Price Filter values
+  const prices = useMemo(() => ({
+    max: filterType === "20to40" ? 40 : (filterType === "under20" ? 20 : (priceRange || undefined)),
+    min: filterType === "20to40" ? 20 : (filterType === "above40" ? 40 : undefined)
+  }), [filterType, priceRange]);
 
   const { products, totalPages, loading, error } = useProducts({
     category,
@@ -48,8 +56,8 @@ function AllProducts() {
     page: currentPage,
     limit: productsPerPage,
     sort: sortType,
-    maxPrice: filterType === "20to40" ? 40 : (filterType === "under20" ? 20 : (priceRange || undefined)),
-    minPrice: filterType === "20to40" ? 20 : (filterType === "above40" ? 40 : undefined),
+    maxPrice: prices.max,
+    minPrice: prices.min,
   });
 
   const [visible, setVisible] = useState(false);
@@ -58,14 +66,19 @@ function AllProducts() {
     setVisible(true);
   }, []);
 
+  // 4. Scroll to top on Page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("page", page.toString());
-    if (searchTerm) newParams.set("search", searchTerm);
-    setSearchParams(newParams);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev);
+      params.set("page", page.toString());
+      return params;
+    });
   };
 
   return (

@@ -8,7 +8,7 @@ import Cart from "../models/Cart.js";
 export const addOrderItems = async (req, res, next) => {
     try {
         const {
-            orderItems,
+            orderItems, // Expecting items from frontend
             shippingAddress,
             paymentMethod,
         } = req.body;
@@ -17,9 +17,8 @@ export const addOrderItems = async (req, res, next) => {
             res.status(400);
             throw new Error("No order items");
         } else {
-            // Logic to fetch prices from DB and calculate totals
-            let itemsPrice = 0;
-            const dbOrderItems = [];
+            let totalAmount = 0;
+            const items = [];
 
             for (const item of orderItems) {
                 const product = await Product.findById(item.product);
@@ -27,27 +26,26 @@ export const addOrderItems = async (req, res, next) => {
                     res.status(404);
                     throw new Error(`Product not found: ${item.name}`);
                 }
-                itemsPrice += product.price * item.quantity;
-                dbOrderItems.push({
-                    ...item,
+                totalAmount += product.price * item.quantity;
+                items.push({
+                    name: product.title,
+                    quantity: item.quantity,
+                    image: product.image,
                     price: product.price,
                     product: product._id
                 });
             }
 
-            const shippingPrice = itemsPrice > 100 ? 0 : 10; // Example logic: Free shipping over $100
-            const taxPrice = Number((0.15 * itemsPrice).toFixed(2)); // Example tax: 15%
-            const totalPrice = itemsPrice + shippingPrice + taxPrice;
+            // Simple logic: add shipping if under $100
+            const shippingPrice = totalAmount > 100 ? 0 : 10;
+            totalAmount += shippingPrice;
 
             const order = new Order({
-                orderItems: dbOrderItems,
                 user: req.user._id,
+                items,
                 shippingAddress,
-                paymentMethod,
-                itemsPrice,
-                taxPrice,
-                shippingPrice,
-                totalPrice,
+                totalAmount,
+                status: paymentMethod === "COD" ? "Pending COD" : "paid"
             });
 
             const createdOrder = await order.save();

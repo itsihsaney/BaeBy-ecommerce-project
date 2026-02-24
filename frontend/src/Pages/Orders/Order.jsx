@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import api from "../../utils/api";
 
 function Orders() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API_URL = "https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders";
 
   useEffect(() => {
     if (!user) {
@@ -19,15 +17,8 @@ function Orders() {
 
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get(API_URL);
-        // Filter by user's name or email
-        const userOrders = data.filter(
-          (order) =>
-            order.userEmail === user.email ||
-            order.userName?.toLowerCase() === user.name?.toLowerCase()
-        );
-
-        setOrders(userOrders);
+        const { data } = await api.get("/api/orders/myorders");
+        setOrders(data);
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {
@@ -46,7 +37,7 @@ function Orders() {
     );
   }
 
-  if (!orders.length) {
+  if (!orders || orders.length === 0) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center text-center">
         <img
@@ -77,61 +68,58 @@ function Orders() {
       </h1>
 
       <div className="grid gap-6">
-        {orders.map((order, index) => (
+        {orders.map((order) => (
           <div
-            key={`${order.id}-${index}`}
+            key={order._id}
             className="bg-white shadow-lg rounded-2xl p-6 border border-gray-100 hover:shadow-xl transition"
           >
             {/* Order header */}
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-lg text-gray-800">
-                Order #{order.id}
-              </h3>
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="font-semibold text-lg text-gray-800">
+                  Order #{order._id.substring(0, 10).toUpperCase()}...
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Placed on: {new Date(order.createdAt).toLocaleString()}
+                </p>
+              </div>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === "Delivered"
-                    ? "bg-green-100 text-green-700"
-                    : order.status?.includes("Pending")
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-blue-100 text-blue-700"
+                className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === "paid"
+                  ? "bg-green-100 text-green-700"
+                  : order.status?.includes("Pending")
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-blue-100 text-blue-700"
                   }`}
               >
-                {order.status}
+                {order.status?.toUpperCase() || "PENDING"}
               </span>
             </div>
 
-            {/* Order details */}
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>
-                <span className="font-medium">Name:</span> {order.shippingName || order.name}
-              </p>
-              <p>
-                <span className="font-medium">Address:</span> {order.address}
-              </p>
-              <p>
-                <span className="font-medium">Date:</span> {order.date}
-              </p>
-              <p>
-                <span className="font-medium">Payment:</span>{" "}
-                {order.method?.toUpperCase()}
-              </p>
-              <p>
-                <span className="font-medium">Phone:</span> {order.phone}
-              </p>
+            {/* Product section */}
+            <div className="space-y-4">
+              {order.items?.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4">
+                  <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl border border-pink-50" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800">{item.name}</p>
+                    <p className="text-sm text-gray-400">Quantity: {item.quantity}</p>
+                  </div>
+                  <p className="font-bold text-gray-800">${item.price}</p>
+                </div>
+              ))}
             </div>
 
-            {/* Product section */}
-            <div className="mt-4 border-t pt-3 flex justify-between items-center">
-              <div>
-                <p className="font-semibold text-gray-800">
-                  {order.product || "—"}
-                </p>
-                <p className="text-gray-500 text-sm">
-                  Price: {order.price || order.totalAmount}
-                </p>
+            {/* Order details */}
+            <div className="mt-6 border-t border-gray-50 pt-4 flex flex-col md:flex-row justify-between gap-4">
+              <div className="text-sm text-gray-500">
+                <p className="font-medium text-gray-700">Shipping Address:</p>
+                <p>{order.shippingAddress?.address}</p>
+                <p>{order.shippingAddress?.city}, {order.shippingAddress?.postalCode}</p>
               </div>
-              <p className="font-semibold text-gray-900">
-                Total: {order.price || order.totalAmount}
-              </p>
+              <div className="bg-pink-50 p-4 rounded-xl flex items-center justify-between md:min-w-[200px]">
+                <span className="text-pink-800 font-medium">Total Amount</span>
+                <span className="text-2xl font-extrabold text-pink-600">${order.totalAmount?.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         ))}

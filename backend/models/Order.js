@@ -7,7 +7,7 @@ const orderSchema = mongoose.Schema(
             required: true,
             ref: "User",
         },
-        orderItems: [
+        items: [
             {
                 name: { type: String, required: true },
                 quantity: { type: Number, required: true },
@@ -20,57 +20,26 @@ const orderSchema = mongoose.Schema(
                 },
             },
         ],
-        shippingAddress: {
-            address: { type: String, required: true },
-            city: { type: String, required: true },
-            postalCode: { type: String, required: true },
-            country: { type: String, required: true },
+        totalAmount: {
+            type: Number,
+            required: true,
+            default: 0.0,
         },
-        paymentMethod: {
+        paymentId: {
             type: String,
-            required: true,
         },
-        paymentResult: {
-            id: { type: String },
-            status: { type: String },
-            update_time: { type: String },
-            email_address: { type: String },
+        orderId: {
+            type: String,
         },
-        itemsPrice: {
-            type: Number,
-            required: true,
-            default: 0.0,
+        status: {
+            type: String,
+            default: "pending",
         },
-        taxPrice: {
-            type: Number,
-            required: true,
-            default: 0.0,
-        },
-        shippingPrice: {
-            type: Number,
-            required: true,
-            default: 0.0,
-        },
-        totalPrice: {
-            type: Number,
-            required: true,
-            default: 0.0,
-        },
-        isPaid: {
-            type: Boolean,
-            required: true,
-            default: false,
-        },
-        paidAt: {
-            type: Date,
-        },
-        isDelivered: {
-            type: Boolean,
-            required: true,
-            default: false,
-        },
-        deliveredAt: {
-            type: Date,
+        shippingAddress: {
+            address: { type: String },
+            city: { type: String },
+            postalCode: { type: String },
+            country: { type: String },
         },
     },
     {

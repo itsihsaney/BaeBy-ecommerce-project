@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../../utils/api";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 
@@ -40,51 +41,124 @@ function Payment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let orderProducts = [];
+    let orderItems = [];
     let totalAmount = 0;
 
+    // Prepare items and total amount
     if (product && !Array.isArray(product)) {
-      // Single product checkout
-      orderProducts = [product.name || product.title];
+      orderItems = [{
+        name: product.name || product.title,
+        quantity: 1,
+        image: product.image,
+        price: cleanPrice(product.price || product.amount),
+        product: product.id || product._id
+      }];
       totalAmount = cleanPrice(product.price || product.amount);
     } else if (Array.isArray(product)) {
-      // Cart checkout
-      orderProducts = product.map((p) => p.name || p.title);
+      orderItems = product.map((p) => ({
+        name: p.name || p.title,
+        quantity: p.quantity || 1,
+        image: p.image,
+        price: cleanPrice(p.price || p.amount),
+        product: p.id || p._id
+      }));
       totalAmount = product.reduce(
         (sum, p) => sum + cleanPrice(p.price || p.amount) * (p.quantity || 1),
         0
       );
     }
 
-    //  Protect against zero prices
     if (totalAmount <= 0) {
-      alert("Error: Product price missing or invalid.");
-      console.error("🛑 Invalid product data:", product);
+      alert("Error: Total amount is invalid.");
       return;
     }
 
-    const newOrder = {
-      id: Date.now().toString(),
-      userEmail: user?.email || "guest",
-      userName: user?.name || "Guest",
-      shippingName: form.name,
+    const shippingData = {
       address: form.address,
-      phone: form.phone,
-      method,
-      product: orderProducts.join(", "),
-      price: `$${totalAmount.toFixed(2)}`,
-      totalAmount: `$${totalAmount.toFixed(2)}`,
-      status: method === "cod" ? "Pending COD" : "Paid",
-      date: new Date().toLocaleString(),
+      city: "Default City", // You might want to add these fields to the form
+      postalCode: "000000",
+      country: "India"
     };
 
+    if (method === "cod") {
+      // Handle COD
+      const newOrder = {
+        items: orderItems,
+        totalAmount,
+        shippingAddress: shippingData,
+        status: "Pending COD"
+      };
 
-    try {
-      await axios.post("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders", newOrder);
-      navigate("/order-success", { state: { order: newOrder } });
-    } catch (error) {
-      console.error("Error saving order:", error);
-      alert("Something went wrong. Please try again.");
+      try {
+        // You might want to have a separate COD endpoint or use the same order endpoint
+        // For now, let's just show success as per existing flow but you should probably 
+        // implement a real COD order saving in backend if needed.
+        // For simplicity, let's assume Razorpay is the main focus here.
+        const createdResponse = await api.post("/api/orders", {
+          orderItems: orderItems,
+          shippingAddress: shippingData,
+          paymentMethod: "COD"
+        });
+
+        navigate("/order-success", { state: { order: { ...createdResponse.data, id: createdResponse.data._id, method: "cod" }, fromPayment: true } });
+      } catch (error) {
+        console.error("Error saving COD order:", error);
+        alert("Something went wrong. Please try again.");
+      }
+    } else {
+      // Handle Razorpay
+      try {
+        // 1. Create order on backend
+        const { data } = await api.post("/api/payment/create-order", {
+          amount: totalAmount
+        });
+
+        const options = {
+          key: "rzp_test_SJr8psddTz1yjJ",
+          amount: data.order.amount,
+          currency: "INR",
+          name: "BaeBy Store",
+          description: "Purchase Description",
+          order_id: data.order.id,
+          handler: async function (response) {
+            try {
+              // 2. Verify payment on backend
+              const verifyData = {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                items: orderItems,
+                totalAmount: totalAmount,
+                shippingAddress: shippingData
+              };
+
+              const res = await api.post("/api/payment/verify-payment", verifyData);
+
+              if (res.data.success) {
+                navigate("/order-success", { state: { order: { id: response.razorpay_order_id, method: "razorpay", status: "Paid" }, fromPayment: true } });
+              }
+            } catch (err) {
+              console.error("Verification failed:", err);
+              alert("Payment verification failed. Please contact support.");
+            }
+          },
+          prefill: {
+            name: form.name,
+            email: user?.email,
+            contact: form.phone
+          },
+          theme: {
+            color: "#ec4899" // Pink-500
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+
+      } catch (error) {
+        console.error("Razorpay error:", error);
+        alert("Could not initiate payment. Please try again.");
+      }
     }
   };
 
@@ -122,8 +196,7 @@ function Payment() {
         <div className="flex justify-around mb-6">
           {[
             { key: "cod", label: "Cash on Delivery" },
-            { key: "card", label: "Debit Card" },
-            { key: "upi", label: "UPI" },
+            { key: "razorpay", label: "Online (Razorpay)" },
           ].map((opt) => (
             <button
               key={opt.key}
@@ -169,62 +242,11 @@ function Payment() {
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
           />
 
-          {/*  Card Fields */}
-          {method === "card" && (
-            <>
-              <input
-                type="text"
-                name="cardNumber"
-                placeholder="Card Number"
-                maxLength="16"
-                value={form.cardNumber}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
-              />
-              <div className="flex gap-3">
-                <input
-                  type="text"
-                  name="expiry"
-                  placeholder="MM/YY"
-                  maxLength="5"
-                  value={form.expiry}
-                  onChange={handleChange}
-                  required
-                  className="w-1/2 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
-                />
-                <input
-                  type="password"
-                  name="cvv"
-                  placeholder="CVV"
-                  maxLength="3"
-                  value={form.cvv}
-                  onChange={handleChange}
-                  required
-                  className="w-1/2 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
-                />
-              </div>
-            </>
-          )}
-
-          {/*  UPI Field */}
-          {method === "upi" && (
-            <input
-              type="text"
-              name="upiId"
-              placeholder="UPI ID (e.g., name@okaxis)"
-              value={form.upiId}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-pink-500"
-            />
-          )}
-
           <button
             type="submit"
             className="w-full bg-pink-500 text-white font-semibold py-3 rounded-xl hover:bg-pink-600 transition transform hover:scale-[1.02]"
           >
-            {method === "cod" ? "Place Order" : "Pay Securely"}
+            {method === "cod" ? "Place Order" : "Pay with Razorpay"}
           </button>
         </form>
       </div>

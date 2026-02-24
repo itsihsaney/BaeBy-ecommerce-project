@@ -6,15 +6,15 @@ import { useCart } from "../../Context/CartContext";
 function OrderSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { clearCart } = useCart();
+  const { cart, clearCart } = useCart();
 
   // Get order data and check if came from Payment
   const order = location.state?.order || {};
   const fromPayment = location.state?.fromPayment || false;
 
-  //  Clear cart only if coming from a real payment success
+  //  Clear cart only if coming from a real payment success and cart isn't already empty
   useEffect(() => {
-    if (fromPayment) {
+    if (fromPayment && cart.length > 0) {
       clearCart();
 
       // Optional: redirect automatically to orders after few seconds
@@ -24,7 +24,7 @@ function OrderSuccess() {
 
       return () => clearTimeout(timer);
     }
-  }, [fromPayment, clearCart, navigate]);
+  }, [fromPayment, cart, clearCart, navigate]);
 
   return (
     <div className="min-h-screen bg-pink-50 flex flex-col items-center justify-center text-center px-6">

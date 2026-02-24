@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import api from "../utils/api";
 
 const CartContext = createContext();
@@ -35,7 +35,7 @@ export function CartProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = async (item) => {
+  const addToCart = useCallback(async (item) => {
     const token = localStorage.getItem("token") || localStorage.getItem("userInfo");
 
     // Optimistic UI Update first
@@ -67,9 +67,9 @@ export function CartProvider({ children }) {
         setCart((prev) => prev.filter((p) => p.id !== item.id));
       }
     }
-  };
+  }, [cart]);
 
-  const removeFromCart = async (id) => {
+  const removeFromCart = useCallback(async (id) => {
     const token = localStorage.getItem("token") || localStorage.getItem("userInfo");
     const removedItem = cart.find((i) => i.id === id);
 
@@ -85,14 +85,14 @@ export function CartProvider({ children }) {
         // Optionally revert state here if strict sync is needed
       }
     }
-  };
+  }, [cart]);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     showToast("Cart cleared");
-  };
+  }, []);
 
-  const updateQuantity = async (id, action) => {
+  const updateQuantity = useCallback(async (id, action) => {
     const token = localStorage.getItem("token") || localStorage.getItem("userInfo");
     let newQuantity = 1;
 
@@ -130,7 +130,7 @@ export function CartProvider({ children }) {
         // Revert on error?
       }
     }
-  };
+  }, [cart]);
 
   //  Custom Toast 
   const showToast = (message) => {
@@ -149,10 +149,16 @@ export function CartProvider({ children }) {
     }, 2000);
   };
 
+  const value = useMemo(() => ({
+    cart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    updateQuantity
+  }), [cart, addToCart, removeFromCart, clearCart, updateQuantity]);
+
   return (
-    <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );

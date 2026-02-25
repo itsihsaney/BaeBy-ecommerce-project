@@ -40,11 +40,7 @@ function Orders() {
   if (!orders || orders.length === 0) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center text-center">
-        <img
-          src="/empty.png"
-          alt="No Orders"
-          className="w-56 mb-6 opacity-80"
-        />
+
         <h2 className="text-2xl font-semibold text-gray-700 mb-2">
           You haven’t placed any orders yet
         </h2>

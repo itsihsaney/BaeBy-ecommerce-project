@@ -65,7 +65,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post("/api/auth/logout");
+    } catch (err) {
+      console.error("Logout failed at backend:", err);
+    }
+
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");

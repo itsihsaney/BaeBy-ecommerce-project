@@ -34,10 +34,11 @@ import NotAuthorized from "./Components/Auth/NotAuthorized";
 export default function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAuthRoute = ["/login", "/register"].includes(location.pathname);
 
   return (
     <>
-<Toaster
+      <Toaster
         position="top-center"
         reverseOrder={false}
         gutter={12}
@@ -45,94 +46,94 @@ export default function App() {
           style: { zIndex: 99999999 },
         }}
       />
-    <AuthProvider>
-      <WishlistProvider>
-        <CartProvider>
-          <ScrollToTop />
-            {!isAdminRoute && <Header />}
+      <AuthProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <ScrollToTop />
+            {!isAdminRoute && !isAuthRoute && <Header />}
 
-          <Routes>
-            {/*  Home Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
+            <Routes>
+              {/*  Home Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
 
-            {/*  Auth */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+              {/*  Auth */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/*  Not Authorized */}
-            <Route path="/not-authorized" element={<NotAuthorized />} />
+              {/*  Not Authorized */}
+              <Route path="/not-authorized" element={<NotAuthorized />} />
 
-            {/*  Protected Routes (User) */}
-            <Route
-              path="/cart"
-              element={
-                <ProtectedRoute>
-                  <Cart />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/wishlist"
-              element={
-                <ProtectedRoute>
-                  <WishlistPage />
-                </ProtectedRoute>
-              }
-            />
+              {/*  Protected Routes (User) */}
+              <Route
+                path="/cart"
+                element={
+                  <ProtectedRoute>
+                    <Cart />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <WishlistPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/*  Products */}
-            <Route path="/products" element={<Products />}>
-              <Route index element={<AllProducts />} />
-              <Route path=":category" element={<AllProducts />} />
-            </Route>
+              {/*  Products */}
+              <Route path="/products" element={<Products />}>
+                <Route index element={<AllProducts />} />
+                <Route path=":category" element={<AllProducts />} />
+              </Route>
 
-            {/*  Payment & Orders */}
-            <Route
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <Payment />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              }
-            />
+              {/*  Payment & Orders */}
+              <Route
+                path="/payment"
+                element={
+                  <ProtectedRoute>
+                    <Payment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/order-success" element={<OrderSuccess />} />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/*  Other Pages */}
-            <Route path="/gen-z-picks" element={<GenzPicks />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/returns" element={<Return />} />
+              {/*  Other Pages */}
+              <Route path="/gen-z-picks" element={<GenzPicks />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/returns" element={<Return />} />
 
-            {/*  ADMIN SIDE (Protected) */}
-            <Route
-              path="/admin"
-              element={
-                <AdminRoute>
-                  <AdminLayout />
-                </AdminRoute>
-              }
-            >
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="users" element={<Users />} />
-            </Route>
-          </Routes>
+              {/*  ADMIN SIDE (Protected) */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="users" element={<Users />} />
+              </Route>
+            </Routes>
 
-          {!isAdminRoute && <Footer />}
-        </CartProvider>
-      </WishlistProvider>
-    </AuthProvider>
+            {!isAdminRoute && !isAuthRoute && <Footer />}
+          </CartProvider>
+        </WishlistProvider>
+      </AuthProvider>
     </>
   );
 }

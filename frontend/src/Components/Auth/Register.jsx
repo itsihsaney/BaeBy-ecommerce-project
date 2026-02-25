@@ -1,7 +1,7 @@
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
-import axios from "axios";
 
 function Register() {
   const { register } = useAuth();
@@ -49,101 +49,113 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">
-      <div className="relative w-full max-w-md">
-        <div className="backdrop-blur-sm bg-white/30 border border-white/20 rounded-3xl shadow-2xl p-8">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-2 text-center">
-            Create Account
-          </h2>
-          <p className="text-sm text-gray-700 text-center mb-6">
-            Join <span className="font-semibold">BaeBy</span> — tiny trends, big smiles.
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-[#FEF9FA] px-4 font-sans selection:bg-pink-100">
+      <div className="w-full max-w-md animate-fadeIn">
 
-          {error && <div className="text-red-500 text-sm text-center mb-3">{error}</div>}
-          {info && <div className="text-green-600 text-sm text-center mb-3">{info}</div>}
+        {/* Logo/Brand */}
+        <div className="text-center mb-8">
+          <Link to="/" className="text-4xl font-black text-pink-500 tracking-tighter hover:opacity-80 transition-opacity">
+            BaeBy.
+          </Link>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
-            <div className="relative">
+        {/* Soft Card Container */}
+        <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.04)] border border-white p-10 sm:p-12">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mb-3 tracking-tight">
+              Create Account
+            </h2>
+            <p className="text-gray-400 text-sm font-medium">
+              Join the BaeBy community for tiny trends
+            </p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 text-red-500 text-xs font-bold text-center py-3 px-4 rounded-xl mb-6 border border-red-100 animate-shake">
+              {error}
+            </div>
+          )}
+
+          {info && (
+            <div className="bg-green-50 text-green-600 text-xs font-bold text-center py-3 px-4 rounded-xl mb-6 border border-green-100">
+              {info}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Input */}
+            <div className="space-y-2">
+              <label htmlFor="name" className="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">
+                Full Name
+              </label>
               <input
                 id="name"
                 name="name"
                 type="text"
                 value={form.name}
                 onChange={handleChange}
-                className="peer w-full bg-transparent border border-white/25 rounded-xl px-4 py-3 outline-none placeholder-transparent focus:ring-2 focus:ring-violet-200 focus:shadow-[0_0_12px_rgba(139,92,246,0.08)] transition"
-                placeholder="Full name"
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 outline-none focus:bg-white focus:ring-2 focus:ring-pink-100 focus:border-pink-300 transition-all duration-200 placeholder:text-gray-300 text-[#0F172A] font-medium"
+                placeholder="John Doe"
                 required
               />
-              <label
-                htmlFor="name"
-                className="absolute left-4 -top-2 text-sm text-gray-700 bg-white/40 px-2 rounded-md pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-              >
-                Full name
-              </label>
             </div>
 
-            {/* Email */}
-            <div className="relative">
+            {/* Email Input */}
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">
+                Email Address
+              </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 value={form.email}
                 onChange={handleChange}
-                className="peer w-full bg-transparent border border-white/25 rounded-xl px-4 py-3 outline-none placeholder-transparent focus:ring-2 focus:ring-pink-300 focus:shadow-[0_0_12px_rgba(236,72,153,0.08)] transition"
-                placeholder="Email"
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 outline-none focus:bg-white focus:ring-2 focus:ring-pink-100 focus:border-pink-300 transition-all duration-200 placeholder:text-gray-300 text-[#0F172A] font-medium"
+                placeholder="name@example.com"
                 required
               />
-              <label
-                htmlFor="email"
-                className="absolute left-4 -top-2 text-sm text-gray-700 bg-white/40 px-2 rounded-md pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-              >
-                Email
-              </label>
             </div>
 
-            {/* Password */}
-            <div className="relative">
+            {/* Password Input */}
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
                 type="password"
                 value={form.password}
                 onChange={handleChange}
-                className="peer w-full bg-transparent border border-white/25 rounded-xl px-4 py-3 outline-none placeholder-transparent focus:ring-2 focus:ring-pink-300 focus:shadow-[0_0_12px_rgba(232,121,249,0.08)] transition"
-                placeholder="Password"
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 outline-none focus:bg-white focus:ring-2 focus:ring-pink-100 focus:border-pink-300 transition-all duration-200 placeholder:text-gray-300 text-[#0F172A] font-medium"
+                placeholder="••••••••"
                 required
               />
-              <label
-                htmlFor="password"
-                className="absolute left-4 -top-2 text-sm text-gray-700 bg-white/40 px-2 rounded-md pointer-events-none peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-              >
-                Password
-              </label>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 rounded-full font-semibold text-white bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 shadow-lg"
+              className="w-full py-[14px] px-[20px] rounded-[50px] font-semibold text-white bg-gradient-to-r from-[#FF2E93] via-[#C33CFF] to-[#8E3BFF] hover:-translate-y-[2px] hover:shadow-[0_10px_20px_rgba(142,59,255,0.3)] transition-all duration-300 active:scale-[0.98]"
             >
-              Register
+              Register Now
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-700 mt-5">
-            Already a member?{" "}
-            <Link to="/login" className="text-pink-500 font-semibold">
-              Sign in
-            </Link>
-          </p>
+          <div className="mt-10 pt-10 border-t border-gray-50 text-center">
+            <p className="text-sm font-medium text-gray-400">
+              Already a member?{" "}
+              <Link to="/login" className="text-pink-500 font-bold hover:text-pink-600 transition-colors ml-1">
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
 
-        <div
-          className="absolute -inset-1 rounded-3xl blur-xl opacity-30 pointer-events-none"
-          style={{ background: "linear-gradient(90deg,#ff7ab6,#8b5cf6,#60a5fa)" }}
-        />
+        {/* Support Link */}
+        <p className="text-center mt-8 text-xs text-gray-300 font-medium">
+          Protected by Secure Auth &bull; &copy; 2026 BaeBy Store
+        </p>
       </div>
     </div>
   );

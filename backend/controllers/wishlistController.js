@@ -1,5 +1,6 @@
 import Wishlist from "../models/Wishlist.js";
 import Product from "../models/Product.js";
+import mongoose from "mongoose";
 
 // @desc    Get user wishlist
 // @route   GET /api/wishlist
@@ -10,6 +11,7 @@ export const getWishlist = async (req, res, next) => {
 
         if (!wishlist) {
             wishlist = await Wishlist.create({ user: req.user._id, products: [] });
+            wishlist = await wishlist.populate("products");
         }
 
         res.status(200).json(wishlist);
@@ -25,10 +27,13 @@ export const addToWishlist = async (req, res, next) => {
     try {
         const { productId } = req.body;
 
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid product ID format." });
+        }
+
         const product = await Product.findById(productId);
         if (!product) {
-            res.status(404);
-            throw new Error("Product not found");
+            return res.status(404).json({ message: "Product not found." });
         }
 
         let wishlist = await Wishlist.findOne({ user: req.user._id });
@@ -37,8 +42,7 @@ export const addToWishlist = async (req, res, next) => {
             wishlist = await Wishlist.create({ user: req.user._id, products: [productId] });
         } else {
             if (wishlist.products.includes(productId)) {
-                res.status(400);
-                throw new Error("Product already in wishlist");
+                return res.status(400).json({ message: "Product already in wishlist." });
             }
             wishlist.products.push(productId);
             await wishlist.save();
@@ -58,6 +62,10 @@ export const removeFromWishlist = async (req, res, next) => {
     try {
         const productId = req.params.id;
 
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "Invalid product ID format." });
+        }
+
         let wishlist = await Wishlist.findOne({ user: req.user._id });
 
         if (wishlist) {
@@ -68,8 +76,7 @@ export const removeFromWishlist = async (req, res, next) => {
             const populatedWishlist = await wishlist.populate("products");
             res.status(200).json(populatedWishlist);
         } else {
-            res.status(404);
-            throw new Error("Wishlist not found");
+            return res.status(404).json({ message: "Wishlist not found." });
         }
     } catch (error) {
         next(error);

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Menu, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, LogOut, Bell, Search, User as UserIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../../Context/AuthContext";
 
@@ -38,74 +38,90 @@ export default function TopBar({ onMenuClick }) {
 
   return (
     <>
-      <header className="sticky top-0 z-[100] bg-[#1F2937]/95 backdrop-blur-md shadow-lg border-b border-fuchsia-700/30 px-6 py-4 flex justify-between items-center">
-        {/* Left: Menu + Title */}
-        <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-[10] bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all">
+        {/* Left: Menu & Search */}
+        <div className="flex items-center gap-6">
           <button
-            className="lg:hidden text-gray-300 hover:text-fuchsia-400 transition"
+            className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition"
             onClick={onMenuClick}
           >
-            <Menu size={24} />
+            <Menu size={20} />
           </button>
 
-          <h1 className="text-lg font-semibold bg-gradient-to-r from-fuchsia-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-            Admin Dashboard
-          </h1>
+          <div className="hidden md:flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-gray-300 focus-within:ring-1 focus-within:ring-violet-500/50 focus-within:border-violet-500/50 transition-all w-64 lg:w-96 shadow-inner pointer-events-none">
+            <Search size={16} className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search anything..."
+              className="bg-transparent border-none outline-none w-full text-white placeholder-gray-500 pointer-events-auto"
+            />
+          </div>
         </div>
 
-        {/* Right: User Info + Logout */}
-        <div className="flex items-center gap-4">
+        {/* Right: Notifications, User Info + Logout */}
+        <div className="flex items-center gap-4 lg:gap-6">
+          {/* Notifications Placeholder */}
+          <button className="relative p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-colors cursor-pointer">
+            <Bell size={20} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]"></span>
+          </button>
+
+          <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
+
           {adminInfo ? (
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
                 <p className="font-medium text-gray-200 text-sm">
                   {adminInfo.name}
                 </p>
-                <p className="text-[10px] text-fuchsia-400 font-bold uppercase tracking-wider">
+                <p className="text-[10px] text-violet-400 font-bold uppercase tracking-wider">
                   {adminInfo.role}
                 </p>
               </div>
-              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-fuchsia-600 to-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-fuchsia-500/20">
+              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-violet-500/30 ring-2 ring-white/10">
                 {adminInfo.name?.charAt(0).toUpperCase()}
               </div>
             </div>
           ) : (
-            <div className="h-9 w-9 rounded-full bg-gray-700 flex items-center justify-center text-gray-400">
+            <div className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-gray-400 ring-2 ring-white/5">
               <UserIcon size={18} />
             </div>
           )}
 
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl border border-gray-700 hover:border-fuchsia-500/50 transition-all text-sm group"
+            className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-gray-300 px-4 py-2 rounded-xl border border-white/10 hover:border-white/20 transition-all text-sm group"
           >
-            <LogOut size={16} className="group-hover:text-fuchsia-400 transition-colors" />
-            <span className="group-hover:text-fuchsia-400 transition-colors">Logout</span>
+            <LogOut size={16} className="group-hover:text-red-400 transition-colors" />
+            <span className="group-hover:text-red-400 transition-colors font-medium">Logout</span>
           </button>
         </div>
       </header>
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[500] p-4">
-          <div className="bg-[#1E1E2A] border border-fuchsia-700/30 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
-            <h2 className="text-2xl font-bold text-fuchsia-300 mb-2">
-              Confirm Logout
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[500] p-4 transition-opacity">
+          <div className="bg-[#0f0f11] border border-white/10 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center transform scale-100 transition-transform">
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
+              <LogOut size={28} className="text-red-500" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">
+              Ready to leave?
             </h2>
             <p className="text-gray-400 mb-8 text-sm leading-relaxed">
-              Are you sure you want to log out from the admin session?
+              Are you sure you want to log out from the admin session? You will need to sign in again.
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 py-2.5 rounded-xl font-medium transition text-sm"
+                className="flex-1 bg-white/5 hover:bg-white/10 text-white py-2.5 rounded-xl font-medium transition text-sm border border-white/5 hover:border-white/10"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 bg-gradient-to-r from-fuchsia-600 to-pink-500 py-2.5 rounded-xl text-white font-bold hover:opacity-90 transition shadow-lg shadow-fuchsia-500/25 text-sm"
+                className="flex-1 bg-red-500 hover:bg-red-600 py-2.5 rounded-xl text-white font-medium transition shadow-lg shadow-red-500/25 text-sm"
               >
                 Log Out
               </button>

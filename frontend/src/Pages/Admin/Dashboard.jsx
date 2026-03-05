@@ -8,11 +8,17 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  YAxis,
+  CartesianGrid,
 } from "recharts";
 import { motion } from "framer-motion";
+import { CreditCard, Package, ShoppingCart, Users } from "lucide-react";
 import { getStats, getOrders } from "../../api/adminApi";
+import { convertToINR } from "../../utils/currency";
 
-const COLORS = ["#C084FC", "#E879F9", "#F472B6", "#F9A8D4"];
+const COLORS = ["#8B5CF6", "#6366F1", "#A855F7", "#EC4899"];
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -76,19 +82,19 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#111827]">
-        <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-fuchsia-500" />
+      <div className="flex justify-center items-center h-full min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.5)]" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-[#111827] gap-4">
+      <div className="flex flex-col justify-center items-center h-full min-h-[60vh] gap-4">
         <p className="text-red-400 font-semibold text-lg">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded-xl font-medium transition"
+          className="px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-medium transition shadow-[0_0_15px_rgba(139,92,246,0.4)]"
         >
           Retry
         </button>
@@ -109,163 +115,217 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 bg-[#111827] text-gray-200 min-h-screen">
-      <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-pink-400 via-purple-400 to-fuchsia-500 bg-clip-text text-transparent">
-        Baeby Admin Dashboard
-      </h1>
+    <div className="text-gray-200 p-2 md:p-6 pb-20">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-white tracking-tight mb-2">
+          Overview
+        </h1>
+        <p className="text-gray-400">Welcome back! Here's what's happening today.</p>
+      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
         <AnimatedStatCard
           title="Total Users"
           value={stats.totalUsers}
-          color="from-fuchsia-600 to-pink-500"
+          icon={Users}
+          color="violet"
         />
         <AnimatedStatCard
           title="Total Products"
           value={stats.totalProducts}
-          color="from-violet-500 to-fuchsia-400"
+          icon={Package}
+          color="indigo"
         />
         <AnimatedStatCard
           title="Total Orders"
           value={stats.totalOrders}
-          color="from-pink-500 to-purple-500"
+          icon={ShoppingCart}
+          color="pink"
         />
         <AnimatedStatCard
           title="Total Revenue"
           value={stats.totalRevenue}
-          color="from-purple-600 to-fuchsia-500"
+          icon={CreditCard}
+          color="purple"
           isCurrency
         />
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
-        <ChartCard title="Data Overview">
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={barData}>
-              <XAxis dataKey="name" stroke="#D8B4FE" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <ChartCard title="Platform Metrics" className="lg:col-span-2">
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={barData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+              <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip
-                contentStyle={{ backgroundColor: "#1F2937", border: "none", borderRadius: "8px" }}
-                cursor={{ fill: "rgba(192,132,252,0.08)" }}
+                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                contentStyle={{ backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}
               />
-              <Bar dataKey="value" fill="#C084FC" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                {barData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Category Breakdown">
-          <ResponsiveContainer width="100%" height={280}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                dataKey="value"
-                outerRadius={100}
-                fill="#C084FC"
-                label={({ name, percent }) =>
-                  `${name} ${(percent * 100).toFixed(0)}%`
-                }
-                labelLine={false}
-              >
-                {pieData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{ backgroundColor: "#1F2937", border: "none", borderRadius: "8px" }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+        <ChartCard title="Data Distribution">
+          <div className="relative h-[320px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  dataKey="value"
+                  outerRadius={110}
+                  innerRadius={80}
+                  stroke="transparent"
+                  paddingAngle={5}
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#18181b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)" }}
+                  itemStyle={{ color: "#e4e4e7" }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            {/* Center Label */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-3xl font-bold text-white">{stats.totalOrders + stats.totalProducts + stats.totalUsers}</span>
+              <span className="text-xs text-gray-400">Total Data</span>
+            </div>
+          </div>
         </ChartCard>
       </div>
 
       {/* Recent Orders Table */}
-      <div className="bg-[#1F2937] rounded-2xl p-6 border border-fuchsia-500/10">
-        <h2 className="text-xl font-semibold mb-6 text-fuchsia-300">
-          Recent Orders
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left">
-            <thead>
-              <tr className="text-gray-400 text-sm border-b border-gray-700">
-                <th className="pb-4 pr-4">Order ID</th>
-                <th className="pb-4 pr-4">Customer</th>
-                <th className="pb-4 text-center">Amount</th>
-                <th className="pb-4 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentOrders.map((order) => (
-                <tr
-                  key={order.id || order._id}
-                  className="border-b border-gray-800/50 hover:bg-white/5 transition"
-                >
-                  <td className="py-4 pr-4 text-sm font-mono text-gray-400">
-                    #{(order.id || order._id)?.toString().slice(-6).toUpperCase()}
-                  </td>
-                  <td className="py-4 pr-4 text-sm text-gray-200">
-                    {order.user?.name || "Guest"}
-                    {order.user?.email && (
-                      <p className="text-xs text-gray-500">{order.user.email}</p>
-                    )}
-                  </td>
-                  <td className="py-4 text-sm text-center font-semibold text-fuchsia-300">
-                    ₹{(order.totalAmount || 0).toFixed(2)}
-                  </td>
-                  <td className="py-4 text-center">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${order.status?.toLowerCase().includes("delivered")
-                          ? "bg-green-500/10 text-green-400"
-                          : order.status?.toLowerCase().includes("paid")
-                            ? "bg-blue-500/10 text-blue-400"
-                            : "bg-orange-500/10 text-orange-400"
-                        }`}
-                    >
-                      {order.status || "Pending"}
-                    </span>
-                  </td>
+      <div className="bg-[#0f0f11] rounded-3xl p-6 border border-white border-opacity-[0.05] shadow-2xl relative overflow-hidden">
+        {/* Glow effect */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl rounded-full"></div>
+
+        <div className="relative z-10">
+          <h2 className="text-xl font-bold mb-6 text-white tracking-tight flex items-center gap-2">
+            <ShoppingCart size={20} className="text-violet-500" />
+            Recent Orders
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-gray-400 text-sm border-b border-white/10 uppercase tracking-wider">
+                  <th className="pb-4 pr-4 font-medium">Order ID</th>
+                  <th className="pb-4 pr-4 font-medium">Customer</th>
+                  <th className="pb-4 text-center font-medium">Amount</th>
+                  <th className="pb-4 text-center font-medium">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {recentOrders.length === 0 && (
-            <p className="text-center text-gray-500 mt-6 italic">
-              No recent orders found.
-            </p>
-          )}
+              </thead>
+              <tbody>
+                {recentOrders.map((order) => (
+                  <tr
+                    key={order.id || order._id}
+                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
+                  >
+                    <td className="py-4 pr-4 text-sm font-mono text-gray-400 group-hover:text-violet-400 transition-colors">
+                      #{(order.id || order._id)?.toString().slice(-8).toUpperCase()}
+                    </td>
+                    <td className="py-4 pr-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-xs font-bold">
+                          {(order.user?.name || "G").charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-200 font-medium">
+                            {order.user?.name || "Guest"}
+                          </p>
+                          {order.user?.email && (
+                            <p className="text-xs text-gray-500">{order.user.email}</p>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 text-sm text-center font-medium text-gray-200">
+                      {convertToINR(order.totalAmount || 0)}
+                    </td>
+                    <td className="py-4 text-center">
+                      <span
+                        className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium capitalize border ${order.status?.toLowerCase().includes("delivered")
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          : order.status?.toLowerCase().includes("paid")
+                            ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                            : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                          }`}
+                      >
+                        {order.status || "Pending"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {recentOrders.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                <Package size={32} className="mb-3 opacity-20" />
+                <p className="italic">No recent orders found.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function ChartCard({ title, children }) {
+function ChartCard({ title, children, className = "" }) {
   return (
-    <div className="bg-[#1F2937] rounded-2xl p-6 border border-fuchsia-500/10 shadow-lg">
-      <h2 className="text-lg font-semibold mb-6 text-fuchsia-300">{title}</h2>
+    <div className={`bg-[#0f0f11] rounded-3xl p-6 border border-white border-opacity-[0.05] shadow-xl ${className}`}>
+      <h2 className="text-lg font-bold mb-6 text-white tracking-tight">{title}</h2>
       {children}
     </div>
   );
 }
 
-function AnimatedStatCard({ title, value, color, isCurrency = false }) {
+function AnimatedStatCard({ title, value, icon: Icon, color, isCurrency = false }) {
+  const colorMap = {
+    violet: "from-violet-500/20 to-violet-600/5 text-violet-500 border-violet-500/20",
+    indigo: "from-indigo-500/20 to-indigo-600/5 text-indigo-500 border-indigo-500/20",
+    pink: "from-pink-500/20 to-pink-600/5 text-pink-500 border-pink-500/20",
+    purple: "from-purple-500/20 to-purple-600/5 text-purple-500 border-purple-500/20",
+  };
+
+  const bgStyle = colorMap[color];
+
   return (
     <motion.div
-      className={`bg-gradient-to-r ${color} text-white p-6 rounded-2xl shadow-lg border border-white/10`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+      className={`relative overflow-hidden bg-[#0f0f11] rounded-3xl p-6 border border-white border-opacity-[0.05] shadow-xl`}
     >
-      <h3 className="text-gray-100/80 text-sm font-medium mb-2">{title}</h3>
-      <p className="text-3xl font-bold tracking-tight">
-        {isCurrency
-          ? `₹${Number(value).toLocaleString("en-IN")}`
-          : value}
-      </p>
+      <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full bg-gradient-to-br ${bgStyle} blur-2xl opacity-50`}></div>
+      <div className="relative z-10 flex flex-col justify-between h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-gray-400 text-sm font-medium">{title}</h3>
+          <div className={`p-2 rounded-xl bg-gradient-to-br ${bgStyle}`}>
+            <Icon size={18} />
+          </div>
+        </div>
+        <div>
+          <p className="text-3xl font-bold tracking-tight text-white">
+            {isCurrency
+              ? convertToINR(value)
+              : Number(value).toLocaleString("en-IN")}
+          </p>
+        </div>
+      </div>
     </motion.div>
   );
 }

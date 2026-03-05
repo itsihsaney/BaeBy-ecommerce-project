@@ -3,12 +3,15 @@ import {
     adminLogin,
     getUsers,
     getUserById,
+    updateUser,
+    deleteUser,
     getProducts,
     getProductById,
     createProduct,
     updateProduct,
     deleteProduct,
     getOrders,
+    updateOrderStatus,
     getStats
 } from "../controllers/adminController.js";
 import adminOnly from "../middlewares/adminMiddleware.js";
@@ -33,7 +36,9 @@ router.route("/users")
     .get(getUsers);
 
 router.route("/users/:id")
-    .get(getUserById);
+    .get(getUserById)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 // Products management
 router.route("/products")
@@ -48,6 +53,9 @@ router.route("/products/:id")
 // Orders management
 router.route("/orders")
     .get(getOrders);
+
+router.route("/orders/:id")
+    .patch(updateOrderStatus);
 
 // Dashboard stats
 router.route("/stats")

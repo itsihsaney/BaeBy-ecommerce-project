@@ -1,111 +1,90 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { PackageCheck, Loader2, XCircle, Edit3 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getOrders } from "../../api/adminApi";
+import api from "../../api/axiosInstance";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState({ message: "", type: "" });
   const [editingOrder, setEditingOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
 
   const itemsPerPage = 8;
 
-  // ------------------ URL PARAMS ----------------------
+  // ─── URL params ────────────────────────────────────────────────
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // Get filter from URL or default "all"
   const filterFromUrl = searchParams.get("filter") || "all";
   const [filter, setFilter] = useState(filterFromUrl);
-
-  // Pagination from URL
   const initialPage = parseInt(searchParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
-
-  // ----------------------------------------------------
+  // ───────────────────────────────────────────────────────────────
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  // sync URL / filter
+  // Sync filter from URL changes
   useEffect(() => {
-    const urlFilter = searchParams.get("filter") || "all";
-    setFilter(urlFilter);
+    setFilter(searchParams.get("filter") || "all");
   }, [searchParams]);
 
+  /* ─── Fetch all orders from real backend ─── */
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders");
-      setOrders(res.data.sort((a,b) => Number (b.id) - Number (a.id)));
+      // getOrders() → GET /api/admin/orders  (JWT auto-attached via axiosInstance)
+      const res = await getOrders();
+      // Backend: { status: "success", data: [...] }
+      const data = res.data?.data || [];
+      // Sort newest first using createdAt
+      const sorted = [...data].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setOrders(sorted);
     } catch (err) {
-      showToast("Failed to fetch orders", "error");
+      toast.error(
+        err.response?.data?.message || "Failed to fetch orders"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast({ message: "", type: "" }), 2500);
-  };
-
-  const normalizePrice = (value) => {
-    if (!value) return 0;
-    return parseFloat(value.toString().replace(/[^0-9.]/g, "")) || 0;
-  };
-
-  // ------------------------- STATUS UPDATE ----------------------------
+  /* ─── Status update ─── */
   const handleUpdateStatus = async () => {
     if (!newStatus) return;
-
     try {
-      const updatedOrder = { ...editingOrder, status: newStatus };
+      // PATCH /api/admin/orders/:id  — update status field only
+      await api.patch(`/api/admin/orders/${editingOrder.id}`, {
+        status: newStatus,
+      });
 
-      await axios.patch(
-        `https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders/${(editingOrder.id)}`,
-        updatedOrder
-      );
-
-      // instant UI update
       setOrders((prev) =>
         prev.map((o) =>
           o.id === editingOrder.id ? { ...o, status: newStatus } : o
         )
       );
 
-      showToast(`Order #${editingOrder.id} updated to ${newStatus}`);
+      toast.success(`Order updated to "${newStatus}"`);
       setEditingOrder(null);
     } catch (err) {
-      showToast("Failed to update", "error");
+      toast.error(
+        err.response?.data?.message || "Failed to update order status"
+      );
     }
   };
 
-  // ------------------------- CANCEL ORDER ----------------------------
-  const handleCancelOrder = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
-
-    try {
-      await axios.delete(`https://6931218d11a8738467cd5cde.mockapi.io/api/v1/orders/${id}`);
-      setOrders((prev) => prev.filter((o) => o.id !== id));
-      showToast("Order canceled");
-    } catch (err) {
-      showToast("Failed to cancel", "error");
-    }
-  };
-
-  // ------------------------- FILTER ----------------------------
+  /* ─── Filters ─── */
   const filteredOrders = orders.filter((o) => {
     if (filter === "all") return true;
-    return o.status?.toLowerCase().includes(filter);
+    return o.status?.toLowerCase().includes(filter.toLowerCase());
   });
 
-  // ------------------------- PAGINATION ----------------------------
+  /* ─── Pagination ─── */
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentOrders = filteredOrders.slice(indexOfFirst, indexOfLast);
-
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
   const handlePageChange = (page) => {
@@ -113,30 +92,15 @@ export default function AdminOrders() {
     setSearchParams({ filter, page });
   };
 
-  // ------------------------- FILTER Change ----------------------------
   const handleFilterChange = (type) => {
     setFilter(type);
-    setCurrentPage(1); // reset page when filter changes
-
+    setCurrentPage(1);
     if (type === "all") setSearchParams({});
     else setSearchParams({ filter: type, page: 1 });
   };
 
   return (
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
-      
-      {/* TOAST */}
-      {toast.message && (
-        <div
-          className={`fixed top-6 right-6 px-5 py-3 rounded-xl shadow-lg text-sm font-medium transition-all duration-300 ${
-            toast.type === "success"
-              ? "bg-green-600/90 text-white"
-              : "bg-rose-600/90 text-white"
-          }`}
-        >
-          {toast.message}
-        </div>
-      )}
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
@@ -145,9 +109,7 @@ export default function AdminOrders() {
         </h2>
         <div className="text-sm text-gray-400">
           Total Orders:{" "}
-          <span className="text-fuchsia-300 font-semibold">
-            {orders.length}
-          </span>
+          <span className="text-fuchsia-300 font-semibold">{orders.length}</span>
         </div>
       </div>
 
@@ -157,11 +119,10 @@ export default function AdminOrders() {
           <button
             key={type}
             onClick={() => handleFilterChange(type)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${
-              filter === type
+            className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition ${filter === type
                 ? "bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white"
                 : "bg-[#1F2937] text-gray-400 border border-fuchsia-800/30 hover:text-fuchsia-300"
-            }`}
+              }`}
           >
             {type === "all" ? "All Orders" : type}
           </button>
@@ -192,11 +153,11 @@ export default function AdminOrders() {
               <tr className="bg-gradient-to-r from-fuchsia-700/40 to-pink-600/30 text-fuchsia-100 text-sm uppercase tracking-wider">
                 <th className="py-3 px-4 text-left">Order ID</th>
                 <th className="py-3 px-4 text-left">Customer</th>
-                <th className="py-3 px-4 text-left">Product</th>
+                <th className="py-3 px-4 text-left">Items</th>
                 <th className="py-3 px-4 text-center">Amount ($)</th>
                 <th className="py-3 px-4 text-center">Payment</th>
                 <th className="py-3 px-4 text-center">Status</th>
-                <th className="py-3 px-4 text-center">Date & Time</th>
+                <th className="py-3 px-4 text-center">Date</th>
                 <th className="py-3 px-4 text-center">Actions</th>
               </tr>
             </thead>
@@ -204,65 +165,76 @@ export default function AdminOrders() {
             <tbody>
               {currentOrders.map((order) => (
                 <tr
-                  key={order.id}
+                  key={order.id || order._id}
                   className="border-t border-fuchsia-800/20 hover:bg-fuchsia-800/10 transition"
                 >
-                  <td className="py-3 px-4 text-sm text-gray-300">{order.id}</td>
+                  <td className="py-3 px-4 text-xs text-gray-400 font-mono">
+                    #{(order.id || order._id)?.toString().slice(-6).toUpperCase()}
+                  </td>
 
                   <td className="py-3 px-4 text-sm text-gray-200 font-medium">
-                    {order.shippingName || order.name}
-                  </td>
-
-                  <td className="py-3 px-4 text-sm text-gray-400">
-                    {order.product || "—"}
-                  </td>
-
-                  <td className="py-3 px-4 text-center text-fuchsia-300 font-semibold">
-                    ${normalizePrice(order.price || order.totalAmount).toFixed(
-                      2
+                    {order.user?.name || "—"}
+                    {order.user?.email && (
+                      <p className="text-xs text-gray-500">{order.user.email}</p>
                     )}
                   </td>
 
-                  <td className="py-3 px-4 text-center text-gray-300 capitalize">
-                    {(order.method || order.paymentMethod || "—")?.toUpperCase()}
+                  <td className="py-3 px-4 text-sm text-gray-400">
+                    {Array.isArray(order.items)
+                      ? `${order.items.length} item${order.items.length !== 1 ? "s" : ""}`
+                      : "—"}
+                  </td>
+
+                  <td className="py-3 px-4 text-center text-fuchsia-300 font-semibold">
+                    ${(order.totalAmount || 0).toFixed(2)}
+                  </td>
+
+                  <td className="py-3 px-4 text-center text-gray-300 capitalize text-sm">
+                    {order.paymentMethod?.toUpperCase() || "—"}
                   </td>
 
                   <td
-                    className={`py-3 px-4 text-center font-semibold ${
-                      order.status?.includes("Pending")
+                    className={`py-3 px-4 text-center font-semibold text-sm ${order.status?.toLowerCase().includes("pending")
                         ? "text-orange-400"
-                        : order.status?.includes("Paid")
-                        ? "text-blue-400"
-                        : order.status?.includes("Delivered")
-                        ? "text-green-400"
-                        : "text-gray-400"
-                    }`}
+                        : order.status?.toLowerCase().includes("paid")
+                          ? "text-blue-400"
+                          : order.status?.toLowerCase().includes("delivered")
+                            ? "text-green-400"
+                            : "text-gray-400"
+                      }`}
                   >
-                    {order.status}
+                    {order.status || "—"}
                   </td>
 
                   <td className="py-3 px-4 text-center text-gray-400 text-xs">
-                    {order.date}
+                    {order.createdAt
+                      ? new Date(order.createdAt).toLocaleDateString()
+                      : "—"}
                   </td>
 
                   {/* ACTIONS */}
-                  <td className="py-3 px-4 text-center flex justify-center gap-3">
-                    <button
-                      onClick={() => {
-                        setEditingOrder(order);
-                        setNewStatus(order.status);
-                      }}
-                      className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
-                    >
-                      <Edit3 size={14} /> Edit
-                    </button>
+                  <td className="py-3 px-4 text-center">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingOrder(order);
+                          setNewStatus(order.status || "");
+                        }}
+                        className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
+                      >
+                        <Edit3 size={14} /> Edit
+                      </button>
 
-                    <button
-                      onClick={() => handleCancelOrder(order.id)}
-                      className="flex items-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
-                    >
-                      <XCircle size={14} /> Cancel
-                    </button>
+                      <button
+                        onClick={() => {
+                          setEditingOrder(order);
+                          setNewStatus("Cancelled");
+                        }}
+                        className="flex items-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-1 rounded-md text-white text-xs font-medium hover:opacity-90"
+                      >
+                        <XCircle size={14} /> Cancel
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -274,8 +246,6 @@ export default function AdminOrders() {
       {/* PAGINATION */}
       {!loading && filteredOrders.length > 0 && (
         <div className="flex justify-center gap-3 mt-8">
-
-          {/* Prev */}
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
@@ -284,22 +254,17 @@ export default function AdminOrders() {
             Prev
           </button>
 
-          {/* Page Numbers */}
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
               onClick={() => handlePageChange(i + 1)}
-              className={`px-3 py-2 rounded-lg ${
-                currentPage === i + 1
-                  ? "bg-fuchsia-600"
-                  : "bg-gray-700"
-              }`}
+              className={`px-3 py-2 rounded-lg ${currentPage === i + 1 ? "bg-fuchsia-600" : "bg-gray-700"
+                }`}
             >
               {i + 1}
             </button>
           ))}
 
-          {/* Next */}
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
@@ -307,11 +272,10 @@ export default function AdminOrders() {
           >
             Next
           </button>
-
         </div>
       )}
 
-      {/* EDIT MODAL */}
+      {/* EDIT / STATUS MODAL */}
       {editingOrder && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-[#1E1E2A] p-6 rounded-2xl border border-fuchsia-700/30 w-96 relative">
@@ -323,7 +287,7 @@ export default function AdminOrders() {
             </button>
 
             <h3 className="text-xl font-semibold text-fuchsia-300 mb-4">
-              Edit Order #{editingOrder.id}
+              Edit Order #{(editingOrder.id || editingOrder._id)?.toString().slice(-6).toUpperCase()}
             </h3>
 
             <div className="space-y-4">
@@ -332,16 +296,17 @@ export default function AdminOrders() {
               <select
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200"
+                className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:border-fuchsia-500"
               >
                 <option value="Pending COD">Pending COD</option>
                 <option value="Paid">Paid</option>
                 <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
 
               <button
                 onClick={handleUpdateStatus}
-                className="w-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white mt-4 py-2 rounded-lg"
+                className="w-full bg-gradient-to-r from-fuchsia-600 to-pink-500 text-white mt-4 py-2 rounded-lg hover:opacity-90 transition"
               >
                 Save Changes
               </button>
@@ -349,7 +314,6 @@ export default function AdminOrders() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

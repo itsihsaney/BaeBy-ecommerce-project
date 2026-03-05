@@ -15,30 +15,30 @@ const generateToken = (id) => {
 // @route   POST /api/admin/login
 // @access  Public
 export const adminLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  const admin = await User.findOne({
-    email,
-    role: "admin"
-  });
+    const admin = await User.findOne({
+        email,
+        role: "admin"
+    });
 
-  if (!admin) {
-    res.status(401);
-    throw new Error("Admin not found");
-  }
+    if (!admin) {
+        res.status(401);
+        throw new Error("Admin not found");
+    }
 
-  const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, admin.password);
 
-  if (!isMatch) {
-    res.status(401);
-    throw new Error("Invalid password");
-  }
+    if (!isMatch) {
+        res.status(401);
+        throw new Error("Invalid password");
+    }
 
-  res.json({
-    status: "success",
-    message: "Successfully logged in",
-    data: { jwt_token: generateToken(admin._id) }
-  });
+    res.json({
+        status: "success",
+        message: "Successfully logged in",
+        data: { jwt_token: generateToken(admin._id) }
+    });
 });
 
 // @desc    Get all users
@@ -64,6 +64,56 @@ export const getUserById = asyncHandler(async (req, res) => {
             status: "success",
             message: "User retrieved successfully",
             data: user
+        });
+    } else {
+        res.status(404);
+        throw new Error("User not found");
+    }
+});
+
+// @desc    Update a user
+// @route   PATCH /api/admin/users/:id
+// @access  Private/Admin
+export const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+        if (req.body.name !== undefined) user.name = req.body.name;
+        if (req.body.email !== undefined) user.email = req.body.email;
+        if (req.body.role !== undefined) user.role = req.body.role;
+        if (req.body.status !== undefined) user.status = req.body.status;
+
+        const updatedUser = await user.save();
+
+        res.json({
+            status: "success",
+            message: "User updated successfully",
+            data: updatedUser
+        });
+    } else {
+        res.status(404);
+        throw new Error("User not found");
+    }
+});
+
+// @desc    Delete a user
+// @route   DELETE /api/admin/users/:id
+// @access  Private/Admin
+export const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+        // Prevent admin from deleting themselves
+        if (user._id.toString() === req.user._id.toString()) {
+            res.status(400);
+            throw new Error("You cannot delete your own admin account");
+        }
+
+        await User.deleteOne({ _id: user._id });
+        res.json({
+            status: "success",
+            message: "User deleted successfully",
+            data: null
         });
     } else {
         res.status(404);
@@ -182,12 +232,37 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 export const getOrders = asyncHandler(async (req, res) => {
     const orders = await Order.find({})
         .populate("user", "name email")
-        .populate("items.product", "title price image category");
+        .populate("items.product", "title price image category")
+        .sort({ createdAt: -1 });
 
     res.json({
         status: "success",
         message: "Orders retrieved successfully",
         data: orders
+    });
+});
+
+// @desc    Update order status
+// @route   PATCH /api/admin/orders/:id
+// @access  Private/Admin
+export const updateOrderStatus = asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+        res.status(404);
+        throw new Error("Order not found");
+    }
+
+    if (req.body.status !== undefined) {
+        order.status = req.body.status;
+    }
+
+    const updatedOrder = await order.save();
+
+    res.json({
+        status: "success",
+        message: "Order status updated successfully",
+        data: updatedOrder
     });
 });
 

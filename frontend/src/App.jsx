@@ -29,6 +29,7 @@ import Dashboard from "./Pages/Admin/Dashboard";
 import AdminProducts from "./Pages/Admin/AdminProducts";
 import AdminOrders from "./Pages/Admin/AdminOrders";
 import AdminLayout from "./Pages/Admin/Layout/AdminLayout";
+import AdminLogin from "./Pages/Admin/AdminLogin";
 import NotAuthorized from "./Components/Auth/NotAuthorized";
 
 export default function App() {
@@ -113,6 +114,9 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/returns" element={<Return />} />
+
+              {/*  ADMIN LOGIN */}
+              <Route path="/admin/login" element={<AdminLogin />} />
 
               {/*  ADMIN SIDE (Protected) */}
               <Route

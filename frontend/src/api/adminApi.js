@@ -1,31 +1,51 @@
 import api from "./axiosInstance";
 
-// USERS
-export const getUsers = () => api.get("/api/admin/users");
+/* ================= USERS ================= */
 
-export const deleteUser = (id) =>
-  api.delete(`/api/admin/users/${id}`);
+export const getUsers = async () => {
+  return await api.get("/api/admin/users");
+};
 
-export const updateUser = (id, data) =>
-  api.patch(`/api/admin/users/${id}`, data);
+export const deleteUser = async (id) => {
+  return await api.delete(`/api/admin/users/${id}`);
+};
 
-// PRODUCTS
-export const getProducts = () =>
-  api.get("/api/admin/products");
+export const updateUser = async (id, data) => {
+  return await api.patch(`/api/admin/users/${id}`, data);
+};
 
-export const createProduct = (data) =>
-  api.post("/api/admin/products", data);
+/* ================= PRODUCTS ================= */
 
-export const updateProduct = (id, data) =>
-  api.put(`/api/admin/products/${id}`, data);
+export const getProducts = async () => {
+  return await api.get("/api/admin/products");
+};
 
-export const deleteProduct = (id) =>
-  api.delete(`/api/admin/products/${id}`);
+export const createProduct = async (data) => {
+  return await api.post("/api/admin/products", data);
+};
 
-// ORDERS
-export const getOrders = () =>
-  api.get("/api/admin/orders");
+export const updateProduct = async (id, data) => {
+  return await api.put(`/api/admin/products/${id}`, data);
+};
 
-// STATS
-export const getStats = () =>
-  api.get("/api/admin/stats");
+export const deleteProduct = async (id) => {
+  return await api.delete(`/api/admin/products/${id}`);
+};
+
+/* ================= ORDERS ================= */
+
+export const getOrders = async () => {
+  return await api.get("/api/admin/orders");
+};
+
+/* ================= DASHBOARD ================= */
+
+export const getStats = async () => {
+  return await api.get("/api/admin/stats");
+};
+
+/* ================= AUTH ================= */
+
+export const adminLogin = async (data) => {
+  return await api.post("/api/admin/login", data);
+};

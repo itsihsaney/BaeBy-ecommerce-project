@@ -13,6 +13,8 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
+import adminRoutes from "./routes/adminRoutes.js"
+
 dotenv.config();        // Load environment variables
 connectDB();            // Connect to MongoDB
 
@@ -37,6 +39,8 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/payment", paymentRoutes);
+
+app.use("/api/admin", adminRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

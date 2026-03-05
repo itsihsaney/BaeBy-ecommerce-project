@@ -5,8 +5,6 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-    // If status code is 200, set it to 500 (internal server error)
-    // because if we are in this handler, an error occurred.
     let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     let message = err.message;
 

@@ -127,7 +127,7 @@ function Login() {
                 value={form.password}
                 onChange={handleChange}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-4 outline-none focus:bg-white focus:ring-2 focus:ring-pink-100 focus:border-pink-300 transition-all duration-200 placeholder:text-gray-300 text-[#0F172A] font-medium"
-                placeholder="••••••••"
+                placeholder="Enter Your Password.."
                 required
               />
             </div>

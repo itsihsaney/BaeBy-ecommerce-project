@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Trash2, Loader2, Edit3, Package } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import {
   getProducts,
@@ -11,7 +11,6 @@ import {
 
 export default function AdminProducts() {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const initialPage = parseInt(searchParams.get("page")) || 1;
 
   const [products, setProducts] = useState([]);
@@ -35,10 +34,10 @@ export default function AdminProducts() {
 
   /* ─── Fetch Products ─── */
   const fetchProducts = async () => {
+    setLoading(true);
     try {
-      // getProducts() → GET /api/admin/products  (JWT auto-attached)
       const res = await getProducts();
-      // Backend: { status: "success", data: [...] }
+      // Backend: { status: "success", data: [ ...products ] }
       setProducts(res.data?.data || []);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to fetch products");
@@ -47,18 +46,19 @@ export default function AdminProducts() {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { fetchProducts(); }, []);
 
   /* ─── Delete Product ─── */
   const confirmDeleteProduct = async () => {
     if (!productToDelete) return;
     setDeleting(true);
+    const pid = productToDelete.id || productToDelete._id;
     try {
-      // deleteProduct(id) → DELETE /api/admin/products/:id
-      await deleteProduct(productToDelete.id);
-      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      // DELETE /api/admin/products/:id
+      await deleteProduct(pid);
+      setProducts((prev) =>
+        prev.filter((p) => (p.id || p._id) !== pid)
+      );
       toast.success("Product deleted successfully");
       setProductToDelete(null);
     } catch (err) {
@@ -72,54 +72,76 @@ export default function AdminProducts() {
   const handleAddProduct = async () => {
     const { title, category, price } = newProduct;
     if (!title || !category || !price) {
-      toast.error("Please fill all required fields (title, category, price)");
+      toast.error("Title, category and price are required");
       return;
     }
+
     try {
-      // createProduct(data) → POST /api/admin/products
-      const res = await createProduct({
-        ...newProduct,
+      // POST /api/admin/products
+      // Backend schema: { title, description, image, price, category }
+      const payload = {
+        title: newProduct.title,
+        description: newProduct.description || "",
+        image: newProduct.image || "https://placehold.co/400x400?text=No+Image",
         price: parseFloat(newProduct.price),
-      });
-      setProducts((prev) => [...prev, res.data?.data]);
+        category: newProduct.category,
+      };
+
+      const res = await createProduct(payload);
+      const created = res.data?.data;
+      setProducts((prev) => [created, ...prev]);
       toast.success("Product added successfully");
       setShowAddModal(false);
       setNewProduct({ title: "", category: "", price: "", image: "", description: "" });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to add product");
+      // Show Joi validation errors clearly
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Failed to add product";
+      toast.error(msg);
     }
   };
 
   /* ─── Edit Product ─── */
   const openEditModal = (product) => {
-    setEditProductData({
-      ...product,
-      price: parseFloat(product.price) || 0,
-    });
+    setEditProductData({ ...product, price: parseFloat(product.price) || 0 });
     setShowEditModal(true);
   };
 
   const handleEditSave = async () => {
     const { title, category, price } = editProductData;
     if (!title || !category || !price) {
-      toast.error("All required fields must be filled");
+      toast.error("Title, category and price are required");
       return;
     }
+
+    const pid = editProductData.id || editProductData._id;
+
     try {
-      // updateProduct(id, data) → PUT /api/admin/products/:id
-      const res = await updateProduct(editProductData.id, {
-        ...editProductData,
+      // PUT /api/admin/products/:id
+      const payload = {
+        title: editProductData.title,
+        description: editProductData.description || "",
+        image: editProductData.image || "https://placehold.co/400x400?text=No+Image",
         price: parseFloat(editProductData.price),
-      });
+        category: editProductData.category,
+      };
+
+      const res = await updateProduct(pid, payload);
+      const updated = res.data?.data || { ...editProductData, ...payload };
+
       setProducts((prev) =>
-        prev.map((p) =>
-          p.id === editProductData.id ? res.data?.data || { ...p, ...editProductData } : p
-        )
+        prev.map((p) => ((p.id || p._id) === pid ? updated : p))
       );
       toast.success("Product updated successfully");
       setShowEditModal(false);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update product");
+      const msg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Failed to update product";
+      toast.error(msg);
     }
   };
 
@@ -140,17 +162,17 @@ export default function AdminProducts() {
     setSearchParams({ page });
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-64 text-fuchsia-400">
         <Loader2 className="animate-spin w-8 h-8 mr-2" />
         Loading Products...
       </div>
     );
+  }
 
   return (
     <div className="p-6 bg-[#111827] text-gray-100 min-h-screen relative">
-      <Toaster position="top-right" />
 
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
@@ -167,7 +189,7 @@ export default function AdminProducts() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="bg-[#1F2937] border border-fuchsia-700/40 px-4 py-2 rounded-lg text-gray-200 w-60 focus:outline-none focus:border-fuchsia-500"
+            className="bg-[#1F2937] border border-fuchsia-700/40 px-4 py-2 rounded-lg text-gray-200 w-60 focus:outline-none focus:border-fuchsia-500 text-sm"
           />
 
           <button
@@ -189,68 +211,65 @@ export default function AdminProducts() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-[#1F2937]/80 border border-fuchsia-700/20 rounded-2xl shadow-md hover:shadow-fuchsia-600/30 transition duration-300 overflow-hidden"
-            >
-              <img
-                src={product.image || "https://via.placeholder.com/300x200?text=No+Image"}
-                alt={product.title}
-                className="h-48 w-full object-cover"
-                onError={(e) => {
-                  e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
-                }}
-              />
+          {currentProducts.map((product) => {
+            const pid = product.id || product._id;
+            return (
+              <div
+                key={pid}
+                className="bg-[#1F2937]/80 border border-fuchsia-700/20 rounded-2xl shadow-md hover:shadow-fuchsia-600/20 transition duration-300 overflow-hidden"
+              >
+                <img
+                  src={product.image || "https://placehold.co/400x300?text=No+Image"}
+                  alt={product.title}
+                  className="h-48 w-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "https://placehold.co/400x300?text=No+Image";
+                  }}
+                />
 
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-white truncate">
-                  {product.title}
-                </h3>
-                <p className="text-sm text-gray-400 capitalize">{product.category}</p>
-                <p className="text-fuchsia-300 font-semibold">
-                  ${parseFloat(product.price || 0).toFixed(2)}
-                </p>
+                <div className="p-4">
+                  <h3 className="text-md font-semibold text-white truncate">
+                    {product.title}
+                  </h3>
+                  <p className="text-xs text-gray-400 capitalize mt-0.5">
+                    {product.category}
+                  </p>
+                  <p className="text-fuchsia-300 font-semibold mt-1">
+                    ₹{parseFloat(product.price || 0).toFixed(2)}
+                  </p>
 
-                <div className="flex justify-between mt-3 gap-2">
-                  <button
-                    onClick={() => openEditModal(product)}
-                    className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-blue-600 to-fuchsia-500 px-3 py-2 rounded text-white text-sm hover:opacity-90 transition"
-                  >
-                    <Edit3 size={14} /> Edit
-                  </button>
-                  <button
-                    onClick={() => setProductToDelete(product)}
-                    className="flex-1 flex items-center justify-center gap-1 bg-gradient-to-r from-rose-600 to-pink-500 px-3 py-2 rounded text-white text-sm hover:opacity-90 transition"
-                  >
-                    <Trash2 size={14} /> Delete
-                  </button>
+                  <div className="flex justify-between mt-3 gap-2">
+                    <button
+                      onClick={() => openEditModal(product)}
+                      className="flex-1 flex items-center justify-center gap-1 bg-blue-600/80 hover:bg-blue-500 px-3 py-2 rounded text-white text-xs transition"
+                    >
+                      <Edit3 size={13} /> Edit
+                    </button>
+                    <button
+                      onClick={() => setProductToDelete(product)}
+                      className="flex-1 flex items-center justify-center gap-1 bg-rose-600/80 hover:bg-rose-500 px-3 py-2 rounded text-white text-xs transition"
+                    >
+                      <Trash2 size={13} /> Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {/* Delete Modal */}
       {productToDelete && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/40 w-96 relative">
-            <button
-              onClick={() => setProductToDelete(null)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-rose-400 transition"
-            >
-              ✖
-            </button>
-
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1E1E2A] p-6 rounded-2xl shadow-lg border border-fuchsia-700/40 w-full max-w-sm">
             <h3 className="text-xl font-semibold mb-4 text-fuchsia-300">
               Confirm Delete
             </h3>
-
-            <p className="text-gray-300 mb-6">
+            <p className="text-gray-300 mb-6 text-sm">
               Are you sure you want to delete{" "}
               <span className="text-white font-semibold">
-                {productToDelete.title || `#${productToDelete.id}`}
+                {productToDelete.title}
               </span>
               ? This action cannot be undone.
             </p>
@@ -258,15 +277,14 @@ export default function AdminProducts() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setProductToDelete(null)}
-                className="px-4 py-2 bg-gray-600/40 rounded-md text-gray-300 hover:bg-gray-600/60"
+                className="px-4 py-2 bg-gray-600/40 rounded-md text-gray-300 hover:bg-gray-600/60 transition text-sm"
               >
                 Cancel
               </button>
-
               <button
                 onClick={confirmDeleteProduct}
                 disabled={deleting}
-                className="bg-gradient-to-r from-fuchsia-600 to-pink-500 px-6 py-2 rounded-lg text-white font-medium hover:opacity-90 transition disabled:opacity-60"
+                className="bg-gradient-to-r from-fuchsia-600 to-pink-500 px-6 py-2 rounded-lg text-white font-medium hover:opacity-90 transition disabled:opacity-60 text-sm"
               >
                 {deleting ? "Deleting..." : "Yes, Delete"}
               </button>
@@ -277,30 +295,28 @@ export default function AdminProducts() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-3 mt-8">
+        <div className="flex justify-center gap-2 mt-8">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
+            className="px-3 py-2 bg-gray-700 rounded-lg text-sm disabled:opacity-30 hover:bg-gray-600 transition"
           >
             Prev
           </button>
-
           {[...Array(totalPages)].map((_, i) => (
             <button
               key={i}
               onClick={() => handlePageChange(i + 1)}
-              className={`px-3 py-2 rounded-lg ${currentPage === i + 1 ? "bg-fuchsia-600" : "bg-gray-700"
+              className={`px-3 py-2 rounded-lg text-sm transition ${currentPage === i + 1 ? "bg-fuchsia-600 text-white" : "bg-gray-700 hover:bg-gray-600"
                 }`}
             >
               {i + 1}
             </button>
           ))}
-
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-2 bg-gray-700 rounded-lg disabled:opacity-30"
+            className="px-3 py-2 bg-gray-700 rounded-lg text-sm disabled:opacity-30 hover:bg-gray-600 transition"
           >
             Next
           </button>
@@ -337,18 +353,33 @@ function ProductForm({ product, setProduct }) {
 
   return (
     <div className="space-y-4">
-      {/* NOTE: Backend uses "title" not "name" */}
       <Input label="Title *" name="title" value={product.title || ""} onChange={handleChange} />
       <Input label="Category *" name="category" value={product.category || ""} onChange={handleChange} />
-      <Input label="Price ($) *" name="price" value={product.price || ""} onChange={handleChange} type="number" />
-      <Input label="Image URL" name="image" value={product.image || ""} onChange={handleChange} />
-      <Input label="Description" name="description" value={product.description || ""} onChange={handleChange} />
+      <Input
+        label="Price ($) *"
+        name="price"
+        value={product.price || ""}
+        onChange={handleChange}
+        type="number"
+      />
+      <Input
+        label="Image URL (optional)"
+        name="image"
+        value={product.image || ""}
+        onChange={handleChange}
+        placeholder="https://example.com/image.jpg"
+      />
+      <Input
+        label="Description (optional)"
+        name="description"
+        value={product.description || ""}
+        onChange={handleChange}
+      />
     </div>
   );
 }
 
-/* ─── Reusable Input ─── */
-function Input({ label, name, value, onChange, type = "text" }) {
+function Input({ label, name, value, onChange, type = "text", placeholder }) {
   return (
     <div>
       <label className="block text-sm text-gray-400 mb-1">{label}</label>
@@ -357,20 +388,20 @@ function Input({ label, name, value, onChange, type = "text" }) {
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:border-fuchsia-500 transition"
+        placeholder={placeholder || ""}
+        className="w-full bg-[#2C2F3C] border border-fuchsia-700/30 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:border-fuchsia-500 transition text-sm"
       />
     </div>
   );
 }
 
-/* ─── Reusable Modal ─── */
 function Modal({ title, onClose, onSave, children }) {
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-[#1E1E2A] p-6 rounded-xl border border-fuchsia-700/30 w-full max-w-md relative">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-400 hover:text-fuchsia-400 transition"
+          className="absolute top-3 right-4 text-gray-400 hover:text-fuchsia-400 transition text-lg"
         >
           ✖
         </button>

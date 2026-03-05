@@ -8,11 +8,29 @@ export default function TopBar({ onMenuClick }) {
   const navigate = useNavigate();
   const { logout, user } = useContext(AuthContext);
 
+  // Read admin info directly from localStorage (set by AdminLogin)
+  const getAdminInfo = () => {
+    // Try AuthContext user first (if admin logged in via the main login page)
+    if (user && user.role === "admin") return user;
+
+    // Otherwise, decode a minimal display from nothing (token is opaque)
+    return null;
+  };
+
+  const adminInfo = getAdminInfo();
+
   const handleLogout = () => {
     try {
       setShowLogoutModal(false);
-      logout();
-      // AuthContext handles state cleanup and navigation to /login
+
+      // Clear admin-specific token
+      localStorage.removeItem("adminToken");
+
+      // If user was also logged in via AuthContext, log them out too
+      if (logout) logout();
+
+      // Navigate to login
+      navigate("/login", { replace: true });
     } catch (err) {
       console.error("Logout error:", err);
     }
@@ -36,39 +54,40 @@ export default function TopBar({ onMenuClick }) {
         </div>
 
         {/* Right: User Info + Logout */}
-        <div className="flex items-center gap-5">
-          {user ? (
+        <div className="flex items-center gap-4">
+          {adminInfo ? (
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
-                <p className="font-medium text-gray-200 text-sm">{user.name}</p>
+                <p className="font-medium text-gray-200 text-sm">
+                  {adminInfo.name}
+                </p>
                 <p className="text-[10px] text-fuchsia-400 font-bold uppercase tracking-wider">
-                  {user.role}
+                  {adminInfo.role}
                 </p>
               </div>
-
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-fuchsia-600 to-pink-500 flex items-center justify-center text-white font-bold shadow-lg shadow-fuchsia-500/20">
-                {user.name?.charAt(0).toUpperCase()}
+              <div className="h-9 w-9 rounded-full bg-gradient-to-br from-fuchsia-600 to-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-fuchsia-500/20">
+                {adminInfo.name?.charAt(0).toUpperCase()}
               </div>
             </div>
           ) : (
-            <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-400">
-              <UserIcon size={20} />
+            <div className="h-9 w-9 rounded-full bg-gray-700 flex items-center justify-center text-gray-400">
+              <UserIcon size={18} />
             </div>
           )}
 
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="bg-gray-800 hover:bg-gray-700 text-gray-300 p-2.5 rounded-xl border border-gray-700 hover:border-fuchsia-500/50 transition-all group"
-            title="Logout"
+            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl border border-gray-700 hover:border-fuchsia-500/50 transition-all text-sm group"
           >
-            <LogOut size={20} className="group-hover:text-fuchsia-400" />
+            <LogOut size={16} className="group-hover:text-fuchsia-400 transition-colors" />
+            <span className="group-hover:text-fuchsia-400 transition-colors">Logout</span>
           </button>
         </div>
       </header>
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[500]">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[500] p-4">
           <div className="bg-[#1E1E2A] border border-fuchsia-700/30 rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
             <h2 className="text-2xl font-bold text-fuchsia-300 mb-2">
               Confirm Logout
@@ -80,13 +99,13 @@ export default function TopBar({ onMenuClick }) {
             <div className="flex gap-4">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 py-2.5 rounded-xl font-medium transition"
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 py-2.5 rounded-xl font-medium transition text-sm"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 bg-gradient-to-r from-fuchsia-600 to-pink-500 py-2.5 rounded-xl text-white font-bold hover:opacity-90 transition shadow-lg shadow-fuchsia-500/25"
+                className="flex-1 bg-gradient-to-r from-fuchsia-600 to-pink-500 py-2.5 rounded-xl text-white font-bold hover:opacity-90 transition shadow-lg shadow-fuchsia-500/25 text-sm"
               >
                 Log Out
               </button>

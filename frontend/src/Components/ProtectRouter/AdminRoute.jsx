@@ -1,16 +1,18 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../Context/AuthContext";
 
+/**
+ * AdminRoute Protector
+ *
+ * Strategy: Check for `adminToken` in localStorage (set by AdminLogin).
+ * This is decoupled from AuthContext so normal user sessions are not affected.
+ */
 export default function AdminRoute({ children }) {
-  const { user } = useAuth();
+  const token = localStorage.getItem("adminToken");
 
-  //  Not logged in
-  if (!user) return <Navigate to="/login" replace />;
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
 
-  //  Logged in but not admin
-  if (user.role !== "admin") return <Navigate to="/not-authorized" replace />;
-
-  //  Admin
   return children;
 }

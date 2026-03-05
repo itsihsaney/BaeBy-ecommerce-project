@@ -27,12 +27,10 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check for "token" instead of "adminToken"
-    const token = localStorage.getItem("token");
-
+    // Guard: if no adminToken present, redirect to admin login
+    const token = localStorage.getItem("adminToken");
     if (!token) {
-      console.warn("No token found. Redirecting to login...");
-      window.location.href = "/login";
+      window.location.href = "/admin/login";
       return;
     }
 
@@ -43,7 +41,7 @@ export default function Dashboard() {
           getOrders(),
         ]);
 
-        // res.data.data mapping
+        // Backend format: { status: "success", data: { ... } }
         const statsData = statsRes?.data?.data || {};
 
         setStats({
@@ -53,6 +51,7 @@ export default function Dashboard() {
           totalRevenue: statsData.totalRevenue || 0,
         });
 
+        // Backend format: { status: "success", data: [ ...orders ] }
         const orders = ordersRes?.data?.data || [];
         const latestOrders = [...orders]
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -62,10 +61,11 @@ export default function Dashboard() {
       } catch (err) {
         console.error("Dashboard fetch error:", err);
         if (err.response?.status === 401) {
-          window.location.href = "/login";
+          localStorage.removeItem("adminToken");
+          window.location.href = "/admin/login";
           return;
         }
-        setError("Failed to load dashboard data.");
+        setError("Failed to load dashboard data. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -84,8 +84,14 @@ export default function Dashboard() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#111827]">
-        <p className="text-red-400 font-semibold">{error}</p>
+      <div className="flex flex-col justify-center items-center min-h-screen bg-[#111827] gap-4">
+        <p className="text-red-400 font-semibold text-lg">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white rounded-xl font-medium transition"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -109,7 +115,7 @@ export default function Dashboard() {
       </h1>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
         <AnimatedStatCard
           title="Total Users"
           value={stats.totalUsers}
@@ -140,7 +146,8 @@ export default function Dashboard() {
             <BarChart data={barData}>
               <XAxis dataKey="name" stroke="#D8B4FE" />
               <Tooltip
-                contentStyle={{ backgroundColor: "#1F2937", border: "none" }}
+                contentStyle={{ backgroundColor: "#1F2937", border: "none", borderRadius: "8px" }}
+                cursor={{ fill: "rgba(192,132,252,0.08)" }}
               />
               <Bar dataKey="value" fill="#C084FC" radius={[8, 8, 0, 0]} />
             </BarChart>
@@ -150,7 +157,16 @@ export default function Dashboard() {
         <ChartCard title="Category Breakdown">
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
-              <Pie data={pieData} dataKey="value" outerRadius={100} fill="#C084FC">
+              <Pie
+                data={pieData}
+                dataKey="value"
+                outerRadius={100}
+                fill="#C084FC"
+                label={({ name, percent }) =>
+                  `${name} ${(percent * 100).toFixed(0)}%`
+                }
+                labelLine={false}
+              >
                 {pieData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -159,7 +175,7 @@ export default function Dashboard() {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ backgroundColor: "#1F2937", border: "none" }}
+                contentStyle={{ backgroundColor: "#1F2937", border: "none", borderRadius: "8px" }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -175,8 +191,8 @@ export default function Dashboard() {
           <table className="min-w-full text-left">
             <thead>
               <tr className="text-gray-400 text-sm border-b border-gray-700">
-                <th className="pb-4">Order ID</th>
-                <th className="pb-4">Customer</th>
+                <th className="pb-4 pr-4">Order ID</th>
+                <th className="pb-4 pr-4">Customer</th>
                 <th className="pb-4 text-center">Amount</th>
                 <th className="pb-4 text-center">Status</th>
               </tr>
@@ -187,23 +203,28 @@ export default function Dashboard() {
                   key={order.id || order._id}
                   className="border-b border-gray-800/50 hover:bg-white/5 transition"
                 >
-                  <td className="py-4 text-sm font-mono text-gray-400">
+                  <td className="py-4 pr-4 text-sm font-mono text-gray-400">
                     #{(order.id || order._id)?.toString().slice(-6).toUpperCase()}
                   </td>
-                  <td className="py-4 text-sm text-gray-200">
+                  <td className="py-4 pr-4 text-sm text-gray-200">
                     {order.user?.name || "Guest"}
+                    {order.user?.email && (
+                      <p className="text-xs text-gray-500">{order.user.email}</p>
+                    )}
                   </td>
                   <td className="py-4 text-sm text-center font-semibold text-fuchsia-300">
-                    ${(order.totalAmount || 0).toFixed(2)}
+                    ₹{(order.totalAmount || 0).toFixed(2)}
                   </td>
                   <td className="py-4 text-center">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "delivered"
+                      className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${order.status?.toLowerCase().includes("delivered")
                           ? "bg-green-500/10 text-green-400"
-                          : "bg-orange-500/10 text-orange-400"
+                          : order.status?.toLowerCase().includes("paid")
+                            ? "bg-blue-500/10 text-blue-400"
+                            : "bg-orange-500/10 text-orange-400"
                         }`}
                     >
-                      {order.status}
+                      {order.status || "Pending"}
                     </span>
                   </td>
                 </tr>
@@ -237,10 +258,13 @@ function AnimatedStatCard({ title, value, color, isCurrency = false }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
     >
       <h3 className="text-gray-100/80 text-sm font-medium mb-2">{title}</h3>
       <p className="text-3xl font-bold tracking-tight">
-        {isCurrency ? `$${Number(value).toLocaleString()}` : value}
+        {isCurrency
+          ? `₹${Number(value).toLocaleString("en-IN")}`
+          : value}
       </p>
     </motion.div>
   );

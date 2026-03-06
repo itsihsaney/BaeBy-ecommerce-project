@@ -24,12 +24,12 @@ import Return from "./Components/Footer/Return";
 import Payment from "./Pages/Payments/Payments";
 import OrderSuccess from "./Pages/Payments/OrderSuccess";
 import Orders from "./Pages/Orders/Order";
-import Users from "./Pages/Admin/Users";
-import Dashboard from "./Pages/Admin/Dashboard";
-import AdminProducts from "./Pages/Admin/AdminProducts";
-import AdminOrders from "./Pages/Admin/AdminOrders";
-import AdminLayout from "./Pages/Admin/Layout/AdminLayout";
-import AdminLogin from "./Pages/Admin/AdminLogin";
+import Users from "./pages/admin/Users";
+import Dashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/Products";
+import AdminOrders from "./pages/admin/Orders";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
 import NotAuthorized from "./Components/Auth/NotAuthorized";
 
 export default function App() {

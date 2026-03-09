@@ -2,44 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Users, Package, ShoppingCart, X, CornerDownLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getUsers, getProducts, getOrders } from '../../api/adminApi';
+import { globalSearch } from '../../api/adminApi';
 
 export default function SearchModal({ isOpen, onClose }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState({ users: [], products: [], orders: [] });
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState({ users: [], products: [], orders: [] });
     const inputRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isOpen) {
             inputRef.current?.focus();
-            fetchAllData();
         } else {
             setQuery('');
+            setResults({ users: [], products: [], orders: [] });
         }
     }, [isOpen]);
-
-    const fetchAllData = async () => {
-        setLoading(true);
-        try {
-            const [usersRes, productsRes, ordersRes] = await Promise.all([
-                getUsers(),
-                getProducts(),
-                getOrders()
-            ]);
-            setData({
-                users: usersRes.data?.data || [],
-                products: productsRes.data?.data || [],
-                orders: ordersRes.data?.data || []
-            });
-        } catch (err) {
-            console.error("Search data fetch failed:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         if (!query.trim()) {
@@ -47,16 +26,20 @@ export default function SearchModal({ isOpen, onClose }) {
             return;
         }
 
-        const q = query.toLowerCase();
-        setResults({
-            users: data.users.filter(u => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)).slice(0, 4),
-            products: data.products.filter(p => p.title?.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q)).slice(0, 4),
-            orders: data.orders.filter(o =>
-                (o.orderId || o.id || o._id)?.toString().toLowerCase().includes(q) ||
-                o.user?.name?.toLowerCase().includes(q)
-            ).slice(0, 4)
-        });
-    }, [query, data]);
+        const delayDebounceFn = setTimeout(async () => {
+            setLoading(true);
+            try {
+                const res = await globalSearch(query);
+                setResults(res.data || { users: [], products: [], orders: [] });
+            } catch (err) {
+                console.error("Search failed:", err);
+            } finally {
+                setLoading(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [query]);
 
     const handleNavigate = (path) => {
         navigate(path);
@@ -211,7 +194,7 @@ export default function SearchModal({ isOpen, onClose }) {
                                     <span>Navigate</span>
                                 </div>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest">Search Console • Frontend Driven</p>
+                            <p className="text-[10px] font-bold text-gray-700 uppercase tracking-widest">Search Console • Backend Driven</p>
                         </div>
                     </motion.div>
                 </div>

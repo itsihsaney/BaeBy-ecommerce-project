@@ -34,6 +34,8 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.index({ title: 1 });
+productSchema.index({ category: 1 });
 productSchema.index({ title: "text", category: "text" });
 
 export default mongoose.model("Product", productSchema);

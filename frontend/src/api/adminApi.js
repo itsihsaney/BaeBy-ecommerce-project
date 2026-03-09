@@ -1,9 +1,28 @@
 import api from "./axiosInstance";
 
+/* ================= AUTH ================= */
+
+/**
+ * Admin Login
+ * @param {Object} data - { email, password }
+ */
+export const adminLogin = async (data) => {
+  return await api.post("/api/admin/login", data);
+};
+
+/* ================= DASHBOARD ================= */
+
+/**
+ * Get dashboard stats (Total Users, Products, Orders, Revenue)
+ */
+export const getStats = async () => {
+  return await api.get("/api/admin/stats");
+};
+
 /* ================= USERS ================= */
 
-export const getUsers = async () => {
-  return await api.get("/api/admin/users");
+export const getUsers = async (params) => {
+  return await api.get("/api/admin/users", { params });
 };
 
 export const deleteUser = async (id) => {
@@ -16,8 +35,8 @@ export const updateUser = async (id, data) => {
 
 /* ================= PRODUCTS ================= */
 
-export const getProducts = async () => {
-  return await api.get("/api/admin/products");
+export const getProducts = async (params) => {
+  return await api.get("/api/admin/products", { params });
 };
 
 export const createProduct = async (data) => {
@@ -34,16 +53,34 @@ export const deleteProduct = async (id) => {
 
 /* ================= ORDERS ================= */
 
-export const getOrders = async () => {
-  return await api.get("/api/admin/orders");
+export const getOrders = async (params) => {
+  return await api.get("/api/admin/orders", { params });
 };
 
 export const updateOrderStatus = async (id, data) => {
   return await api.patch(`/api/admin/orders/${id}`, data);
 };
 
-/* ================= AUTH ================= */
+/* ================= SEARCH ================= */
 
-export const adminLogin = async (data) => {
-  return await api.post("/api/admin/login", data);
+export const globalSearch = async (q) => {
+  return await api.get("/api/admin/search", { params: { q } });
+};
+
+/* ================= NOTIFICATIONS ================= */
+
+export const getNotifications = async () => {
+  return await api.get("/api/admin/notifications");
+};
+
+export const getUnreadCount = async () => {
+  return await api.get("/api/admin/notifications/unread-count");
+};
+
+export const markNotificationAsRead = async (id) => {
+  return await api.patch(`/api/admin/notifications/${id}/read`);
+};
+
+export const markAllNotificationsRead = async () => {
+  return await api.patch("/api/admin/notifications/read-all");
 };

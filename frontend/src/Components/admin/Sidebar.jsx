@@ -21,9 +21,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             >
                 <div className="p-6">
                     <Link to="/admin" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-black text-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:scale-105 transition-transform duration-300">
-                            B
-                        </div>
+                        <img
+                            src="/BaeBy Official Logo.jpg"
+                            alt="BaeBy Logo"
+                            className="w-10 h-10 object-contain rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:scale-105 transition-transform duration-300"
+                        />
                         <span className="text-2xl font-black text-white tracking-tight">
                             BaeBy<span className="text-purple-500">Admin</span>
                         </span>
@@ -41,8 +43,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                                 to={item.path}
                                 onClick={() => window.innerWidth < 768 && setIsOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative group overflow-hidden ${isActive
-                                        ? "text-white font-medium"
-                                        : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
+                                    ? "text-white font-medium"
+                                    : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
                                     }`}
                             >
                                 {isActive && (

@@ -10,9 +10,21 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
+    getStats
+} from "../controllers/adminController.js";
+import {
     getOrders,
     updateOrderStatus
-} from "../controllers/adminController.js";
+} from "../controllers/adminOrderController.js";
+import {
+    globalSearch
+} from "../controllers/adminSearchController.js";
+import {
+    getNotifications,
+    getUnreadCount,
+    markAsRead,
+    markAllAsRead,
+} from "../controllers/notificationController.js";
 
 import adminOnly from "../middlewares/adminMiddleware.js";
 import protect from "../middlewares/authMiddleware.js";
@@ -60,6 +72,28 @@ router.route("/orders")
 
 router.route("/orders/:id")
     .patch(validateRequest(updateOrderSchema), updateOrderStatus);
+
+
+// Dashboard stats
+router.route("/stats")
+    .get(getStats);
+
+// Global Search
+router.route("/search")
+    .get(globalSearch);
+
+// Notifications
+router.route("/notifications")
+    .get(getNotifications);
+
+router.route("/notifications/unread-count")
+    .get(getUnreadCount);
+
+router.route("/notifications/:id/read")
+    .patch(markAsRead);
+
+router.route("/notifications/read-all")
+    .patch(markAllAsRead);
 
 
 export default router;

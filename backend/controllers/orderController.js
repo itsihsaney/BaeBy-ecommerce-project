@@ -1,6 +1,7 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Cart from "../models/Cart.js";
+import Notification from "../models/Notification.js";
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -49,6 +50,21 @@ export const addOrderItems = async (req, res, next) => {
             });
 
             const createdOrder = await order.save();
+
+            // Create notification for admin (preventing duplicates)
+            try {
+                const existingNotification = await Notification.findOne({ orderId: createdOrder._id });
+                if (!existingNotification) {
+                    await Notification.create({
+                        type: "order",
+                        message: `New order placed by ${req.user.name || "Customer"}`,
+                        orderId: createdOrder._id,
+                        userId: req.user._id,
+                    });
+                }
+            } catch (notifError) {
+                console.error("Notification creation failed:", notifError);
+            }
 
             // Clear Cart after successful order
             await Cart.deleteMany({ user: req.user._id });

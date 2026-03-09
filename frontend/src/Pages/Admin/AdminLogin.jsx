@@ -59,9 +59,11 @@ export default function AdminLogin() {
                 <div className="text-center mb-10">
                     <Link to="/" className="inline-block group">
                         <div className="flex items-center justify-center gap-2 mb-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-black text-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:scale-105 transition-transform duration-300">
-                                B
-                            </div>
+                            <img
+                                src="/BaeBy Official Logo.jpg"
+                                alt="BaeBy Logo"
+                                className="w-10 h-10 object-contain rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] group-hover:scale-105 transition-transform duration-300"
+                            />
                             <span className="text-3xl font-black text-white tracking-tight">
                                 BaeBy<span className="text-purple-500">.</span>
                             </span>

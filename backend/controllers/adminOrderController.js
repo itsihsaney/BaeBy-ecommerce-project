@@ -1,0 +1,76 @@
+import Order from "../models/Order.js";
+import User from "../models/User.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
+
+// @desc    Get all orders with filtering and search
+// @route   GET /api/admin/orders
+// @access  Private/Admin
+export const getOrders = asyncHandler(async (req, res) => {
+    const { status, search } = req.query;
+    let query = {};
+
+    // Filter by status
+    if (status && status !== "all") {
+        query.status = status;
+    }
+
+    // Search logic
+    if (search) {
+        const searchRegex = { $regex: search, $options: "i" };
+
+        // Find users matching search to support searching by user fields
+        const users = await User.find({
+            $or: [
+                { name: searchRegex },
+                { email: searchRegex }
+            ]
+        }).select("_id");
+        const userIds = users.map(u => u._id);
+
+        query.$or = [
+            { orderId: searchRegex },
+            { status: searchRegex },
+            { user: { $in: userIds } }
+        ];
+
+        // Also check if search is a valid ObjectId for _id search
+        if (mongoose.isValidObjectId(search)) {
+            query.$or.push({ _id: search });
+        }
+    }
+
+    const orders = await Order.find(query)
+        .populate("user", "name email")
+        .sort({ createdAt: -1 });
+
+    res.json({
+        status: "success",
+        count: orders.length,
+        data: orders
+    });
+});
+
+// @desc    Update order status
+// @route   PATCH /api/admin/orders/:id
+// @access  Private/Admin
+export const updateOrderStatus = asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+        res.status(404);
+        throw new Error("Order not found");
+    }
+
+    if (req.body.status !== undefined) {
+        order.status = req.body.status;
+    }
+
+    const updatedOrder = await order.save();
+
+    res.json({
+        status: "success",
+        message: "Order status updated successfully",
+        data: updatedOrder
+    });
+});

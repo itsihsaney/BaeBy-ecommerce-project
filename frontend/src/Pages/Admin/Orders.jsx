@@ -20,7 +20,11 @@ export default function Orders() {
     const fetchOrders = async () => {
         setLoading(true);
         try {
-            const res = await getOrders();
+            const params = {
+                status: statusFilter,
+                search: searchQuery
+            };
+            const res = await getOrders(params);
             setOrders(res.data?.data || []);
         } catch (error) {
             console.error("Orders fetch error:", error);
@@ -32,22 +36,16 @@ export default function Orders() {
     };
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        const timeoutId = setTimeout(() => {
+            fetchOrders();
+        }, 500); // 500ms debounce
 
-    // 1. FILTERING (Frontend Driven)
-    const filteredOrders = orders.filter((o) => {
-        const oid = (o.id || o._id || "").toString().toLowerCase();
-        const matchesSearch = oid.includes(searchQuery.toLowerCase()) ||
-            o.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            o.status?.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = statusFilter === "all" || o.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery, statusFilter]);
 
-    // 2. PAGINATION (Frontend Driven)
-    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
-    const currentOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    // 1. DATA (Backend Driven)
+    const currentOrders = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
 
     const handlePageChange = (p) => {
         if (p >= 1 && p <= totalPages) setCurrentPage(p);
@@ -86,7 +84,7 @@ export default function Orders() {
                     </div>
                     <div className="flex items-center gap-3 bg-[#111111]/80 px-5 py-2.5 border border-white/[0.05] rounded-2xl shadow-xl">
                         <span className="text-xs text-gray-400 font-bold uppercase tracking-widest hidden lg:block">Volume</span>
-                        <span className="text-lg text-purple-400 font-black">{filteredOrders.length}</span>
+                        <span className="text-lg text-purple-400 font-black">{orders.length}</span>
                     </div>
                 </div>
             </div>
@@ -162,7 +160,7 @@ export default function Orders() {
             {totalPages > 1 && (
                 <div className="flex items-center justify-between p-4 bg-[#111111]/50 rounded-2xl border border-white/5 shadow-lg">
                     <div className="text-xs font-bold text-gray-500 uppercase tracking-widest hidden sm:block">
-                        Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredOrders.length)} of {filteredOrders.length} records
+                        Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, orders.length)} of {orders.length} records
                     </div>
                     <div className="flex items-center gap-1 mx-auto sm:mx-0">
                         <button

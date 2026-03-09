@@ -3,7 +3,7 @@ import {
     BarChart, Bar, XAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, YAxis, CartesianGrid
 } from "recharts";
 import { CreditCard, Package, ShoppingCart, Users } from "lucide-react";
-import { getUsers, getProducts, getOrders } from "../../api/adminApi";
+import { getStats,getOrders } from "../../api/adminApi";
 import { convertUSDToINR } from "../../utils/currencyFormatter";
 import StatCard from "../../Components/admin/StatCard";
 import DataTable from "../../Components/admin/DataTable";
@@ -20,28 +20,15 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Fetch all data for frontend-driven stats
-                const [usersRes, productsRes, ordersRes] = await Promise.all([
-                    getUsers(),
-                    getProducts(),
-                    getOrders()
-                ]);
-
-                const users = usersRes.data?.data || [];
-                const products = productsRes.data?.data || [];
-                const orders = ordersRes.data?.data || [];
-
-                // Calculate stats locally
-                const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-
+                const [statsRes, ordersRes] = await Promise.all([getStats(), getOrders()]);
+                const statsData = statsRes?.data?.data || {};
                 setStats({
-                    totalUsers: users.length,
-                    totalOrders: orders.length,
-                    totalProducts: products.length,
-                    totalRevenue: totalRevenue
+                    totalUsers: statsData.totalUsers || 0,
+                    totalOrders: statsData.totalOrders || 0,
+                    totalProducts: statsData.totalProducts || 0,
+                    totalRevenue: statsData.totalRevenue || 0,
                 });
-
-                // Get recent orders
+                const orders = ordersRes?.data?.data || [];
                 setRecentOrders([...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5));
             } catch (err) {
                 if (err.response?.status === 401) {
@@ -110,7 +97,7 @@ export default function Dashboard() {
                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                             <XAxis dataKey="name" stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
                             <YAxis stroke="#888" fontSize={12} tickLine={false} axisLine={false} />
-                            <Tooltip cursor={{ fill: "rgba(255,255,255,0.02)" }} contentStyle={{ backgroundColor: "#6c6c74ff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
+                            <Tooltip cursor={{ fill: "rgba(255,255,255,0.02)" }} contentStyle={{ backgroundColor: "#404043ff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
                             <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                                 {barData.map((_, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}
                             </Bar>
@@ -126,7 +113,7 @@ export default function Dashboard() {
                                 <Pie data={pieData} dataKey="value" outerRadius={110} innerRadius={80} stroke="transparent" paddingAngle={5}>
                                     {pieData.map((_, index) => <Cell key={index} fill={COLORS[index % COLORS.length]} />)}
                                 </Pie>
-                                <Tooltip contentStyle={{ backgroundColor: "#6c6c74ff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
+                                <Tooltip contentStyle={{ backgroundColor: "#404043ff", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px" }} />
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">

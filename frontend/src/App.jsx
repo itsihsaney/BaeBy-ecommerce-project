@@ -29,6 +29,7 @@ import Users from "./pages/admin/Users";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
+import AdminNotifications from "./Pages/admin/Notifications";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminLogin from "./pages/admin/AdminLogin";
 import NotAuthorized from "./Components/Auth/NotAuthorized";
@@ -133,6 +134,7 @@ export default function App() {
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="users" element={<Users />} />
+                <Route path="notifications" element={<AdminNotifications />} />
               </Route>
             </Routes>
 

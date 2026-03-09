@@ -234,45 +234,33 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Get all orders
-// @route   GET /api/admin/orders
+// @desc    Get dashboard stats
+// @route   GET /api/admin/stats
 // @access  Private/Admin
-export const getOrders = asyncHandler(async (req, res) => {
-    const orders = await Order.find({})
-        .populate("user", "name email")
-        .populate("items.product", "title price image category")
-        .sort({ createdAt: -1 });
+export const getStats = asyncHandler(async (req, res) => {
+    const totalUsers = await User.countDocuments({});
+    const totalProducts = await Product.countDocuments({});
+    const totalOrders = await Order.countDocuments({});
+
+    const revenueStats = await Order.aggregate([
+        {
+            $group: {
+                _id: null,
+                totalRevenue: { $sum: "$totalAmount" }
+            }
+        }
+    ]);
+
+    const totalRevenue = revenueStats.length > 0 ? revenueStats[0].totalRevenue : 0;
 
     res.json({
         status: "success",
-        message: "Orders retrieved successfully",
-        data: orders
-    });
-});
-
-
-// @desc    Update order status
-// @route   PATCH /api/admin/orders/:id
-// @access  Private/Admin
-export const updateOrderStatus = asyncHandler(async (req, res) => {
-    console.log("Updating order status:", req.params.id, "Status:", req.body.status);
-    const order = await Order.findById(req.params.id);
-
-
-    if (!order) {
-        res.status(404);
-        throw new Error("Order not found");
-    }
-
-    if (req.body.status !== undefined) {
-        order.status = req.body.status;
-    }
-
-    const updatedOrder = await order.save();
-
-    res.json({
-        status: "success",
-        message: "Order status updated successfully",
-        data: updatedOrder
+        message: "Stats retrieved successfully",
+        data: {
+            totalUsers,
+            totalProducts,
+            totalOrders,
+            totalRevenue
+        }
     });
 });
